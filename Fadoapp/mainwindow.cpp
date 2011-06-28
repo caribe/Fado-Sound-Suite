@@ -13,7 +13,7 @@ MainWindow::MainWindow() : QMainWindow() {
 	tabs = new QTabWidget(this);
 	tabs->setTabPosition(QTabWidget::West);
 
-	route = new Route(this);
+	route = new Route(core->store);
 	pattern  = new Pattern(this);
 	track = new Track(this);
 	playback = new Playback(this);
@@ -24,6 +24,30 @@ MainWindow::MainWindow() : QMainWindow() {
 	tabs->addTab(playback, QIcon(":/playback"), tr("Playback"));
 
 	setCentralWidget(tabs);
+
+	status = statusBar();
+
+	// *** Actions ***
+
+	QAction *actionTabRoute = new QAction(QIcon(":/machines"), tr("Machines"), this);
+	actionTabRoute->setShortcut(Qt::Key_F1);
+	actionTabRoute->setObjectName("actionTabRoute");
+	connect(actionTabRoute, SIGNAL(triggered()), SLOT(setTabByAction()));
+
+	QAction *actionTabPattern = new QAction(QIcon(":/patterns"), tr("Patterns"), this);
+	actionTabPattern->setShortcut(Qt::Key_F2);
+	actionTabPattern->setObjectName("actionTabPattern");
+	connect(actionTabPattern, SIGNAL(triggered()), SLOT(setTabByAction()));
+
+	QAction *actionTabTrack = new QAction(QIcon(":/sequencer"), tr("Sequencer"), this);
+	actionTabTrack->setShortcut(Qt::Key_F3);
+	actionTabTrack->setObjectName("actionTabTrack");
+	connect(actionTabTrack, SIGNAL(triggered()), SLOT(setTabByAction()));
+
+	QAction *actionTabPlayback = new QAction(QIcon(":/playback"), tr("Playback"), this);
+	actionTabPlayback->setShortcut(Qt::Key_F4);
+	actionTabPlayback->setObjectName("actionTabPlayback");
+	connect(actionTabPlayback, SIGNAL(triggered()), SLOT(setTabByAction()));
 
 	// *** menu ***
 
@@ -56,6 +80,12 @@ MainWindow::MainWindow() : QMainWindow() {
 	connect(menuFileQuit, SIGNAL(triggered()), this, SLOT(close()));
 	menuFile->addAction(menuFileQuit);
 
+	QMenu *tabs = menu->addMenu("&Tabs");
+	tabs->addAction(actionTabRoute);
+	tabs->addAction(actionTabPattern);
+	tabs->addAction(actionTabTrack);
+	tabs->addAction(actionTabPlayback);
+
 	menu->addMenu("&Settings");
 
 	QMenu *debugMenu = menu->addMenu("&Debug");
@@ -74,8 +104,7 @@ MainWindow::MainWindow() : QMainWindow() {
 	menuHelp->addAction(menuHelpAbout);
 
 	menuFileNewSlot();
-	
-	status = statusBar();
+
 }
 
 
@@ -189,23 +218,18 @@ void MainWindow::refreshPatterns()
 }
 
 
-void MainWindow::keyPressEvent(QKeyEvent *event)
+void MainWindow::setTabByAction()
 {
-	switch (event->key()) {
-		case Qt::Key_F2:
-			tabs->setCurrentIndex(0);
-			break;
-		case Qt::Key_F3:
-			tabs->setCurrentIndex(1);
-			break;
-		case Qt::Key_F4:
-			tabs->setCurrentIndex(2);
-			break;
-		case Qt::Key_F5:
-			tabs->setCurrentIndex(3);
-			break;
-		default:
-			QMainWindow::keyPressEvent(event);
+	QString sender = QObject::sender()->objectName();
+
+	if (sender == "actionTabRoute") {
+		tabs->setCurrentIndex(0);
+	} else if (sender == "actionTabPattern") {
+		tabs->setCurrentIndex(1);
+	} else if (sender == "actionTabTrack") {
+		tabs->setCurrentIndex(2);
+	} else if (sender == "actionTabPlayback") {
+		tabs->setCurrentIndex(3);
 	}
 }
 

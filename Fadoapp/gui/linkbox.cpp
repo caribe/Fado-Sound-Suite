@@ -85,9 +85,11 @@ void LinkBox::hoverEnterEvent(QGraphicsSceneHoverEvent * event)
 
 void LinkBox::hoverLeaveEvent(QGraphicsSceneHoverEvent * event)
 {
+	/*
 	setBrush(QBrush(backgrounds[0]));
 	clearFocus();
 	route->mainWindow->status->clearMessage();
+	*/
 }
 
 

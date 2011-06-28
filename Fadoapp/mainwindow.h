@@ -40,12 +40,13 @@ class MainWindow : public QMainWindow
 		
 		QTabWidget *tabs;
 		QStatusBar *status;
-		void keyPressEvent(QKeyEvent *event);
 		void closeEvent(QCloseEvent *event);
 
 		void critical(const QString & s);
 
 	private slots:
+		void setTabByAction();
+
 		void menuFileCloseSlot();
 		void menuFileNewSlot();
 		void menuFileOpenSlot();

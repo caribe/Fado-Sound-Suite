@@ -1,94 +1,75 @@
 #include "gui/route.h"
 
-Route::Route(MainWindow *mainWindow)
+Route::Route(Store *store)
 {
-	this->mainWindow = mainWindow;
-	store = mainWindow->getStore();
-
-	hide();
-
-	QGridLayout *grid = new QGridLayout(this);
-	grid->setSpacing(3);
-	grid->setContentsMargins(3, 3, 3, 3);
-
-	QSplitter *splitter = new QSplitter(this);
+	this->store = store;
 
 	// Machine tree
+
 	QTreeView *routeTree = new QTreeView(this);
-	routeTree->setModel(store->machineTree);
-	splitter->addWidget(routeTree);
+	routeTree->setModel(store->gearsTree);
+	connect(routeTree, SIGNAL(doubleClicked(QModelIndex)), SLOT(newMachine(QModelIndex)));
 
 	// Editor
-	routeScene = new QGraphicsScene(splitter);
+
+	routeScene = new QGraphicsScene(this);
 	routeScene->setSceneRect(0, 0, 1440, 768);
 
-	routeEditor = new QGraphicsView(routeScene, splitter);
+	routeEditor = new QGraphicsView(routeScene, this);
 	routeEditor->setRenderHints(QPainter::Antialiasing);
 	routeEditor->centerOn(0, 0);
-
-	splitter->addWidget(routeEditor);
-	
-
-	splitter->setStretchFactor(1, 1);
-	grid->addWidget(splitter, 0, 0);
 
 	extraline = new QGraphicsPathItem();
 	extraline->hide();
 	routeScene->addItem(extraline);
+
+	// Layout
+
+	addWidget(routeTree);
+	addWidget(routeEditor);
+
+	setStretchFactor(1, 1);
+
 }
 
 
-void Route::newMachine(QString type, QString author, QString code)
+void Route::newMachine(const QModelIndex &index)
 {
-	/*
-	QTextStream out(stdout);
+	int id = index.data(Qt::UserRole + 1).toInt();
 
-	int id;
-	QList<int> keys = store->machines.keys();
-	qSort(keys);
+	Machine *machine;
 
-	for (id = 0; id < keys.length(); id++) if (id != keys[id]) break;
-
-	Machine *tx;
-	if (author == "Core" and code == "lineinput") {
-		tx = (Machine *)new LineInput();
-	} else if (author == "Core" and code == "fileinput") {
-		tx = (Machine *)new FileInput();
-	} else {
-		tx = store->factory[type.toLower()][author][code]();
+	if (id > 0) {
+		machine = qobject_cast<Machine *>(store->gears[id]->instance());
+	} else if (id == -1){
+		machine  = (Machine *)new LineInput();
+	} else if (id == -2) {
+		machine  = (Machine *)new FileInput();
 	}
-	tx->id = id;
-	tx->x = tx->y = -1;
 
-	tx->store = store;
-	tx->patterns[0];
-	store->machines[id] = tx;
+	machine->id = store->machines.length();
+	store->machines.append(machine);
 
-	addMachine(tx);
+	addMachine(machine);
 
-	mainWindow->refreshMachines();
-	*/
+	// mainWindow->refreshMachines();
 }
 
 
 
 void Route::addMachine(Machine *machine)
 {
-	/*
 	MachineBox *box = new MachineBox(this, machine);
 	machines[machine->id] = box;
 	routeScene->addItem(box);
 	qDebug() << "Added machine #" << machine->id << endl;
-	*/
 }
 
 
 
 void Route::delMachine(Machine *machine)
 {
-	/*
 	if (machines.contains(machine->id)) delMachine(machines[machine->id]);
-	*/
 }
 
 

@@ -4,6 +4,8 @@
 #include <QGraphicsPathItem>
 #include <QStatusBar>
 
+#include <cmath>
+
 class LinkBox;
 
 #include "gui/route.h"

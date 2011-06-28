@@ -19,7 +19,7 @@ class Store : public QObject {
 		//! Constructor
 		Store();
 
-		QStandardItemModel *machineTree;
+		QStandardItemModel *gearsTree;
 
 		int beat_per_pattern, total_patterns;
 

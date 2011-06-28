@@ -112,8 +112,10 @@ void MachineBox::keyPressEvent(QKeyEvent *e) {
 
 void MachineBox::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event) 
 {
+	/*
 	parent->mainWindow->tabs->setCurrentIndex(1);
 	parent->mainWindow->pattern->machineCombo->setCurrentIndex(id());
+	*/
 }
 
 

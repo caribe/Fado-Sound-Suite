@@ -23,12 +23,27 @@ void Core::loadPlugins()
 	if (store != 0) delete store;
 	store = new Store();
 
+	QStandardItem *item;
+
+	// Standard gears
+
+	item = new QStandardItem(QIcon(":/machine"), "Line Input");
+	item->setEditable(false);
+	item->data() = -1;
+	store->gearsTree->appendRow(item);
+
+	item = new QStandardItem(QIcon(":/machine"), "File Input");
+	item->setEditable(false);
+	item->data() = -2;
+	store->gearsTree->appendRow(item);
+
+	// Plugins
+
 	QDir libs(pluginsPath);
 	QStringList dirList = libs.entryList();
 
 	qDebug() << "Loading machines...";
 
-	// Caricamento makers per tutte le librerie
 	foreach (QString name, dirList) {
 
 		QFileInfo info(pluginsPath + name);
@@ -47,10 +62,13 @@ void Core::loadPlugins()
 
 				qDebug() << "Loaded" << machine->name;
 
-				QStandardItem *item = new QStandardItem(QIcon(":/machine"), machine->name);
+				item = new QStandardItem(QIcon(":/machine"), machine->name);
+				item->setEditable(false);
 				item->data() = id;
 
-// 				delete machine;
+				store->gearsTree->appendRow(item);
+
+				// delete machine;
 
 			} else {
 				qDebug() << "Error" << lib->errorString();
@@ -95,6 +113,8 @@ int Core::jack_init()
 
 	output_port[0] = jack_port_register(client, "output_lx", JACK_DEFAULT_AUDIO_TYPE, JackPortIsOutput, 0);
 	output_port[1] = jack_port_register(client, "output_rx", JACK_DEFAULT_AUDIO_TYPE, JackPortIsOutput, 0);
+
+	return 0;
 }
 
 
