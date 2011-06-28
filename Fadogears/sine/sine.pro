@@ -10,3 +10,6 @@ TARGET = sine
 TEMPLATE = lib
 
 SOURCES += sine.cpp
+
+HEADERS += \
+    sine.h

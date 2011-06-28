@@ -1,10 +1,10 @@
+/*
 #include "machine.h"
 
 #include <cstdio>
 
 int Machine::preprocess(jack_nframes_t nframes, int process)
 {
-	/*
 	for (unsigned int j = 0; j < nframes; j++) li[j] = ri[j] = 0;
 
 	foreach (int i, store->iconn[id]) {
@@ -20,7 +20,6 @@ int Machine::preprocess(jack_nframes_t nframes, int process)
 
 	if (process > 0) this->process(nframes);
 	return 0;
-	*/
 }
 
 
@@ -125,3 +124,4 @@ QString Machine::validate(QString param, QString value)
 
 	return value;
 }
+*/

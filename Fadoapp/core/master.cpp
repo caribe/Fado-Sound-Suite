@@ -4,6 +4,7 @@
 
 Master::Master()
 {
+	/*
 	type = Machine::t_output;
 
 	type = "core";
@@ -12,14 +13,16 @@ Master::Master()
 	description = "Master Output";
 
 	addParam(new Param("bpm", "Beats per minute", Param::int_t, 50, 1000));
+	*/
 }
 
 
 
 int Master::init(Store *store)
 {
+	/*
 	this->store = store;
-/*
+
 	for (int i = 0; i < store->order.length(); i++) {
 		if (store->machines.contains(store->order[i]) == false) continue;
 		Machine *m = store->machines[store->order[i]];
@@ -86,8 +89,10 @@ int Master::go(jack_client_t *client, jack_port_t **input_port, jack_port_t **ou
 
 
 void Master::reconfig() {
+	/*
 // 	qDebug() <<params["bpm"]->getInt() << "\t" << store->buffer_size << "\t" << store->sampling_rate << "\n";
 	period_per_beat = (int)((60.0 / params["bpm"]->getInt()) / ((float)store->buffer_size / (float)store->sampling_rate));
+	*/
 }
 
 

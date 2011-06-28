@@ -74,17 +74,21 @@ void Route::newMachine(QString type, QString author, QString code)
 
 void Route::addMachine(Machine *machine)
 {
+	/*
 	MachineBox *box = new MachineBox(this, machine);
 	machines[machine->id] = box;
 	routeScene->addItem(box);
 	qDebug() << "Added machine #" << machine->id << endl;
+	*/
 }
 
 
 
 void Route::delMachine(Machine *machine)
 {
+	/*
 	if (machines.contains(machine->id)) delMachine(machines[machine->id]);
+	*/
 }
 
 

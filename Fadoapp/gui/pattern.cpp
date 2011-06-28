@@ -133,6 +133,7 @@ void Pattern::machineChange(int index) {
 
 
 void Pattern::refreshPatterns() {
+	/*
 	if (!activeMachine) return;
 
 	patternCombo->clear();
@@ -148,6 +149,7 @@ void Pattern::refreshPatterns() {
 	tableview->reset();
 
 	activeCol(-1);
+	*/
 }
 
 
@@ -157,6 +159,7 @@ void Pattern::patternChange(int index) {
 
 void Pattern::activeCol(int col)
 {
+	/*
 	if (!activeMachine) return;
 
 	if (col == -1) {
@@ -176,11 +179,13 @@ void Pattern::activeCol(int col)
 		detailMax->show();
 		detailMax->setText("Max: <b>" + QString::number(activeMachine->params[param]->max) + "</b>");
 	}
+	*/
 }
 
 
 void Pattern::addPattern()
 {
+	/*
 	if (!activeMachine) return;
 
 	int i;
@@ -193,11 +198,13 @@ void Pattern::addPattern()
 	} else {
 		QMessageBox::critical(mainWindow, "Too much patterns", "You can have only 1024 patterns for each machine");
 	}
+	*/
 }
 
 
 void Pattern::renPattern()
 {
+	/*
 	int index = patternCombo->currentIndex();
 	if (!activeMachine or index < 0) return;
 	
@@ -217,14 +224,17 @@ void Pattern::renPattern()
 		mainWindow->refreshPatterns();
 		patternCombo->setCurrentIndex(index);
 	}
+	*/
 }
 
 
 void Pattern::delPattern()
 {
+	/*
 	if (!activeMachine or patternCombo->currentIndex() < 0) return;
 	activeMachine->patterns.remove(patternCombo->itemData(patternCombo->currentIndex()).toInt());
 	refreshPatterns();
+	*/
 }
 
 

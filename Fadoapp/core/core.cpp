@@ -45,13 +45,15 @@ void Core::loadPlugins()
 
 				Machine *machine = qobject_cast<Machine *>(lib->instance());
 
+				qDebug() << "Loaded" << machine->name;
+
 				QStandardItem *item = new QStandardItem(QIcon(":/machine"), machine->name);
 				item->data() = id;
 
-				delete machine;
+// 				delete machine;
 
 			} else {
-				qDebug() << lib->errorString();
+				qDebug() << "Error" << lib->errorString();
 			}
 		}
 	}

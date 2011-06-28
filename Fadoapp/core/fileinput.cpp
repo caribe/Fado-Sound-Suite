@@ -2,6 +2,7 @@
 
 FileInput::FileInput()
 {
+	/*
 	type = Machine::t_input;
 
 	type = "generator";
@@ -11,13 +12,14 @@ FileInput::FileInput()
 
 	addParam(new Param("file", "File name path", Param::string_t, 0, 0));
 	addParam(new Param("seek", "Position inside file", Param::int_t, 0, 1000000));
+	*/
 }
 
 
 void FileInput::init()
 {
 	SNDFILE *file;
-
+/*
 	foreach (int pattern, patterns.keys()) {
 		foreach (int row, patterns[pattern].keys()) {
 			if (patterns[pattern][row].contains("file")) {
@@ -44,6 +46,7 @@ void FileInput::init()
 			}
 		}
 	}
+*/
 }
 
 
@@ -54,13 +57,16 @@ void FileInput::finish() {
 }
 
 void FileInput::reconfig() {
+	/*
 	seek = 0;
 	ratio = (float)info.samplerate / (float)store->sampling_rate;
+	*/
 }
 
 // seek2 = seek * info.samplerate / sampling_rate
 
 int FileInput::process(jack_nframes_t nframes) {
+	/*
 	int i, seek2;
 
 	if (info.channels == 2) {
@@ -77,6 +83,6 @@ int FileInput::process(jack_nframes_t nframes) {
 			lx[i] = rx[i] = filebuffer[params["file"]->getString()][seek2];
 		}
 	}
-
+*/
 	return 0;
 }

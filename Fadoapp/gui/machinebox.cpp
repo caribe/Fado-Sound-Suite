@@ -2,6 +2,7 @@
 
 MachineBox::MachineBox(Route *parent, Machine *machine)
 {
+	/*
 	this->m = machine;
 	this->parent = parent;
 
@@ -45,10 +46,12 @@ MachineBox::MachineBox(Route *parent, Machine *machine)
 	setCursor(Qt::OpenHandCursor);
 
 	setAcceptHoverEvents(true);
+	*/
 }
 
 
 void MachineBox::mousePressEvent(QGraphicsSceneMouseEvent *e) {
+	/*
 	if (e->button() == Qt::LeftButton) {
 		if (e->modifiers() == Qt::ControlModifier) {
 			dragMode = 2;
@@ -61,10 +64,12 @@ void MachineBox::mousePressEvent(QGraphicsSceneMouseEvent *e) {
 			setCursor(Qt::ClosedHandCursor);
 		}
 	}
+	*/
 }
 
 
 void MachineBox::mouseMoveEvent(QGraphicsSceneMouseEvent *e) {
+	/*
 	if (dragMode == 1) {
 		QGraphicsRectItem::mouseMoveEvent(e);
 		parent->moveConnection(this);
@@ -72,10 +77,12 @@ void MachineBox::mouseMoveEvent(QGraphicsSceneMouseEvent *e) {
 		QPointF pos = e->scenePos();
 		parent->connectionMove(m->x, m->y, pos.x(), pos.y());
 	}
+	*/
 }
 
 
 void MachineBox::mouseReleaseEvent(QGraphicsSceneMouseEvent *e) {
+	/*
 	if (dragMode == 1) {
 		QGraphicsRectItem::mouseReleaseEvent(e);
 		setCursor(Qt::OpenHandCursor);
@@ -86,10 +93,12 @@ void MachineBox::mouseReleaseEvent(QGraphicsSceneMouseEvent *e) {
 		QPointF pos = e->scenePos();
 		parent->connectionFinish(this, pos.x(), pos.y());
 	}
+	*/
 }
 
 
 void MachineBox::keyPressEvent(QKeyEvent *e) {
+	/*
 	if (e->key() == Qt::Key_Delete and (m->author != "Core" or m->name != "output")) {
 		if (QMessageBox::question(this->parent, "Are you sure?", "Are you sure to delete this machine?", QMessageBox::Ok, QMessageBox::Cancel) == QMessageBox::Ok) {
 			parent->delMachine(this);
@@ -97,6 +106,7 @@ void MachineBox::keyPressEvent(QKeyEvent *e) {
 	} else {
 		e->ignore();
 	}
+	*/
 }
 
 
@@ -109,21 +119,27 @@ void MachineBox::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event)
 
 void MachineBox::hoverEnterEvent(QGraphicsSceneHoverEvent * event)
 {
+	/*
 	setBrush(QBrush(backgrounds[1]));
 	setFocus(Qt::MouseFocusReason);
 	parent->mainWindow->status->showMessage(m->type+"."+m->author+"."+m->name);
+	*/
 }
 
 
 void MachineBox::hoverLeaveEvent(QGraphicsSceneHoverEvent * event)
 {
+	/*
 	setBrush(QBrush(backgrounds[0]));
 	clearFocus();
 	parent->mainWindow->status->clearMessage();
+	*/
 }
 
 
 int MachineBox::id()
 {
+	/*
 	return m->id;
+	*/
 }

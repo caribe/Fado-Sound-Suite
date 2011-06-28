@@ -8,6 +8,7 @@ class Master;
 
 #include "core/core.h"
 #include "ext/machine.h"
+#include "core/store.h"
 
 int jack_process(jack_nframes_t nframes, void *arg);
 void jack_shutdown(void *arg);

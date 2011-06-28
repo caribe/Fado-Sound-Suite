@@ -12,7 +12,13 @@ class Machine;
 #include "param.h"
 
 class Machine {
+
 	public:
+		virtual int process(jack_nframes_t nframes)=0;
+		virtual void reconfig()=0;
+		virtual void init() {}
+		virtual void finish() {}
+
 		enum types { t_output, t_input, t_generator, t_effect };
 		jack_default_audio_sample_t lx[2048], rx[2048];
 		jack_default_audio_sample_t li[2048], ri[2048];
@@ -27,11 +33,6 @@ class Machine {
 
 		QHash<int, int> track;
 
-		virtual int process(jack_nframes_t nframes)=0;
-		virtual void reconfig()=0;
-		virtual void init() {}
-		virtual void finish() {}
-
 		QString validate(QString param, QString value);
 		int preprocess(jack_nframes_t nframes);
 		int preprocess(jack_nframes_t nframes, int process);
@@ -40,6 +41,7 @@ class Machine {
 		void setDescription(const QString &description);
 		void addParam(Param *param);
 		Param *getParam(QString name);
+
 };
 
 Q_DECLARE_INTERFACE(Machine, "org.altervista.saitfainder.fado.Machine/1.0")

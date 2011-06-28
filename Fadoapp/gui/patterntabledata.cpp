@@ -13,11 +13,13 @@ void PatternTableData::reload() {
 
 int PatternTableData::columnCount(const QModelIndex& parent) const
 {
+	/*
 	if (pattern->activeMachine) {
 		return pattern->activeMachine->params.size();
 	} else {
 		return 0;
 	}
+	*/
 }
 
 
@@ -31,6 +33,7 @@ int PatternTableData::rowCount(const QModelIndex& parent) const
 
 QVariant PatternTableData::data(const QModelIndex& index, int role) const
 {
+	/*
 	if (index.isValid() == false) {
 		return QVariant();
 	} else if (role != Qt::DisplayRole and role != Qt::EditRole) { 
@@ -50,13 +53,14 @@ QVariant PatternTableData::data(const QModelIndex& index, int role) const
 	) {
 		return QVariant(pattern->activeMachine->patterns[pat][row][colName]);
 	}
-
+	*/
 	return QVariant();
 }
 
 
 Qt::ItemFlags PatternTableData::flags(const QModelIndex & index) const
 {
+	/*
 	QString paramName = pattern->cols[index.column()];
 
 	if (pattern->activeMachine->params[paramName]->type == pattern->activeMachine->params[paramName]->note_t) {
@@ -64,11 +68,13 @@ Qt::ItemFlags PatternTableData::flags(const QModelIndex & index) const
 	} else {
 		return Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsEnabled;
 	}
+	*/
 }
 
 
 bool PatternTableData::setData(const QModelIndex& index, const QVariant & value, int role)
 {
+	/*
 	int pat = pattern->currentPattern();
 	int row = index.row();
 	int col = index.column();
@@ -90,6 +96,7 @@ bool PatternTableData::setData(const QModelIndex& index, const QVariant & value,
 	} else {
 		pattern->activeMachine->patterns[pat][row][colName] = strValue;
 	}
+	*/
 }
 
 
