@@ -12,10 +12,11 @@ Store::Store()
 
 int Store::optimizeMachines(QHash<int, int> &changes)
 {
+	/*
 	int max = 0;
 	int i;
 
-	foreach (i, machines.keys()) if (i > max) max = i;
+	foreach (i, machines.values()) if (i > max) max = i;
 	QList<int> order;
 
 	for (i = 0; i <= max; i++) if (machines.contains(i)) order.append(i);
@@ -39,13 +40,14 @@ int Store::optimizeMachines(QHash<int, int> &changes)
 			}
 		}
 	}
-
+*/
 	return 0;
 }
 
 
 int Store::orderMachines()
 {
+	/*
 	QHash<int, QList<int> > oconn;
 	QHash<int, QList<int> > iconn;
 	QList<int> order;
@@ -98,7 +100,7 @@ int Store::orderMachines()
 	if (watchdog < 0) return 1;
 
 	this->order = order;
-
+*/
 	return 0;
 }
 
@@ -106,6 +108,7 @@ int Store::orderMachines()
 
 int Store::flipConnection(int from, int to)
 {
+	/*
 	if (connections.contains(from) and connections[from].contains(to)) {
 		connections[from].remove(to);
 		if (connections[from].isEmpty()) connections.remove(from);
@@ -127,4 +130,5 @@ int Store::flipConnection(int from, int to)
 		orderMachines();
 		return 0;
 	}
+	*/
 }

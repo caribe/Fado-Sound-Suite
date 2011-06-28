@@ -25,7 +25,7 @@ class Core;
 class Core : QObject {
 	public:
 		Core(MainWindow *mainWindow);
-		int init();
+		void loadPlugins();
 		int jack_init();
 		int load(QString filename);
 		int start(bool record);
@@ -47,6 +47,8 @@ class Core : QObject {
 		jack_client_t *client;
 		jack_port_t *input_port[4];
 		jack_port_t *output_port[4];
+
+		QString pluginsPath;
 };
 
 #endif

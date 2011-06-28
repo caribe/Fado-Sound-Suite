@@ -9,6 +9,4 @@ QT       += core
 TARGET = sine
 TEMPLATE = lib
 
-DEFINES += SINE_LIBRARY
-
 SOURCES += sine.cpp

@@ -8,7 +8,7 @@
 
 class Machine;
 
-#include "core/store.h"
+#include "../core/store.h"
 #include "param.h"
 
 class Machine {

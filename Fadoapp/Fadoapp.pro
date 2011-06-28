@@ -63,28 +63,15 @@ RESOURCES += \
     resources/resources.qrc
 
 unix|win32: LIBS += -lfftw3
-
 unix|win32: LIBS += -ljack
-
-win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../Fadolib/release/ -lFadolib
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../Fadolib/debug/ -lFadolib
-else:symbian: LIBS += -lFadolib
-else:unix: LIBS += -L$$OUT_PWD/../Fadolib/ -lFadolib
-
-INCLUDEPATH += $$PWD/../Fadolib
-DEPENDPATH += $$PWD/../Fadolib
-
 unix|win32: LIBS += -lsndfile
 
 OTHER_FILES += \
     resources/table.png \
     resources/splashscreen.jpg \
     resources/speaker.png \
-    resources/sequencer.png \
     resources/playback.png \
-    resources/patterns.png \
     resources/node.png \
-    resources/machines.png \
     resources/gear.png \
     resources/block.png \
     resources/001_60.png \

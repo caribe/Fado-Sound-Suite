@@ -4,60 +4,57 @@ Core::Core(MainWindow *mainWindow)
 {
 	this->mainWindow = mainWindow;
 	master = 0;
-	init();
-	jack_init();
+	store = 0;
+	pluginsPath = "../Fadogears/";
+
+	loadPlugins();
+
+	settings = new Settings(this);
+	settings->load();
+
+	// jack_init();
 }
 
 
 
-int Core::init()
+void Core::loadPlugins()
 {
-	errstr = "";
-
+	// TODO Memory leaks!
+	if (store != 0) delete store;
 	store = new Store();
 
-	// Lista file libreria
-	QStringList fileFilter;
-        fileFilter << "*.so" << "*.dll";
-
-	QDir libs(LIB_PATH);
+	QDir libs(pluginsPath);
 	QStringList dirList = libs.entryList();
 
 	qDebug() << "Loading machines...";
 
 	// Caricamento makers per tutte le librerie
-	for (int i = 0; i < dirList.size(); i++) {
-		QString dir = dirList.value(i);
+	foreach (QString name, dirList) {
 
-		QFileInfo info(LIB_PATH + dir);
-		if (info.isDir() && dir != "." && dir != "..") {
-			QDir libs2(LIB_PATH + dir);
-			QStringList fileList = libs2.entryList(fileFilter);
+		QFileInfo info(pluginsPath + name);
 
-			foreach (QString name, fileList) {
-				qDebug() << "Trying " << LIB_PATH << dir << "/" << name;
+		if (info.isDir() && name != "." && name != "..") {
 
-				QPluginLoader *lib = new QPluginLoader(LIB_PATH + dir + "/" + name);
-				if (lib->load()) {
-					int id = store->machines.length();
-					store->machines.append(lib);
+			qDebug() << "Trying " << pluginsPath + name + "/" + name + ".so";
 
-					Machine *machine = qobject_cast<Machine *>(lib->instance());
+			QPluginLoader *lib = new QPluginLoader(pluginsPath + name + "/lib" + name + ".so");
 
-					QStandardItem *item = new QStandardItem(QIcon(":/machine"), machine->name);
-					item->data() = id;
+			if (lib->load()) {
+				int id = store->gears.length();
+				store->gears.append(lib);
 
-					delete machine;
+				Machine *machine = qobject_cast<Machine *>(lib->instance());
 
-				} else {
-					qDebug() << lib->errorString();
-				}
+				QStandardItem *item = new QStandardItem(QIcon(":/machine"), machine->name);
+				item->data() = id;
+
+				delete machine;
+
+			} else {
+				qDebug() << lib->errorString();
 			}
 		}
 	}
-
-	settings = new Settings(this);
-	settings->load();
 }
 
 

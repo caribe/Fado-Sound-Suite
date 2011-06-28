@@ -9,12 +9,12 @@
 
 class Store;
 
-#include "ext/machine.h"
+#include "../ext/machine.h"
 
 #define PI_2 6.28318530718
 
 //! General store of machines
-class Store {
+class Store : public QObject {
 	public:
 		//! Constructor
 		Store();
@@ -23,7 +23,8 @@ class Store {
 
 		int beat_per_pattern, total_patterns;
 
-		QList<QPluginLoader *> machines;
+		QList<QPluginLoader *> gears;
+		QList<Machine *> machines;
 		QMultiHash<int, int> connections;
 
 		QMultiHash<int, int> oconn;
