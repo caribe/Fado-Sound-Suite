@@ -1,37 +1,17 @@
 #ifndef LIBRARY_MACHINE_HPP
 #define LIBRARY_MACHINE_HPP
 
-#include "store.h"
-#include "param.h"
-
-#include <QHash>
-
 #include <jack/jack.h>
 
-#define MACHINE(CLASS, TYPE, GROUP, NAME, DESCRIPTION, VERSION) \
-extern "C" QStringList info() { \
-	QStringList info; \
-	info << TYPE << GROUP << NAME << DESCRIPTION << VERSION; \
-	return info; \
-} \
-\
-extern "C" Machine *maker() { \
-	Machine *m = new CLASS(); \
-	QStringList i = info(); \
-	m->type = i[0]; \
-	m->author = i[1]; \
-	m->name = i[2]; \
-	m->description = i[3]; \
-	m->version = i[4]; \
-	return m; \
-} \
+#include <QHash>
+#include <QtPlugin>
 
-class Store;
+class Machine;
 
-using namespace std;
+#include "core/store.h"
+#include "param.h"
 
-class Machine
-{
+class Machine {
 	public:
 		enum types { t_output, t_input, t_generator, t_effect };
 		jack_default_audio_sample_t lx[2048], rx[2048];
@@ -61,5 +41,7 @@ class Machine
 		void addParam(Param *param);
 		Param *getParam(QString name);
 };
+
+Q_DECLARE_INTERFACE(Machine, "org.altervista.saitfainder.fado.Machine/1.0")
 
 #endif

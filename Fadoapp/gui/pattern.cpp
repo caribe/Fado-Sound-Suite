@@ -109,14 +109,17 @@ Pattern::Pattern(MainWindow *mainWindow) {
 
 void Pattern::refreshMachines()
 {
+	/*
 	machineCombo->clear();
 	foreach (int i, store->machines.keys()) {
 		machineCombo->addItem(store->machines[i]->author+"."+store->machines[i]->name, QVariant(i));
 	}
+	*/
 }
 
 
 void Pattern::machineChange(int index) {
+	/*
 	int i = machineCombo->itemData(index).toInt();
 
 	if (store->machines.contains(i)) {
@@ -125,6 +128,7 @@ void Pattern::machineChange(int index) {
 		foreach (QString name, activeMachine->params.keys()) cols << name;
 		refreshPatterns();
 	}
+	*/
 }
 
 

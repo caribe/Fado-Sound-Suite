@@ -1,7 +1,7 @@
 #ifndef CORE_FILEINPUT_H
 #define CORE_FILEINPUT_H
 
-#include "../Fadolib/machine.h"
+#include "ext/machine.h"
 
 #include <sndfile.h>
 #include <cstdlib>

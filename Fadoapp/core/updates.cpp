@@ -18,6 +18,7 @@ int Updates::check()
 
 void Updates::replyFinished(QNetworkReply *reply)
 {
+	/*
 	if (reply->error() == QNetworkReply::NoError) {
 		QByteArray xml = reply->readAll();
 
@@ -72,6 +73,7 @@ void Updates::replyFinished(QNetworkReply *reply)
 			QMessageBox::information(0, "Updates avaible", "New machines are avaible. Should i try to download them?");
 		}
 	}
+	*/
 }
 
 

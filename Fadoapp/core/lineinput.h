@@ -1,7 +1,7 @@
 #ifndef CORE_LINEINPUT_H
 #define CORE_LINEINPUT_H
 
-#include "../Fadolib/machine.h"
+#include "ext/machine.h"
 
 class LineInput : public Machine {
 

@@ -63,6 +63,7 @@ void Track::refreshMachines()
 
 void Track::refreshPatterns()
 {
+	/*
 	if (store->machines.contains(activeMachine) == false) return;
 
 	hintList->clear();
@@ -94,6 +95,7 @@ void Track::refreshPatterns()
 
 		hintList->addItem(item);
 	}
+	*/
 }
 
 
@@ -118,6 +120,7 @@ void Track::addButtonSlot()
 
 void Track::delButtonSlot()
 {
+	/*
 	int row = tracksTable->currentIndex().row();
 	if (row == -1) row = store->total_patterns - 1;
 	if (store->total_patterns <= 1) return;
@@ -143,6 +146,7 @@ void Track::delButtonSlot()
 	if (m->track_last  >= store->total_patterns) m->track_last  = store->total_patterns - 1;
 
 	tracksTable->refresh();
+	*/
 }
 
 

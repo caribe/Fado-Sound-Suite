@@ -28,6 +28,7 @@ int TrackTableData::rowCount(const QModelIndex& parent) const
 
 QVariant TrackTableData::data(const QModelIndex& index, int role) const
 {
+	/*
 	if (index.isValid() == false) {
 		return QVariant();
 	} else if (role == Qt::BackgroundRole) {
@@ -55,6 +56,7 @@ QVariant TrackTableData::data(const QModelIndex& index, int role) const
 			return QVariant("Pattern "+QString::number(pattern));
 		}
 	}
+	*/
 	return QVariant();
 }
 
@@ -62,6 +64,7 @@ QVariant TrackTableData::data(const QModelIndex& index, int role) const
 
 QVariant TrackTableData::headerData(int section, Qt::Orientation orientation, int role) const
 {
+	/*
 	if (role != Qt::DisplayRole) { 
 		return QVariant();
 	} else if (orientation == Qt::Horizontal) {
@@ -69,4 +72,6 @@ QVariant TrackTableData::headerData(int section, Qt::Orientation orientation, in
 	} else if (orientation == Qt::Vertical) {
 		return QVariant(section);
 	}
+	*/
+	return QVariant();
 }

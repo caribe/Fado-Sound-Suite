@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       -= core gui
+QT       += core
 
 TARGET = sine
 TEMPLATE = lib
@@ -12,25 +12,3 @@ TEMPLATE = lib
 DEFINES += SINE_LIBRARY
 
 SOURCES += sine.cpp
-
-HEADERS += sine.h\
-        sine_global.h
-
-symbian {
-    MMP_RULES += EXPORTUNFROZEN
-    TARGET.UID3 = 0xE45BD793
-    TARGET.CAPABILITY = 
-    TARGET.EPOCALLOWDLLDATA = 1
-    addFiles.sources = sine.dll
-    addFiles.path = !:/sys/bin
-    DEPLOYMENT += addFiles
-}
-
-unix:!symbian {
-    maemo5 {
-        target.path = /opt/usr/lib
-    } else {
-        target.path = /usr/lib
-    }
-    INSTALLS += target
-}

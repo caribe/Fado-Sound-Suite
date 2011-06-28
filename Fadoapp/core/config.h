@@ -3,8 +3,8 @@
 
 #include <QtXml/QDomDocument>
 
-#include "../Fadolib/store.h"
-#include "../Fadolib/machine.h"
+#include "core/store.h"
+#include "ext/machine.h"
 #include "core/master.h"
 #include "core/lineinput.h"
 #include "core/fileinput.h"

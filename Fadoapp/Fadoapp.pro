@@ -15,7 +15,6 @@ SOURCES += main.cpp\
     gui/tracktabledata.cpp \
     gui/tracktable.cpp \
     gui/track.cpp \
-    gui/routetree.cpp \
     gui/route.cpp \
     gui/playback.cpp \
     gui/patterntabledata.cpp \
@@ -31,13 +30,15 @@ SOURCES += main.cpp\
     core/fileinput.cpp \
     core/encoder.cpp \
     core/core.cpp \
-    core/config.cpp
+    core/config.cpp \
+    ext/param.cpp \
+    ext/machine.cpp \
+    core/store.cpp
 
 HEADERS  += mainwindow.h \
     gui/tracktabledata.h \
     gui/tracktable.h \
     gui/track.h \
-    gui/routetree.h \
     gui/route.h \
     gui/playback.h \
     gui/patterntabledata.h \
@@ -53,7 +54,10 @@ HEADERS  += mainwindow.h \
     core/fileinput.h \
     core/encoder.h \
     core/core.h \
-    core/config.h
+    core/config.h \
+    ext/param.h \
+    ext/machine.h \
+    core/store.h
 
 RESOURCES += \
     resources/resources.qrc
@@ -71,3 +75,75 @@ INCLUDEPATH += $$PWD/../Fadolib
 DEPENDPATH += $$PWD/../Fadolib
 
 unix|win32: LIBS += -lsndfile
+
+OTHER_FILES += \
+    resources/table.png \
+    resources/splashscreen.jpg \
+    resources/speaker.png \
+    resources/sequencer.png \
+    resources/playback.png \
+    resources/patterns.png \
+    resources/node.png \
+    resources/machines.png \
+    resources/gear.png \
+    resources/block.png \
+    resources/001_60.png \
+    resources/001_59.png \
+    resources/001_58.png \
+    resources/001_57.png \
+    resources/001_56.png \
+    resources/001_55.png \
+    resources/001_54.png \
+    resources/001_53.png \
+    resources/001_52.png \
+    resources/001_51.png \
+    resources/001_50.png \
+    resources/001_49.png \
+    resources/001_48.png \
+    resources/001_47.png \
+    resources/001_46.png \
+    resources/001_45.png \
+    resources/001_44.png \
+    resources/001_43.png \
+    resources/001_42.png \
+    resources/001_41.png \
+    resources/001_40.png \
+    resources/001_39.png \
+    resources/001_38.png \
+    resources/001_37.png \
+    resources/001_36.png \
+    resources/001_35.png \
+    resources/001_34.png \
+    resources/001_33.png \
+    resources/001_32.png \
+    resources/001_31.png \
+    resources/001_30.png \
+    resources/001_29.png \
+    resources/001_28.png \
+    resources/001_27.png \
+    resources/001_26.png \
+    resources/001_25.png \
+    resources/001_24.png \
+    resources/001_23.png \
+    resources/001_22.png \
+    resources/001_21.png \
+    resources/001_20.png \
+    resources/001_19.png \
+    resources/001_18.png \
+    resources/001_17.png \
+    resources/001_16.png \
+    resources/001_15.png \
+    resources/001_14.png \
+    resources/001_13.png \
+    resources/001_12.png \
+    resources/001_11.png \
+    resources/001_10.png \
+    resources/001_09.png \
+    resources/001_08.png \
+    resources/001_07.png \
+    resources/001_06.png \
+    resources/001_05.png \
+    resources/001_04.png \
+    resources/001_03.png \
+    resources/001_02.png \
+    resources/001_01.png

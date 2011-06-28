@@ -19,14 +19,14 @@ Master::Master()
 int Master::init(Store *store)
 {
 	this->store = store;
-
+/*
 	for (int i = 0; i < store->order.length(); i++) {
 		if (store->machines.contains(store->order[i]) == false) continue;
 		Machine *m = store->machines[store->order[i]];
 		qDebug() <<"Init " << m->name << endl;
 		m->init();
 	}
-
+*/
 	return 0;
 }
 
@@ -94,7 +94,7 @@ void Master::reconfig() {
 int Master::stop()
 {
 	jack_deactivate(client);
-
+/*
 	for (int i = 0; i < store->order.length(); i++) {
 		if (store->machines.contains(store->order[i]) == false) continue;
 		Machine *m = store->machines[store->order[i]];
@@ -103,14 +103,14 @@ int Master::stop()
 	}
 	
 	if (file) fclose(file);
-
+*/
 	return 0;
 }
 
 int Master::process(jack_nframes_t nframes)
 {
 	// qDebug() <<"Period: " << period_counter << " / " << period_per_beat << endl;
-
+/*
 	// It's time to play a new beat
 	if (period_counter == -1 or ++period_counter >= period_per_beat) {
 		period_counter = 0;
@@ -187,7 +187,7 @@ int Master::process(jack_nframes_t nframes)
 		}
 		fwrite(buffer, nframes * 2, 2, file);
 	}
-
+*/
 	return 0;
 }
 

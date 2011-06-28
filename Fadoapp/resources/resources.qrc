@@ -65,5 +65,10 @@
         <file>patterns.png</file>
         <file>playback.png</file>
         <file>sequencer.png</file>
+        <file alias="sequencer">block.png</file>
+        <file alias="machine">gear.png</file>
+        <file alias="machines">node.png</file>
+        <file alias="playback">speaker.png</file>
+        <file alias="patterns">table.png</file>
     </qresource>
 </RCC>

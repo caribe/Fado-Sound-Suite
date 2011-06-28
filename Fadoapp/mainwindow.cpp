@@ -18,10 +18,10 @@ MainWindow::MainWindow() : QMainWindow() {
 	track = new Track(this);
 	playback = new Playback(this);
 
-	tabs->addTab(route,    QIcon(":/machines.png"), tr("Machines"));
-	tabs->addTab(pattern,  QIcon(":/patterns.png"), tr("Patterns"));
-	tabs->addTab(track,    QIcon(":/sequencer.png"), tr("Sequencer"));
-	tabs->addTab(playback, QIcon(":/playback.png"), tr("Playback"));
+	tabs->addTab(route,    QIcon(":/machines"), tr("Machines"));
+	tabs->addTab(pattern,  QIcon(":/patterns"), tr("Patterns"));
+	tabs->addTab(track,    QIcon(":/sequencer"), tr("Sequencer"));
+	tabs->addTab(playback, QIcon(":/playback"), tr("Playback"));
 
 	setCentralWidget(tabs);
 
@@ -80,11 +80,14 @@ MainWindow::MainWindow() : QMainWindow() {
 
 
 void MainWindow::menuFileCloseSlot() {
+	/*
 	foreach (Machine *m, core->store->machines.values()) route->delMachine(m);
 	core->store->machines.clear();
+	*/
 }
 
 void MainWindow::menuFileNewSlot() {
+	/*
 	menuFileCloseSlot();
 
 	Master *tx = new Master();
@@ -103,10 +106,12 @@ void MainWindow::menuFileNewSlot() {
 	refreshMachines();
 
 	setWindowTitle("Fado");
+	*/
 }
 
 
 void MainWindow::menuFileOpenSlot() {
+	/*
 	QString filename = QFileDialog::getOpenFileName(this, "Open Project", "", "Fado project files (*.xml)");
 	if (filename == "") return;
 
@@ -126,6 +131,7 @@ void MainWindow::menuFileOpenSlot() {
 
 	// Toglie eventuali buchi
 	core->optimizeMachines();
+	*/
 }
 
 
@@ -211,6 +217,7 @@ void MainWindow::closeEvent(QCloseEvent *event)
 
 void MainWindow::menuDebugDumpSlot()
 {
+	/*
 	qDebug() << "*** Machines";
 	foreach (int i, core->store->machines.keys()) {
 		qDebug() << i << "\t" << core->store->machines[i]->type << "\t" << core->store->machines[i]->author << "\t" << core->store->machines[i]->name << "\t" << core->store->machines[i]->id << "\t" << core->store->machines[i]->x << "\t" << core->store->machines[i]->y << "\n";
@@ -241,10 +248,11 @@ void MainWindow::menuDebugDumpSlot()
 	foreach (int i, core->store->order) {
 		qDebug() << i << "\n";
 	}
+	*/
 }
 
 
 void MainWindow::critical(const QString & s)
 {
-	
+	QMessageBox::critical(this, tr("Errore"), s);
 }

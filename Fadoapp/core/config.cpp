@@ -1,6 +1,7 @@
 #include "core/config.h"
 
 int Config::load(QString filename, Store *store) {
+	/*
 	QTextStream out(stdout);
 
 	MachineFactory tm;
@@ -146,12 +147,13 @@ int Config::load(QString filename, Store *store) {
 	master->track_last = track_last;
 
 	out << "Beat per pattern: " << store->beat_per_pattern << endl;
-
+*/
 	return 0;
 }
 
 
 int Config::save(QString filename, Store *store) {
+	/*
 	QTextStream out(stdout);
 	Master *master = (Master *)store->machines[0];
 
@@ -236,6 +238,6 @@ int Config::save(QString filename, Store *store) {
 	file.open(QIODevice::WriteOnly);
 	file.write(doc.toByteArray());
 	file.close();
-
+*/
 	return 0;
 }

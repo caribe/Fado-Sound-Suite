@@ -14,7 +14,8 @@ Route::Route(MainWindow *mainWindow)
 	QSplitter *splitter = new QSplitter(this);
 
 	// Machine tree
-	RouteTree *routeTree = new RouteTree(splitter, this);
+	QTreeView *routeTree = new QTreeView(this);
+	routeTree->setModel(store->machineTree);
 	splitter->addWidget(routeTree);
 
 	// Editor
@@ -39,6 +40,7 @@ Route::Route(MainWindow *mainWindow)
 
 void Route::newMachine(QString type, QString author, QString code)
 {
+	/*
 	QTextStream out(stdout);
 
 	int id;
@@ -65,6 +67,7 @@ void Route::newMachine(QString type, QString author, QString code)
 	addMachine(tx);
 
 	mainWindow->refreshMachines();
+	*/
 }
 
 
@@ -88,6 +91,7 @@ void Route::delMachine(Machine *machine)
 
 void Route::delMachine(MachineBox *machine)
 {
+	/*
 	qDebug() << "Remove #" << machine->id() << endl;
 	machines.remove(machine->id());
 	store->machines.remove(machine->id());
@@ -120,11 +124,13 @@ void Route::delMachine(MachineBox *machine)
 	foreach (MachineBox *m, temp) {
 		machines[m->id()] = m;
 	}
+	*/
 }
 
 
 void Route::addConnection(int i1, int i2)
 {
+	/*
 	if (machines.contains(i1) == false) {
 		qDebug() << "Machine #" << i1 << " not found" << endl;
 		return;
@@ -138,11 +144,13 @@ void Route::addConnection(int i1, int i2)
 	LinkBox *linkBox = new LinkBox(this, machines[i1], machines[i2]);
 	routeScene->addItem(linkBox);
 	connections << linkBox;
+	*/
 }
 
 
 void Route::delConnection(MachineBox *m1, MachineBox *m2)
 {
+	/*
 	foreach (LinkBox *linkBox, connections) {
 		if ((linkBox->m1 == m1 and linkBox->m2 == m2) or (linkBox->m1 == m2 and linkBox->m2 == m1)) {
 			connections.removeOne(linkBox);
@@ -150,6 +158,7 @@ void Route::delConnection(MachineBox *m1, MachineBox *m2)
 			delete linkBox;
 		}
 	}
+	*/
 }
 
 

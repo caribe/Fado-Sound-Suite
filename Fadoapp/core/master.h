@@ -7,7 +7,7 @@
 class Master;
 
 #include "core/core.h"
-#include "../Fadolib/machine.h"
+#include "ext/machine.h"
 
 int jack_process(jack_nframes_t nframes, void *arg);
 void jack_shutdown(void *arg);

@@ -6,7 +6,7 @@
 class MachineBox;
 
 #include "gui/route.h"
-#include "../Fadolib/machine.h"
+#include "ext/machine.h"
 
 class MachineBox : public QGraphicsRectItem
 {

@@ -75,9 +75,11 @@ void LinkBox::repos()
 
 void LinkBox::hoverEnterEvent(QGraphicsSceneHoverEvent * event)
 {
+	/*
 	setBrush(QBrush(backgrounds[1]));
 	setFocus(Qt::MouseFocusReason);
 	route->mainWindow->status->showMessage("Connection "+QString::number(store->connections[m1->m->id][m2->m->id])+"%");
+	*/
 }
 
 
@@ -91,6 +93,7 @@ void LinkBox::hoverLeaveEvent(QGraphicsSceneHoverEvent * event)
 
 void LinkBox::keyPressEvent(QKeyEvent *event)
 {
+	/*
 	if (event->key() == Qt::Key_Delete) {
 		store->flipConnection(m1->id(), m2->id());
 		route->delConnection(m1, m2);
@@ -107,10 +110,12 @@ void LinkBox::keyPressEvent(QKeyEvent *event)
 		route->mainWindow->status->showMessage("Connection "+QString::number(value)+"%");
 		store->connections[m1->m->id][m2->m->id] = value;
 	}
+	*/
 }
 
 
 void LinkBox::wheelEvent(QGraphicsSceneWheelEvent *event) {
+	/*
 	if (event->orientation() == Qt::Vertical) {
 		int value = store->connections[m1->m->id][m2->m->id];
 		if (event->delta() > 0) {
@@ -124,4 +129,5 @@ void LinkBox::wheelEvent(QGraphicsSceneWheelEvent *event) {
 		store->connections[m1->m->id][m2->m->id] = value;
 		event->accept();
 	}
+	*/
 }

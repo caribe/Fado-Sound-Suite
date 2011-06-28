@@ -6,6 +6,7 @@ Store::Store()
 {
 	beat_per_pattern = 16;
 	total_patterns = 16;
+	machineTree = new QStandardItemModel();
 }
 
 

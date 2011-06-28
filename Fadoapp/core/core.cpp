@@ -34,19 +34,23 @@ int Core::init()
 			QDir libs2(LIB_PATH + dir);
 			QStringList fileList = libs2.entryList(fileFilter);
 
-			for (int j = 0; j < fileList.size(); j++) {
-				QLibrary lib(LIB_PATH + dir + "/" + fileList.value(j));
+			foreach (QString name, fileList) {
+				qDebug() << "Trying " << LIB_PATH << dir << "/" << name;
 
-				MachineInfo im = (MachineInfo)lib.resolve("info");
-				MachineFactory tm = (MachineFactory)lib.resolve("maker");
+				QPluginLoader *lib = new QPluginLoader(LIB_PATH + dir + "/" + name);
+				if (lib->load()) {
+					int id = store->machines.length();
+					store->machines.append(lib);
 
-				if (im && tm) {
-					qDebug() << "Found " + dir;
-					QStringList info = im();
-					store->info[info[0]][info[1]][info[2]] = im;
-					store->factory[info[0]][info[1]][info[2]] = tm;
+					Machine *machine = qobject_cast<Machine *>(lib->instance());
+
+					QStandardItem *item = new QStandardItem(QIcon(":/machine"), machine->name);
+					item->data() = id;
+
+					delete machine;
+
 				} else {
-					qDebug() << lib.errorString();
+					qDebug() << lib->errorString();
 				}
 			}
 		}

@@ -49,6 +49,7 @@ void TrackTable::keyPressEvent(QKeyEvent *event)
 
 void TrackTable::setValue(int value)
 {
+	/*
 	QModelIndex index = currentIndex();
 
 	int row = index.row();
@@ -63,6 +64,7 @@ void TrackTable::setValue(int value)
 	}
 
 	setCurrentIndex(index.sibling(row2, index.column()));
+	*/
 }
 
 

@@ -3,8 +3,8 @@
 
 #include <jack/jack.h>
 
-#include <Qt/qlibrary.h>
-#include <QtCore>
+#include <QPluginLoader>
+#include <QDebug>
 
 class Core;
 
@@ -15,15 +15,14 @@ class Core;
 #include "core/fileinput.h"
 #include "core/config.h"
 #include "core/encoder.h"
-
-#include "../Fadolib/store.h"
-#include "../Fadolib/machine.h"
+#include "core/store.h"
+#include "ext/machine.h"
 
 #include "mainwindow.h"
 
 #define LIB_PATH "../Fadogears/"
 
-class Core {
+class Core : QObject {
 	public:
 		Core(MainWindow *mainWindow);
 		int init();
