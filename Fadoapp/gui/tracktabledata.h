@@ -1,7 +1,7 @@
 #ifndef GUI_TRACKTABLEDATA_H
 #define GUI_TRACKTABLEDATA_H
 
-#include <QtCore>
+#include <QAbstractTableModel>
 
 class TrackTableData;
 

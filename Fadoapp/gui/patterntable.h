@@ -1,7 +1,7 @@
 #ifndef GUI_PATTERTABLE_H
 #define GUI_PATTERTABLE_H
 
-#include <QtGui>
+#include <QTableView>
 
 class PatternTable;
 

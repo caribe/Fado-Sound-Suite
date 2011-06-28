@@ -1,7 +1,9 @@
 #ifndef GUI_TRACK_H
 #define GUI_TRACK_H
 
-#include <QtGui/QFrame>
+#include <QFrame>
+#include <QListWidget>
+#include <QPushButton>
 
 class Track;
 

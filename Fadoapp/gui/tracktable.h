@@ -1,7 +1,7 @@
 #ifndef GUI_TRACKTABLE_H
 #define GUI_TRACKTABLE_H
 
-#include <QtGui>
+#include <QTableView>
 
 class TrackTable;
 

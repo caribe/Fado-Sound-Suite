@@ -1,7 +1,8 @@
 #ifndef GUI_LINKBOX_H
 #define GUI_LINKBOX_H
 
-#include <QtGui>
+#include <QGraphicsPathItem>
+#include <QStatusBar>
 
 class LinkBox;
 

@@ -2,6 +2,11 @@
 #define GUI_MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QMenuBar>
+#include <QAction>
+#include <QFileDialog>
+#include <QMessageBox>
+#include <QKeyEvent>
 #include <QDebug>
 
 //! MainWindow class

@@ -1,7 +1,10 @@
 #ifndef GUI_PATTERN_H
 #define GUI_PATTERN_H
 
-#include <QtGui>
+#include <QFrame>
+#include <QComboBox>
+#include <QGroupBox>
+#include <QLabel>
 
 class Pattern;
 

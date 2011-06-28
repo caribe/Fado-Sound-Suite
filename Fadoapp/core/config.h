@@ -5,9 +5,9 @@
 
 #include "core/store.h"
 #include "ext/machine.h"
-#include "core/master.h"
-#include "core/lineinput.h"
-#include "core/fileinput.h"
+#include "gears/master.h"
+#include "gears/lineinput.h"
+#include "gears/fileinput.h"
 
 class Config {
 	public:

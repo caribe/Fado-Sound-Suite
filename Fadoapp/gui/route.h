@@ -1,8 +1,12 @@
 #ifndef GUI_ROUTE_H
 #define GUI_ROUTE_H
 
-#include <QtCore>
-#include <QtGui>
+#include <QFrame>
+#include <QGridLayout>
+#include <QGraphicsView>
+#include <QLinkedList>
+#include <QSplitter>
+#include <QTreeView>
 #include <QDebug>
 
 class Route;

@@ -10,9 +10,9 @@ class Core;
 
 #include "core/settings.h"
 #include "core/updates.h"
-#include "core/master.h"
-#include "core/lineinput.h"
-#include "core/fileinput.h"
+#include "gears/master.h"
+#include "gears/lineinput.h"
+#include "gears/fileinput.h"
 #include "core/config.h"
 #include "core/encoder.h"
 #include "core/store.h"

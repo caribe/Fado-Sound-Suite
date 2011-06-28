@@ -1,7 +1,7 @@
 #ifndef GUI_PATTERNTABLEDATA_H
 #define GUI_PATTERNTABLEDATA_H
 
-#include <QtCore>
+#include <QAbstractTableModel>
 
 class PatternTableData;
 

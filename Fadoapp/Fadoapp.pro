@@ -25,15 +25,15 @@ SOURCES += main.cpp\
     gui/about.cpp \
     core/updates.cpp \
     core/settings.cpp \
-    core/master.cpp \
-    core/lineinput.cpp \
-    core/fileinput.cpp \
     core/encoder.cpp \
     core/core.cpp \
     core/config.cpp \
     ext/param.cpp \
     ext/machine.cpp \
-    core/store.cpp
+    core/store.cpp \
+    gears/master.cpp \
+    gears/lineinput.cpp \
+    gears/fileinput.cpp
 
 HEADERS  += mainwindow.h \
     gui/tracktabledata.h \
@@ -49,15 +49,15 @@ HEADERS  += mainwindow.h \
     gui/about.h \
     core/updates.h \
     core/settings.h \
-    core/master.h \
-    core/lineinput.h \
-    core/fileinput.h \
     core/encoder.h \
     core/core.h \
     core/config.h \
     ext/param.h \
     ext/machine.h \
-    core/store.h
+    core/store.h \
+    gears/master.h \
+    gears/lineinput.h \
+    gears/fileinput.h
 
 RESOURCES += \
     resources/resources.qrc

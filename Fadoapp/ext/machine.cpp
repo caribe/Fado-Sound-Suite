@@ -1,8 +1,6 @@
 /*
 #include "machine.h"
 
-#include <cstdio>
-
 int Machine::preprocess(jack_nframes_t nframes, int process)
 {
 	for (unsigned int j = 0; j < nframes; j++) li[j] = ri[j] = 0;

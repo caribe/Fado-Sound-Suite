@@ -1,7 +1,7 @@
 #ifndef GUI_MACHINEBOX_H
 #define GUI_MACHINEBOX_H
 
-#include <QtGui>
+#include <QGraphicsRectItem>
 
 class MachineBox;
 

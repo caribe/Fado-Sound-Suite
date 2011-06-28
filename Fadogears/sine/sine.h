@@ -10,9 +10,10 @@ class Sine : public QObject, public Machine {
 Q_OBJECT
 Q_INTERFACES(Machine)
 
-public:
+private:
 	float rotor, rotor_step;
 
+public:
 	Sine();
 	void reconfig();
 	int process(jack_nframes_t nframes);

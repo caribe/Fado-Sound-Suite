@@ -1,7 +1,9 @@
 #ifndef GUI_PLAYBACK_H
 #define GUI_PLAYBACK_H
 
-#include <QtGui>
+#include <QFrame>
+#include <QFile>
+#include <QScrollBar>
 
 #include <cmath>
 #include <fftw3.h>
