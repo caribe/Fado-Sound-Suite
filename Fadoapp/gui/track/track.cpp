@@ -1,7 +1,7 @@
 #include "track.h"
 
-Track::Track(Store *store) {
-	this->store = store;
+Track::Track(Core *core) {
+	this->core = core;
 	activeMachine = 0;
 
 	QGridLayout *grid = new QGridLayout(this);
@@ -112,7 +112,7 @@ void Track::itemDoubleClickedSlot(QListWidgetItem *item)
 
 void Track::addButtonSlot()
 {
-	store->total_patterns++;
+	core->total_patterns++;
 	tracksTable->refresh();
 }
 
@@ -151,7 +151,7 @@ void Track::delButtonSlot()
 
 void Track::frsButtonSlot()
 {
-	Master *m = (Master *)store->machines[0];
+	Master *m = (Master *)core->machines[0];
 	int row = tracksTable->currentIndex().row();
 	if (row == -1) row = 0;
 	m->track_first = row;
@@ -161,9 +161,9 @@ void Track::frsButtonSlot()
 
 void Track::lstButtonSlot()
 {
-	Master *m = (Master *)store->machines[0];
+	Master *m = (Master *)core->machines[0];
 	int row = tracksTable->currentIndex().row();
-	if (row == -1) row = store->total_patterns - 1;
+	if (row == -1) row = core->total_patterns - 1;
 	if (row < m->track_first) row = m->track_first;
 	m->track_last = row;
 	tracksTable->refresh();

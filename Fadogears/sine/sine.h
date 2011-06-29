@@ -5,6 +5,8 @@
 
 #include <cmath>
 
+#define PI_2 6.28318530718
+
 class Sine : public QObject, public Machine {
 
 Q_OBJECT

@@ -1,8 +1,8 @@
 #include "tracktabledata.h"
 
-TrackTableData::TrackTableData(Track *track, Store *store)
+TrackTableData::TrackTableData(Track *track, Core *core)
 {
-	this->store = store;
+	this->core = core;
 	this->track = track;
 }
 
@@ -14,14 +14,14 @@ void TrackTableData::reload() {
 
 int TrackTableData::columnCount(const QModelIndex& parent) const
 {
-	return store->machines.size();
+	return core->machines.size();
 }
 
 
 
 int TrackTableData::rowCount(const QModelIndex& parent) const
 {
-	return store->total_patterns;
+	return core->total_patterns;
 }
 
 

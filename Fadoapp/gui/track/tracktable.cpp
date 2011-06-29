@@ -3,12 +3,12 @@
 TrackTable::TrackTable(Track *track)
 {
 	this->track = track;
-	this->store = track->store;
+	this->core = track->core;
 
 	setFont(QFont("TypeWriter", 6));
 	// setStyleSheet("QTableView::item { border: 0px; padding: 0px; font: 6px TypeWriter }");
 
-	model = new TrackTableData(track, store);
+	model = new TrackTableData(track, core);
 	setModel(model);
 	setSelectionMode(QAbstractItemView::SingleSelection);
 

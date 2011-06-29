@@ -16,7 +16,7 @@ Sine::Sine() {
 
 void Sine::reconfig() {
 
-	rotor_step = PI_2 / (store->sampling_rate / params["freq"]->getFloat()); // Sample rate / Frequency / (2*PI)
+	// rotor_step = PI_2 / (core->sampling_rate / params["freq"]->getFloat()); // Sample rate / Frequency / (2*PI)
 
 }
 

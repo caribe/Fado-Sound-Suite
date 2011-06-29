@@ -14,6 +14,7 @@ class Route;
 
 #include "machinebox.h"
 #include "linkbox.h"
+#include "core/core.h"
 #include "gears/lineinput.h"
 #include "gears/fileinput.h"
 

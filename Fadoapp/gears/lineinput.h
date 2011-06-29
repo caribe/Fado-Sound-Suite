@@ -1,6 +1,8 @@
 #ifndef CORE_LINEINPUT_H
 #define CORE_LINEINPUT_H
 
+class LineInput;
+
 #include "ext/machine.h"
 
 class LineInput : public Machine {

@@ -52,7 +52,7 @@ void FileInput::init()
 
 void FileInput::finish() {
 	foreach (QString s, filebuffer.keys()) {
-		free(filebuffer[s]);
+		// free(filebuffer[s]);
 	}
 }
 

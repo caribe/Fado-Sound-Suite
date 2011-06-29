@@ -16,9 +16,9 @@
 
 class Core;
 
-#include "core/updates.h"
-#include "core/config.h"
-#include "core/encoder.h"
+#include "updates.h"
+#include "config.h"
+#include "encoder.h"
 #include "ext/machine.h"
 #include "gears/master.h"
 #include "gears/lineinput.h"

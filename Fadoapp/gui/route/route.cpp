@@ -1,13 +1,13 @@
 #include "route.h"
 
-Route::Route(Store *store)
+Route::Route(Core *core)
 {
-	this->store = store;
+	this->core = core;
 
 	// Machine tree
 
 	QTreeView *routeTree = new QTreeView(this);
-	routeTree->setModel(store->gearsTree);
+	routeTree->setModel(core->gearsTree);
 	connect(routeTree, SIGNAL(doubleClicked(QModelIndex)), SLOT(newMachine(QModelIndex)));
 
 	// Editor
@@ -34,6 +34,7 @@ Route::Route(Store *store)
 
 void Route::newMachine(const QModelIndex &index)
 {
+	/*
 	int id = index.data(Qt::UserRole + 1).toInt();
 
 	Machine *machine;
@@ -52,6 +53,7 @@ void Route::newMachine(const QModelIndex &index)
 	addMachine(machine);
 
 	// mainWindow->refreshMachines();
+	*/
 }
 
 
@@ -173,6 +175,7 @@ void Route::connectionMove(int x1, int y1, int x2, int y2)
 
 void Route::connectionFinish(MachineBox *m1, int x, int y)
 {
+	/*
 	extraline->hide();
 	foreach (MachineBox *m2, machines.values()) {
 		// out << "Check #" << m1->id() << " #" << m2->id() << endl;
@@ -194,4 +197,5 @@ void Route::connectionFinish(MachineBox *m1, int x, int y)
 			return;
 		}
 	}
+	*/
 }

@@ -4,6 +4,7 @@
 #include <QGraphicsRectItem>
 #include <QGraphicsSceneMouseEvent>
 #include <QKeyEvent>
+#include <QBrush>
 
 class MachineBox;
 

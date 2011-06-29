@@ -1,7 +1,7 @@
 #include "pattern.h"
 
-Pattern::Pattern(Store *store) {
-	this->store = store;
+Pattern::Pattern(Core *core) {
+	this->core = core;
 
 	activeMachine = 0;
 
@@ -110,8 +110,8 @@ void Pattern::refreshMachines()
 {
 	/*
 	machineCombo->clear();
-	foreach (int i, store->machines.keys()) {
-		machineCombo->addItem(store->machines[i]->author+"."+store->machines[i]->name, QVariant(i));
+	foreach (int i, core->machines.keys()) {
+		machineCombo->addItem(core->machines[i]->author+"."+core->machines[i]->name, QVariant(i));
 	}
 	*/
 }
@@ -121,8 +121,8 @@ void Pattern::machineChange(int index) {
 	/*
 	int i = machineCombo->itemData(index).toInt();
 
-	if (store->machines.contains(i)) {
-		activeMachine = store->machines[i];
+	if (core->machines.contains(i)) {
+		activeMachine = core->machines[i];
 		cols.clear();
 		foreach (QString name, activeMachine->params.keys()) cols << name;
 		refreshPatterns();

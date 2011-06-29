@@ -3,6 +3,8 @@
 
 #include <QtXml/QDomDocument>
 
+class Config;
+
 #include "ext/machine.h"
 #include "gears/master.h"
 #include "gears/lineinput.h"

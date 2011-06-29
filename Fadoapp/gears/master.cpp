@@ -18,7 +18,7 @@ Master::Master()
 
 
 
-int Master::init(Store *store)
+int Master::init(Core *core)
 {
 	/*
 	this->store = store;

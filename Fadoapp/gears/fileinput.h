@@ -1,9 +1,11 @@
 #ifndef CORE_FILEINPUT_H
 #define CORE_FILEINPUT_H
 
+#include <sndfile.h>
+
+
 #include "ext/machine.h"
 
-#include <sndfile.h>
 
 class FileInput : public Machine {
 
