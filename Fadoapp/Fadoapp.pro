@@ -12,7 +12,6 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    gui/about.cpp \
     core/updates.cpp \
     core/encoder.cpp \
     core/core.cpp \
@@ -35,7 +34,6 @@ SOURCES += main.cpp\
     gui/track/track.cpp
 
 HEADERS  += mainwindow.h \
-    gui/about.h \
     core/updates.h \
     core/encoder.h \
     core/core.h \

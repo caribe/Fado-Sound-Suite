@@ -91,11 +91,6 @@ MainWindow::MainWindow() : QMainWindow() {
 
 	menu->addMenu("&Settings");
 
-	QMenu *debugMenu = menu->addMenu("&Debug");
-	QAction *menuDebugDump = new QAction("Machine dump", this);
-	connect(menuDebugDump, SIGNAL(triggered()), this, SLOT(menuDebugDumpSlot()));
-	debugMenu->addAction(menuDebugDump);
-
 	QMenu *menuHelp = menu->addMenu("&Help");
 
 	QAction *menuHelpUpdates = new QAction(QIcon(":/001_10.png"), "Check for updates", this);
@@ -190,8 +185,7 @@ void MainWindow::menuFileSaveAsSlot() {
 
 void MainWindow::menuHelpAboutSlot()
 {
-	// QMessageBox::About(this, "Fado", "Synthetic music generator and sound processor\n<a href='http://saitfainder.altervista.org/fado/'>CheckqDebug() our site</a>");
-	new About(this);
+	QMessageBox::about(this, "Fado", "Synthetic music generator and sound processor");
 }
 
 
@@ -239,42 +233,6 @@ void MainWindow::setTabByAction()
 void MainWindow::closeEvent(QCloseEvent *event)
 {
 	this->settingsSave();
-}
-
-void MainWindow::menuDebugDumpSlot()
-{
-	/*
-	qDebug() << "*** Machines";
-	foreach (int i, core->store->machines.keys()) {
-		qDebug() << i << "\t" << core->store->machines[i]->type << "\t" << core->store->machines[i]->author << "\t" << core->store->machines[i]->name << "\t" << core->store->machines[i]->id << "\t" << core->store->machines[i]->x << "\t" << core->store->machines[i]->y << "\n";
-	}
-
-	qDebug() << "*** Connections\n";
-	foreach (int i, core->store->connections.keys()) {
-		foreach (int j, core->store->connections[i].keys()) {
-			qDebug() << i << " => " << j << " (" << core->store->connections[i][j] << ")\n";
-		}
-	}
-
-	qDebug() << "*** In Connections\n";
-	foreach (int i, core->store->iconn.uniqueKeys()) {
-		foreach (int j, core->store->iconn[i]) {
-			qDebug() << i << " => " << j << "\n";
-		}
-	}
-
-	qDebug() << "*** qDebug() Connections\n";
-	foreach (int i, core->store->oconn.uniqueKeys()) {
-		foreach (int j, core->store->oconn[i]) {
-			qDebug() << i << " => " << j << "\n";
-		}
-	}
-
-	qDebug() << "*** Order\n";
-	foreach (int i, core->store->order) {
-		qDebug() << i << "\n";
-	}
-	*/
 }
 
 

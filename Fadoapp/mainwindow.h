@@ -60,7 +60,6 @@ class MainWindow : public QMainWindow
 		void menuFileSaveAsSlot();
 		void menuHelpAboutSlot();
 		void menuHelpUpdatesSlot();
-		void menuDebugDumpSlot();
 };
 
 #endif
