@@ -4,6 +4,11 @@
 #include <QFrame>
 #include <QFile>
 #include <QScrollBar>
+#include <QGridLayout>
+#include <QGraphicsView>
+#include <QPushButton>
+#include <QGraphicsScene>
+#include <QGraphicsPolygonItem>
 
 #include <cmath>
 #include <fftw3.h>

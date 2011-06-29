@@ -51,6 +51,7 @@ class MainWindow : public QMainWindow
 
 	private slots:
 		void setTabByAction();
+		void messageCritical(const QString &title, const QString &text);
 
 		void menuFileCloseSlot();
 		void menuFileNewSlot();

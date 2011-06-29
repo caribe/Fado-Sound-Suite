@@ -1,6 +1,6 @@
 #include "core/core.h"
 
-Core::Core(QWidget *parent) : QObject(parent)
+Core::Core(QObject *parent) : QObject(parent)
 {
 	master = 0;
 	store = 0;
@@ -81,7 +81,7 @@ int Core::jack_init()
 	// try to become a client of the JACK server
 	jack_status_t jack_status;
 	if ((client = jack_client_open("fado", JackUseExactName, &jack_status, "default")) == 0) {
-		QMessageBox::critical(this, "Jack server not running", "Error " + QString::number(jack_status));
+		// emit messageCritical("Jack server not running", "Error " + QString::number(jack_status));
 		return 1;
 	}
 

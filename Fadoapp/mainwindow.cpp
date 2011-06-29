@@ -2,11 +2,14 @@
 #include "core/core.h"
 
 MainWindow::MainWindow() : QMainWindow() {
-	core = new Core(this);
 
-	resize(800, 600);
 	setWindowTitle("Fado");
 	setWindowIcon(QIcon(":/001_08.png"));
+
+	settingsLoad();
+
+	core = new Core();
+	connect(core, SIGNAL(messageCritical(QString,QString)), SLOT(messageCritical(QString,QString)));
 
 	// *** tabs ***
 
@@ -104,8 +107,6 @@ MainWindow::MainWindow() : QMainWindow() {
 	menuHelp->addAction(menuHelpAbout);
 
 	menuFileNewSlot();
-
-	settingsLoad();
 }
 
 
@@ -303,10 +304,16 @@ void MainWindow::settingsLoad()
 {
 	QSettings settings;
 
-	if (settings.value("settings/maximized").toBool()) {
+	if (settings.value("settings/maximized", false).toBool()) {
 		this->showMaximized();
 	} else {
-		move(settings.value("settings/left").toInt(), settings.value("settings/top").toInt());
-		resize(settings.value("settings/width").toInt(), settings.value("settings/height").toInt());
+		move(settings.value("settings/left", 100).toInt(), settings.value("settings/top", 100).toInt());
+		resize(settings.value("settings/width", 800).toInt(), settings.value("settings/height", 600).toInt());
 	}
+}
+
+
+
+void MainWindow::messageCritical(const QString &title, const QString &text) {
+	QMessageBox::critical(this, title, text);
 }
