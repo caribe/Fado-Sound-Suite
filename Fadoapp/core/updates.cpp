@@ -8,6 +8,8 @@ Updates::Updates(Core *core)
 	connect(manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(replyFinished(QNetworkReply*)));
 }
 
+
+
 int Updates::check()
 {
 	QUrl url("http://saitfainder.altervista.org/fado/updates.php");
@@ -18,7 +20,6 @@ int Updates::check()
 
 void Updates::replyFinished(QNetworkReply *reply)
 {
-	/*
 	if (reply->error() == QNetworkReply::NoError) {
 		QByteArray xml = reply->readAll();
 
@@ -53,7 +54,7 @@ void Updates::replyFinished(QNetworkReply *reply)
 
 		int count = 0, flag = 0;
 		flag = versionCompare(QCoreApplication::applicationVersion(), version) == 1 ? 1 : 0;
-
+/*
 		foreach (QString type, machines.keys()) {
 			if (core->store->info.contains(type)) foreach (QString author, machines[type].keys()) {
 				if (core->store->info[type].contains(author)) foreach (QString name, machines[type][author].keys()) {
@@ -64,7 +65,7 @@ void Updates::replyFinished(QNetworkReply *reply)
 				} else qDebug() << "Unkown author `" << type << "." << author << "`" << endl;
 			} else qDebug() << "Unkown type `" << type << "`" << endl;
 		}
-
+*/
 		if (flag) {
 			QMessageBox::information(0, "Updates avaible", "A new version of Fado is avaible. Go and download it now.");
 		}
@@ -73,7 +74,6 @@ void Updates::replyFinished(QNetworkReply *reply)
 			QMessageBox::information(0, "Updates avaible", "New machines are avaible. Should i try to download them?");
 		}
 	}
-	*/
 }
 
 

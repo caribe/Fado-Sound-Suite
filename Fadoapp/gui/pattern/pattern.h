@@ -11,7 +11,7 @@
 
 class Pattern;
 
-#include "core/store.h"
+#include "core/core.h"
 #include "patterntable.h"
 
 class Pattern : public QFrame
@@ -19,7 +19,7 @@ class Pattern : public QFrame
 	Q_OBJECT
 	
 	public:
-		Store *store;
+		Core *core;
 		Machine *activeMachine;
 		PatternTable *tableview;
 		QComboBox *machineCombo;
@@ -32,7 +32,7 @@ class Pattern : public QFrame
 		QLabel *detailMax;
 		QLabel *detailDesc;
 
-		Pattern(Store *store);
+		Pattern(Core *core);
 		void refreshMachines();
 		void refreshPatterns();
 

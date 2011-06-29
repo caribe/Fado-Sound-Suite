@@ -16,9 +16,9 @@ MainWindow::MainWindow() : QMainWindow() {
 	tabs = new QTabWidget(this);
 	tabs->setTabPosition(QTabWidget::West);
 
-	route = new Route(core->store);
-	pattern  = new Pattern(core->store);
-	track = new Track(core->store);
+	route = new Route(core);
+	pattern  = new Pattern(core);
+	track = new Track(core);
 	playback = new Playback(core);
 
 	tabs->addTab(route,    QIcon(":/machines"), tr("Machines"));
@@ -192,11 +192,6 @@ void MainWindow::menuHelpAboutSlot()
 void MainWindow::menuHelpUpdatesSlot()
 {
 	core->checkUpdates();
-}
-
-
-Store *MainWindow::getStore() {
-	return core->store;
 }
 
 

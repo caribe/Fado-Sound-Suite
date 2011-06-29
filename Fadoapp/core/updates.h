@@ -5,6 +5,7 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QDomDocument>
+#include <QCoreApplication>
 
 class Updates;
 

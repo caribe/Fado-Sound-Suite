@@ -8,7 +8,7 @@
 
 class Machine;
 
-#include "../core/store.h"
+#include "core/core.h"
 #include "param.h"
 
 class Machine {
@@ -22,7 +22,7 @@ class Machine {
 		enum types { t_output, t_input, t_generator, t_effect };
 		jack_default_audio_sample_t lx[2048], rx[2048];
 		jack_default_audio_sample_t li[2048], ri[2048];
-		Store *store;
+		Core *core;
 		int id, x, y;
 
 		QString type, name, description, author, version;

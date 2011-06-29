@@ -10,7 +10,6 @@
 
 class Track;
 
-#include "core/store.h"
 #include "gears/master.h"
 #include "tracktable.h"
 
@@ -19,9 +18,9 @@ class Track : public QFrame
 	Q_OBJECT
 
 	public:
-		Track(Store *store);
+		Track(Core *core);
 		
-		Store *store;
+		Core *core;
 		QListWidget *hintList;
 		TrackTable *tracksTable;
 		int activeMachine;

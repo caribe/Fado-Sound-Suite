@@ -12,10 +12,10 @@ class TrackTableData : public QAbstractTableModel
 	Q_OBJECT
 
 	public:
-		Store *store;
+		Core *core;
 		Track *track;
 
-		TrackTableData(Track *track, Store *store);
+		TrackTableData(Track *track, Core *core);
 		int rowCount(const QModelIndex& parent = QModelIndex()) const;
 		int columnCount(const QModelIndex& parent = QModelIndex()) const;
 		QVariant data(const QModelIndex& index, int role) const;

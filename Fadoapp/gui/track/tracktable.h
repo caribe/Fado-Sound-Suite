@@ -15,7 +15,7 @@ class TrackTable : public QTableView
 
 	public:
 		Track *track;
-		Store *store;
+		Core *core;
 		TrackTableData *model;
 
 		TrackTable(Track *track);

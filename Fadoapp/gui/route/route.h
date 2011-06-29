@@ -12,7 +12,6 @@
 
 class Route;
 
-#include "core/store.h"
 #include "machinebox.h"
 #include "linkbox.h"
 #include "gears/lineinput.h"
@@ -23,7 +22,7 @@ class Route : public QSplitter
 	Q_OBJECT
 
 	public:
-		Route(Store *store);
+		Route(Core *core);
 
 		QGridLayout grid;
 		QGraphicsView *routeEditor;
@@ -45,7 +44,7 @@ class Route : public QSplitter
 		void connectionMove(int x1, int y1, int x2, int y2);
 		void connectionFinish(MachineBox *, int x, int y);
 
-		Store *store;
+		Core *core;
 
 	private slots:
 		void newMachine(const QModelIndex &index);

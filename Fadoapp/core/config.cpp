@@ -1,6 +1,6 @@
 #include "core/config.h"
 
-int Config::load(QString filename, Store *store) {
+int Config::load(QString filename, Core *core) {
 	/*
 	QTextStream out(stdout);
 
@@ -152,7 +152,7 @@ int Config::load(QString filename, Store *store) {
 }
 
 
-int Config::save(QString filename, Store *store) {
+int Config::save(QString filename, Core *core) {
 	/*
 	QTextStream out(stdout);
 	Master *master = (Master *)store->machines[0];

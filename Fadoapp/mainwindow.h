@@ -19,7 +19,6 @@ class MainWindow;
 #include "gui/track/track.h"
 #include "gui/pattern/pattern.h"
 #include "gui/playback/playback.h"
-#include "gui/about.h"
 
 class MainWindow : public QMainWindow
 {
@@ -34,7 +33,6 @@ class MainWindow : public QMainWindow
 		Pattern *pattern;
 		Playback *playback;
 
-		Store *getStore();
 		void optimizeMachines();
 		void refreshMachines();
 		void refreshPatterns();

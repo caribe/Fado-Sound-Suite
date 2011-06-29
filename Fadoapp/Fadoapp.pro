@@ -18,7 +18,6 @@ SOURCES += main.cpp\
     core/config.cpp \
     ext/param.cpp \
     ext/machine.cpp \
-    core/store.cpp \
     gears/master.cpp \
     gears/lineinput.cpp \
     gears/fileinput.cpp \
@@ -40,7 +39,6 @@ HEADERS  += mainwindow.h \
     core/config.h \
     ext/param.h \
     ext/machine.h \
-    core/store.h \
     gears/master.h \
     gears/lineinput.h \
     gears/fileinput.h \

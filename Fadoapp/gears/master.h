@@ -2,13 +2,11 @@
 #define CORE_MASTER_H
 
 #include <jack/jack.h>
-// #include <stdlib.h>
 
 class Master;
 
-#include "core/core.h"
 #include "ext/machine.h"
-#include "core/store.h"
+#include "core/core.h"
 
 int jack_process(jack_nframes_t nframes, void *arg);
 void jack_shutdown(void *arg);
@@ -29,7 +27,7 @@ class Master : public Machine {
 		jack_port_t **output_port;
 
 		// Master(Store *store);
-		int init(Store *store);
+		int init(Core *core);
 		void reconfig();
 		int go(jack_client_t *client, jack_port_t **input_port, jack_port_t **output_port, bool record);
 		int stop();

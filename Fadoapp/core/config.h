@@ -3,7 +3,6 @@
 
 #include <QtXml/QDomDocument>
 
-#include "core/store.h"
 #include "ext/machine.h"
 #include "gears/master.h"
 #include "gears/lineinput.h"
@@ -11,8 +10,8 @@
 
 class Config {
 	public:
-		static int load(QString filename, Store *store);
-		static int save(QString filename, Store *store);
+		static int load(QString filename, Core *core);
+		static int save(QString filename, Core *core);
 };
 
 #endif

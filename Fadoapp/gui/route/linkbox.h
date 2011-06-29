@@ -8,7 +8,6 @@
 
 class LinkBox;
 
-#include "core/store.h"
 #include "machinebox.h"
 
 class LinkBox : public QGraphicsPathItem
