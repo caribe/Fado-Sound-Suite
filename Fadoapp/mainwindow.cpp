@@ -14,9 +14,9 @@ MainWindow::MainWindow() : QMainWindow() {
 	tabs->setTabPosition(QTabWidget::West);
 
 	route = new Route(core->store);
-	pattern  = new Pattern(this);
-	track = new Track(this);
-	playback = new Playback(this);
+	pattern  = new Pattern(core->store);
+	track = new Track(core->store);
+	playback = new Playback(core);
 
 	tabs->addTab(route,    QIcon(":/machines"), tr("Machines"));
 	tabs->addTab(pattern,  QIcon(":/patterns"), tr("Patterns"));

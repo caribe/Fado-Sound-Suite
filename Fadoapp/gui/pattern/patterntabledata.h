@@ -5,7 +5,7 @@
 
 class PatternTableData;
 
-#include "gui/pattern.h"
+#include "pattern.h"
 
 class PatternTableData : public QAbstractTableModel
 {

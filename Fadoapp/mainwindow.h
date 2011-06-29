@@ -14,10 +14,10 @@ class MainWindow;
 
 #include "core/core.h"
 
-#include "gui/route.h"
-#include "gui/track.h"
-#include "gui/pattern.h"
-#include "gui/playback.h"
+#include "gui/route/route.h"
+#include "gui/track/track.h"
+#include "gui/pattern/pattern.h"
+#include "gui/playback/playback.h"
 #include "gui/about.h"
 
 class MainWindow : public QMainWindow

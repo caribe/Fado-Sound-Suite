@@ -2,21 +2,23 @@
 #define GUI_PATTERN_H
 
 #include <QFrame>
+#include <QGridLayout>
+#include <QHBoxLayout>
+#include <QPushButton>
 #include <QComboBox>
 #include <QGroupBox>
 #include <QLabel>
 
 class Pattern;
 
-#include "mainwindow.h"
-#include "gui/patterntable.h"
+#include "core/store.h"
+#include "patterntable.h"
 
 class Pattern : public QFrame
 {
 	Q_OBJECT
 	
 	public:
-		MainWindow *mainWindow;
 		Store *store;
 		Machine *activeMachine;
 		PatternTable *tableview;
@@ -30,7 +32,7 @@ class Pattern : public QFrame
 		QLabel *detailMax;
 		QLabel *detailDesc;
 
-		Pattern(MainWindow *parent);
+		Pattern(Store *store);
 		void refreshMachines();
 		void refreshPatterns();
 

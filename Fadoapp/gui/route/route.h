@@ -13,8 +13,8 @@
 class Route;
 
 #include "core/store.h"
-#include "gui/machinebox.h"
-#include "gui/linkbox.h"
+#include "machinebox.h"
+#include "linkbox.h"
 #include "gears/lineinput.h"
 #include "gears/fileinput.h"
 

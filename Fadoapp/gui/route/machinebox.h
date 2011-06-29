@@ -2,22 +2,22 @@
 #define GUI_MACHINEBOX_H
 
 #include <QGraphicsRectItem>
+#include <QGraphicsSceneMouseEvent>
+#include <QKeyEvent>
 
 class MachineBox;
 
-#include "gui/route.h"
 #include "ext/machine.h"
 
 class MachineBox : public QGraphicsRectItem
 {
 	public:
-		MachineBox(Route *parent, Machine *machine);
+		MachineBox(Machine *machine);
 
 		Machine *m;
 		QString longname;
 		QColor color;
 		int dragMode;
-		Route *parent;
 		int ix, iy;
 		
 		QHash<int, QGraphicsLineItem *> connections;

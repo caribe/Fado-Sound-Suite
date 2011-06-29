@@ -2,11 +2,12 @@
 #define GUI_TRACKTABLE_H
 
 #include <QTableView>
+#include <QKeyEvent>
 
 class TrackTable;
 
-#include "gui/track.h"
-#include "gui/tracktabledata.h"
+#include "track.h"
+#include "tracktabledata.h"
 
 class TrackTable : public QTableView
 {

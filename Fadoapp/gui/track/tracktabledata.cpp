@@ -1,4 +1,4 @@
-#include "gui/tracktabledata.h"
+#include "tracktabledata.h"
 
 TrackTableData::TrackTableData(Track *track, Store *store)
 {

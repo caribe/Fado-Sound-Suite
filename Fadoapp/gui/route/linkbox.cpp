@@ -1,9 +1,7 @@
-#include "gui/linkbox.h"
+#include "linkbox.h"
 
-LinkBox::LinkBox(Route *route, MachineBox *m1, MachineBox *m2)
+LinkBox::LinkBox(MachineBox *m1, MachineBox *m2)
 {
-	this->route = route;
-	this->store = route->store;
 	this->m1 = m1;
 	this->m2 = m2;
 

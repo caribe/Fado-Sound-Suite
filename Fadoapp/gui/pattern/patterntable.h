@@ -2,11 +2,12 @@
 #define GUI_PATTERTABLE_H
 
 #include <QTableView>
+#include <QKeyEvent>
 
 class PatternTable;
 
-#include "gui/pattern.h"
-#include "gui/patterntabledata.h"
+#include "pattern.h"
+#include "patterntabledata.h"
 
 class PatternTable : public QTableView
 {

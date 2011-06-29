@@ -1,8 +1,7 @@
-#include "gui/track.h"
+#include "track.h"
 
-Track::Track(MainWindow *parent) {
-	this->parent = parent;
-	store = parent->getStore();
+Track::Track(Store *store) {
+	this->store = store;
 	activeMachine = 0;
 
 	QGridLayout *grid = new QGridLayout(this);

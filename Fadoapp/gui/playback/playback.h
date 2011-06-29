@@ -11,15 +11,15 @@
 class Playback;
 class MainWindow;
 
-#include "mainwindow.h"
+#include "core/core.h"
 
 class Playback : public QFrame
 {
 	Q_OBJECT
 
 	public:
-		Playback(MainWindow *parent);
-		MainWindow *parent;
+		Playback(Core *core);
+		Core *core;
 		QGraphicsScene *scenef, *scenet;
 		QScrollBar *scrollBar;
 		int state;

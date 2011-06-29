@@ -4,20 +4,23 @@
 #include <QFrame>
 #include <QListWidget>
 #include <QPushButton>
+#include <QGridLayout>
+#include <QHBoxLayout>
+#include <QGroupBox>
 
 class Track;
 
-#include "mainwindow.h"
-#include "gui/tracktable.h"
+#include "core/store.h"
+#include "gears/master.h"
+#include "tracktable.h"
 
 class Track : public QFrame
 {
 	Q_OBJECT
 
 	public:
-		Track(MainWindow *parent);
+		Track(Store *store);
 		
-		MainWindow *parent;
 		Store *store;
 		QListWidget *hintList;
 		TrackTable *tracksTable;

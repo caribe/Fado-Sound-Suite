@@ -12,16 +12,6 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    gui/tracktabledata.cpp \
-    gui/tracktable.cpp \
-    gui/track.cpp \
-    gui/route.cpp \
-    gui/playback.cpp \
-    gui/patterntabledata.cpp \
-    gui/patterntable.cpp \
-    gui/pattern.cpp \
-    gui/machinebox.cpp \
-    gui/linkbox.cpp \
     gui/about.cpp \
     core/updates.cpp \
     core/settings.cpp \
@@ -33,19 +23,19 @@ SOURCES += main.cpp\
     core/store.cpp \
     gears/master.cpp \
     gears/lineinput.cpp \
-    gears/fileinput.cpp
+    gears/fileinput.cpp \
+    gui/pattern/patterntabledata.cpp \
+    gui/pattern/patterntable.cpp \
+    gui/pattern/pattern.cpp \
+    gui/playback/playback.cpp \
+    gui/route/route.cpp \
+    gui/route/machinebox.cpp \
+    gui/route/linkbox.cpp \
+    gui/track/tracktabledata.cpp \
+    gui/track/tracktable.cpp \
+    gui/track/track.cpp
 
 HEADERS  += mainwindow.h \
-    gui/tracktabledata.h \
-    gui/tracktable.h \
-    gui/track.h \
-    gui/route.h \
-    gui/playback.h \
-    gui/patterntabledata.h \
-    gui/patterntable.h \
-    gui/pattern.h \
-    gui/machinebox.h \
-    gui/linkbox.h \
     gui/about.h \
     core/updates.h \
     core/settings.h \
@@ -57,7 +47,17 @@ HEADERS  += mainwindow.h \
     core/store.h \
     gears/master.h \
     gears/lineinput.h \
-    gears/fileinput.h
+    gears/fileinput.h \
+    gui/pattern/patterntabledata.h \
+    gui/pattern/patterntable.h \
+    gui/pattern/pattern.h \
+    gui/playback/playback.h \
+    gui/route/route.h \
+    gui/route/machinebox.h \
+    gui/route/linkbox.h \
+    gui/track/tracktabledata.h \
+    gui/track/tracktable.h \
+    gui/track/track.h
 
 RESOURCES += \
     resources/resources.qrc

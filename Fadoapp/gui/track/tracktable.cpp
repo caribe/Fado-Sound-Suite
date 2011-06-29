@@ -1,4 +1,4 @@
-#include "gui/tracktable.h"
+#include "tracktable.h"
 
 TrackTable::TrackTable(Track *track)
 {

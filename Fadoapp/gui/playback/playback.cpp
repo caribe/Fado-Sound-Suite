@@ -1,8 +1,8 @@
-#include "gui/playback.h"
+#include "playback.h"
 
-Playback::Playback(MainWindow *parent)
+Playback::Playback(Core *core)
 {
-	this->parent = parent;
+	this->core = core;
 
 	QGridLayout *grid = new QGridLayout(this);
 	grid->setSpacing(3);
@@ -69,8 +69,8 @@ Playback::Playback(MainWindow *parent)
 
 void Playback::buttonPlay()
 {
-	if (parent->core->start(false) != 0) {
-		QMessageBox::critical(this, "Cannot start", parent->core->errstr);
+	if (core->start(false) != 0) {
+		QMessageBox::critical(this, "Cannot start", core->errstr);
 		state = 0;
 	} else {
 		state = 1;
@@ -81,8 +81,8 @@ void Playback::buttonPlay()
 
 void Playback::buttonRec()
 {
-	if (parent->core->start(true) != 0) {
-		QMessageBox::critical(this, "Cannot start", parent->core->errstr);
+	if (core->start(true) != 0) {
+		QMessageBox::critical(this, "Cannot start", core->errstr);
 		state = 0;
 	} else {
 		state = 2;
@@ -93,8 +93,8 @@ void Playback::buttonRec()
 
 void Playback::buttonStop()
 {
-	if (parent->core->stop() != 0) {
-		QMessageBox::critical(this, "Cannot stop", parent->core->errstr);
+	if (core->stop() != 0) {
+		QMessageBox::critical(this, "Cannot stop", core->errstr);
 	}
 	state = 0;
 }

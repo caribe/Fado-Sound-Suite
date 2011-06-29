@@ -1,4 +1,4 @@
-#include "gui/route.h"
+#include "route.h"
 
 Route::Route(Store *store)
 {
@@ -29,7 +29,6 @@ Route::Route(Store *store)
 	addWidget(routeEditor);
 
 	setStretchFactor(1, 1);
-
 }
 
 
@@ -59,7 +58,7 @@ void Route::newMachine(const QModelIndex &index)
 
 void Route::addMachine(Machine *machine)
 {
-	MachineBox *box = new MachineBox(this, machine);
+	MachineBox *box = new MachineBox(machine);
 	machines[machine->id] = box;
 	routeScene->addItem(box);
 	qDebug() << "Added machine #" << machine->id << endl;

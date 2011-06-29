@@ -5,7 +5,7 @@
 
 class TrackTableData;
 
-#include "gui/track.h"
+#include "track.h"
 
 class TrackTableData : public QAbstractTableModel
 {

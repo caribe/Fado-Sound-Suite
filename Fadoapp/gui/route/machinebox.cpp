@@ -1,16 +1,18 @@
-#include "gui/machinebox.h"
+#include "machinebox.h"
 
-MachineBox::MachineBox(Route *parent, Machine *machine)
+MachineBox::MachineBox(Machine *machine)
 {
-	/*
 	this->m = machine;
-	this->parent = parent;
+
+	// Box
 
 	setRect(-50, -25, 100, 50);
 	if (m->x == -1) m->x = 100;
 	if (m->y == -1) m->y = 100;
 	setPos(m->x, m->y);
 	setZValue(1);
+
+	// Label
 
 	QGraphicsTextItem *boxText = new QGraphicsTextItem(this);
 	boxText->setPos(-50, -20);
@@ -40,108 +42,97 @@ MachineBox::MachineBox(Route *parent, Machine *machine)
 		boxText->setHtml("<center>"+m->author+"<br/><b>"+m->name+"</b></center>");
 	}
 
+	// Style
+
 	setBrush(QBrush(backgrounds[0]));
 	setFlag(QGraphicsItem::ItemIsFocusable, true);
 	setFlag(QGraphicsItem::ItemIsMovable, true);
-	setCursor(Qt::OpenHandCursor);
+	// setCursor(Qt::OpenHandCursor);
+
+	// Events
 
 	setAcceptHoverEvents(true);
-	*/
 }
 
 
 void MachineBox::mousePressEvent(QGraphicsSceneMouseEvent *e) {
-	/*
 	if (e->button() == Qt::LeftButton) {
 		if (e->modifiers() == Qt::ControlModifier) {
 			dragMode = 2;
-			parent->connectionStart();
+			// parent->connectionStart();
 			QPointF pos = e->scenePos();
-			parent->connectionMove(m->x, m->y, pos.x(), pos.y());
+			// parent->connectionMove(m->x, m->y, pos.x(), pos.y());
 		} else {
 			QGraphicsRectItem::mousePressEvent(e);
 			dragMode = 1;
-			setCursor(Qt::ClosedHandCursor);
+			// setCursor(Qt::ClosedHandCursor);
 		}
 	}
-	*/
 }
 
 
 void MachineBox::mouseMoveEvent(QGraphicsSceneMouseEvent *e) {
-	/*
 	if (dragMode == 1) {
 		QGraphicsRectItem::mouseMoveEvent(e);
-		parent->moveConnection(this);
+		// parent->moveConnection(this);
 	} else if (dragMode == 2) {
 		QPointF pos = e->scenePos();
-		parent->connectionMove(m->x, m->y, pos.x(), pos.y());
+		// parent->connectionMove(m->x, m->y, pos.x(), pos.y());
 	}
-	*/
 }
 
 
 void MachineBox::mouseReleaseEvent(QGraphicsSceneMouseEvent *e) {
-	/*
 	if (dragMode == 1) {
 		QGraphicsRectItem::mouseReleaseEvent(e);
-		setCursor(Qt::OpenHandCursor);
+		// setCursor(Qt::OpenHandCursor);
 		QPointF pos = this->pos();
 		m->x = pos.x();
 		m->y = pos.y();
 	} else if (dragMode == 2) {
 		QPointF pos = e->scenePos();
-		parent->connectionFinish(this, pos.x(), pos.y());
+		// parent->connectionFinish(this, pos.x(), pos.y());
 	}
-	*/
 }
 
 
 void MachineBox::keyPressEvent(QKeyEvent *e) {
-	/*
 	if (e->key() == Qt::Key_Delete and (m->author != "Core" or m->name != "output")) {
+		/*
 		if (QMessageBox::question(this->parent, "Are you sure?", "Are you sure to delete this machine?", QMessageBox::Ok, QMessageBox::Cancel) == QMessageBox::Ok) {
 			parent->delMachine(this);
 		}
+		*/
 	} else {
 		e->ignore();
 	}
-	*/
 }
 
 
 void MachineBox::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event) 
 {
-	/*
-	parent->mainWindow->tabs->setCurrentIndex(1);
-	parent->mainWindow->pattern->machineCombo->setCurrentIndex(id());
-	*/
+	// parent->mainWindow->tabs->setCurrentIndex(1);
+	// parent->mainWindow->pattern->machineCombo->setCurrentIndex(id());
 }
 
 
 void MachineBox::hoverEnterEvent(QGraphicsSceneHoverEvent * event)
 {
-	/*
 	setBrush(QBrush(backgrounds[1]));
 	setFocus(Qt::MouseFocusReason);
-	parent->mainWindow->status->showMessage(m->type+"."+m->author+"."+m->name);
-	*/
+	// parent->mainWindow->status->showMessage(m->type+"."+m->author+"."+m->name);
 }
 
 
 void MachineBox::hoverLeaveEvent(QGraphicsSceneHoverEvent * event)
 {
-	/*
 	setBrush(QBrush(backgrounds[0]));
 	clearFocus();
-	parent->mainWindow->status->clearMessage();
-	*/
+	// parent->mainWindow->status->clearMessage();
 }
 
 
 int MachineBox::id()
 {
-	/*
 	return m->id;
-	*/
 }

@@ -8,16 +8,15 @@
 
 class LinkBox;
 
-#include "gui/route.h"
+#include "core/store.h"
+#include "machinebox.h"
 
 class LinkBox : public QGraphicsPathItem
 {
 	public:
-		LinkBox(Route *parent, MachineBox *m1, MachineBox *m2);
+		LinkBox(MachineBox *m1, MachineBox *m2);
 		void repos();
 
-		Route *route;
-		Store *store;
 		MachineBox *m1, *m2;
 		QList<QColor> backgrounds;
 		int value;

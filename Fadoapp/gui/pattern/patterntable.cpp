@@ -1,4 +1,4 @@
-#include "gui/patterntable.h"
+#include "patterntable.h"
 
 PatternTable::PatternTable(Pattern *pattern) {
 	this->pattern = pattern;

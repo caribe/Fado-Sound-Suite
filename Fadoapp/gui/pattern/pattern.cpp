@@ -1,8 +1,7 @@
-#include "gui/pattern.h"
+#include "pattern.h"
 
-Pattern::Pattern(MainWindow *mainWindow) {
-	this->mainWindow = mainWindow;
-	store = mainWindow->getStore();
+Pattern::Pattern(Store *store) {
+	this->store = store;
 
 	activeMachine = 0;
 
