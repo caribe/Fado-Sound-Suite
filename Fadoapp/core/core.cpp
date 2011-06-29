@@ -1,16 +1,12 @@
 #include "core/core.h"
 
-Core::Core(MainWindow *mainWindow)
+Core::Core(QWidget *parent) : QObject(parent)
 {
-	this->mainWindow = mainWindow;
 	master = 0;
 	store = 0;
 	pluginsPath = "../Fadogears/";
 
 	loadPlugins();
-
-	settings = new Settings(this);
-	settings->load();
 
 	// jack_init();
 }
@@ -85,7 +81,7 @@ int Core::jack_init()
 	// try to become a client of the JACK server
 	jack_status_t jack_status;
 	if ((client = jack_client_open("fado", JackUseExactName, &jack_status, "default")) == 0) {
-		mainWindow->critical("Jack server not running. Error "+QString::number(jack_status));
+		QMessageBox::critical(this, "Jack server not running", "Error " + QString::number(jack_status));
 		return 1;
 	}
 
@@ -180,11 +176,6 @@ int Core::stop()
 }
 
 
-int Core::close()
-{
-	settings->save();
-}
-
 
 int Core::optimizeMachines()
 {
@@ -198,7 +189,7 @@ int Core::optimizeMachines()
 
 	store->orderMachines();
 
-	mainWindow->refreshMachines();
+	// mainWindow->refreshMachines();
 }
 
 

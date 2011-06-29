@@ -14,7 +14,6 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     gui/about.cpp \
     core/updates.cpp \
-    core/settings.cpp \
     core/encoder.cpp \
     core/core.cpp \
     core/config.cpp \
@@ -38,7 +37,6 @@ SOURCES += main.cpp\
 HEADERS  += mainwindow.h \
     gui/about.h \
     core/updates.h \
-    core/settings.h \
     core/encoder.h \
     core/core.h \
     core/config.h \

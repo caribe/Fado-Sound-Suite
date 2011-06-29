@@ -105,6 +105,7 @@ MainWindow::MainWindow() : QMainWindow() {
 
 	menuFileNewSlot();
 
+	settingsLoad();
 }
 
 
@@ -236,7 +237,7 @@ void MainWindow::setTabByAction()
 
 void MainWindow::closeEvent(QCloseEvent *event)
 {
-	core->close();
+	this->settingsSave();
 }
 
 void MainWindow::menuDebugDumpSlot()
@@ -279,4 +280,33 @@ void MainWindow::menuDebugDumpSlot()
 void MainWindow::critical(const QString & s)
 {
 	QMessageBox::critical(this, tr("Errore"), s);
+}
+
+
+void MainWindow::settingsSave()
+{
+	QSettings settings;
+
+	if (isMaximized()) {
+		settings.setValue("settings/maximized", true);
+	} else {
+		settings.setValue("settings/maximized", false);
+		settings.setValue("settings/left", x());
+		settings.setValue("settings/top", y());
+		settings.setValue("settings/width", width());
+		settings.setValue("settings/height", height());
+	}
+}
+
+
+void MainWindow::settingsLoad()
+{
+	QSettings settings;
+
+	if (settings.value("settings/maximized").toBool()) {
+		this->showMaximized();
+	} else {
+		move(settings.value("settings/left").toInt(), settings.value("settings/top").toInt());
+		resize(settings.value("settings/width").toInt(), settings.value("settings/height").toInt());
+	}
 }

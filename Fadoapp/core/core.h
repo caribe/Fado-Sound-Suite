@@ -5,10 +5,11 @@
 
 #include <QPluginLoader>
 #include <QDebug>
+#include <QDir>
+#include <QMessageBox>
 
 class Core;
 
-#include "core/settings.h"
 #include "core/updates.h"
 #include "gears/master.h"
 #include "gears/lineinput.h"
@@ -18,13 +19,11 @@ class Core;
 #include "core/store.h"
 #include "ext/machine.h"
 
-#include "mainwindow.h"
-
 #define LIB_PATH "../Fadogears/"
 
 class Core : QObject {
 	public:
-		Core(MainWindow *mainWindow);
+		Core(QWidget *parent);
 		void loadPlugins();
 		int jack_init();
 		int load(QString filename);
@@ -32,13 +31,10 @@ class Core : QObject {
 		int stop();
 		int save();
 		int save(QString filename);
-		int close();
 		int optimizeMachines();
 		int checkUpdates();
 
 		Store *store;
-		MainWindow *mainWindow;
-		Settings *settings;
 		Updates *updates;
 		Master *master;
 		QString errstr;

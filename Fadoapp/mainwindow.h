@@ -7,6 +7,7 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QKeyEvent>
+#include <QSettings>
 #include <QDebug>
 
 //! MainWindow class
@@ -43,6 +44,10 @@ class MainWindow : public QMainWindow
 		void closeEvent(QCloseEvent *event);
 
 		void critical(const QString & s);
+
+	private:
+		void settingsSave();
+		void settingsLoad();
 
 	private slots:
 		void setTabByAction();
