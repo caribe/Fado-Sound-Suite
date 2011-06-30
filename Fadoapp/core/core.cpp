@@ -186,7 +186,7 @@ void jack_shutdown(void *arg) {}
 
 
 
-int Core::orderMachines()
+bool Core::orderMachines()
 {
 	QHash<Machine *, QList<Machine *> > iconns;
 	QHash<Machine *, QList<Machine *> > oconns;
@@ -222,11 +222,11 @@ int Core::orderMachines()
 	}
 
 	// Loop
-	if (watchdog < 0) return 1;
+	if (watchdog < 0) return false;
 
 	this->order = order;
 
-	return 0;
+	return true;
 }
 
 

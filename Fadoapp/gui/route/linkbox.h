@@ -9,11 +9,15 @@
 class LinkBox;
 
 #include "machinebox.h"
+#include "route.h"
 
 class LinkBox : public QGraphicsPathItem
 {
 	public:
-		LinkBox(MachineBox *m1, MachineBox *m2);
+		LinkBox(Route *route, MachineBox *m1, MachineBox *m2);
+
+		Route *route;
+
 		void repos();
 
 		MachineBox *m1, *m2;

@@ -1,6 +1,6 @@
 #include "linkbox.h"
 
-LinkBox::LinkBox(MachineBox *m1, MachineBox *m2)
+LinkBox::LinkBox(Route *route, MachineBox *m1, MachineBox *m2)
 {
 	this->m1 = m1;
 	this->m2 = m2;
@@ -73,21 +73,17 @@ void LinkBox::repos()
 
 void LinkBox::hoverEnterEvent(QGraphicsSceneHoverEvent * event)
 {
-	/*
 	setBrush(QBrush(backgrounds[1]));
 	setFocus(Qt::MouseFocusReason);
-	route->mainWindow->status->showMessage("Connection "+QString::number(store->connections[m1->m->id][m2->m->id])+"%");
-	*/
+	// route->mainWindow->status->showMessage("Connection "+QString::number(store->connections[m1->m->id][m2->m->id])+"%");
 }
 
 
 void LinkBox::hoverLeaveEvent(QGraphicsSceneHoverEvent * event)
 {
-	/*
 	setBrush(QBrush(backgrounds[0]));
 	clearFocus();
-	route->mainWindow->status->clearMessage();
-	*/
+	// route->mainWindow->status->clearMessage();
 }
 
 
@@ -95,19 +91,19 @@ void LinkBox::keyPressEvent(QKeyEvent *event)
 {
 	/*
 	if (event->key() == Qt::Key_Delete) {
-		store->flipConnection(m1->id(), m2->id());
+		route->core->toggleConnection(m1->m, m2->m);
 		route->delConnection(m1, m2);
 	} else if (event->key() == Qt::Key_Plus) {
 		int value = store->connections[m1->m->id][m2->m->id];
 		value++;
 		if (value > 100) value = 100;
-		route->mainWindow->status->showMessage("Connection "+QString::number(value)+"%");
-		store->connections[m1->m->id][m2->m->id] = value;
+		// route->mainWindow->status->showMessage("Connection "+QString::number(value)+"%");
+		route->connections[m1->m->id][m2->m->id] = value;
 	} else if (event->key() == Qt::Key_Minus) {
 		int value = store->connections[m1->m->id][m2->m->id];
 		value--;
 		if (value < 0) value = 0;
-		route->mainWindow->status->showMessage("Connection "+QString::number(value)+"%");
+		// route->mainWindow->status->showMessage("Connection "+QString::number(value)+"%");
 		store->connections[m1->m->id][m2->m->id] = value;
 	}
 	*/
@@ -125,7 +121,7 @@ void LinkBox::wheelEvent(QGraphicsSceneWheelEvent *event) {
 			value -= 5;
 			if (value < 0) value = 0;
 		}
-		route->mainWindow->status->showMessage("Connection "+QString::number(value)+"%");
+		// route->mainWindow->status->showMessage("Connection "+QString::number(value)+"%");
 		store->connections[m1->m->id][m2->m->id] = value;
 		event->accept();
 	}

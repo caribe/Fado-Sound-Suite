@@ -9,13 +9,17 @@
 
 class MachineBox;
 
+#include "route.h"
 #include "ext/machine.h"
 
 class MachineBox : public QGraphicsRectItem
 {
 	public:
-		MachineBox(Machine *machine);
+		MachineBox(Route *route, Machine *machine);
 
+		enum DragMode {DragBox, DragConnection};
+
+		Route *route;
 		Machine *m;
 		QString longname;
 		QColor color;

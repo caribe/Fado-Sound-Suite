@@ -18,7 +18,7 @@ MainWindow::MainWindow() : QMainWindow() {
 	tabs = new QTabWidget(this);
 	tabs->setTabPosition(QTabWidget::West);
 
-	route = new Route(core);
+	route = new Route(this, core);
 	pattern  = new Pattern(core);
 	track = new Track(core);
 	playback = new Playback(core);

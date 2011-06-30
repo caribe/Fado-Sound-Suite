@@ -23,7 +23,7 @@ class Route : public QSplitter
 	Q_OBJECT
 
 	public:
-		Route(Core *core);
+		Route(QWidget *parent, Core *core);
 
 		QGridLayout grid;
 		QGraphicsView *routeEditor;
@@ -36,7 +36,7 @@ class Route : public QSplitter
 		void delMachine(MachineBox *machine);
 		void delMachine(Machine *machine);
 
-		void addConnection(int i1, int i2);
+		void addConnection(MachineBox *m1, MachineBox *m2);
 		void delConnection(MachineBox *m1, MachineBox *m2);
 		void moveConnection(MachineBox *m);
 		void delConnection(Machine *m1, Machine *m2);

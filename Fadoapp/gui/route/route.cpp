@@ -1,6 +1,6 @@
 #include "route.h"
 
-Route::Route(Core *core)
+Route::Route(QWidget *parent, Core *core) : QSplitter(parent)
 {
 	this->core = core;
 
@@ -60,7 +60,7 @@ void Route::newMachine(const QModelIndex &index)
 
 void Route::addMachine(Machine *machine)
 {
-	MachineBox *machineBox = new MachineBox(machine);
+	MachineBox *machineBox = new MachineBox(this, machine);
 	machineBoxes[machine] = machineBox;
 	routeScene->addItem(machineBox);
 	qDebug() << "Added machine #" << machine->name;
@@ -111,29 +111,17 @@ void Route::delMachine(MachineBox *machineBox)
 }
 
 
-void Route::addConnection(int i1, int i2)
+void Route::addConnection(MachineBox *m1, MachineBox *m2)
 {
-	/*
-	if (machines.contains(i1) == false) {
-		qDebug() << "Machine #" << i1 << " not found" << endl;
-		return;
-	}
-
-	if (machines.contains(i2) == false) {
-		qDebug() << "Machine #" << i2 << " not found" << endl;
-		return;
-	}
-
-	LinkBox *linkBox = new LinkBox(this, machines[i1], machines[i2]);
+	LinkBox *linkBox = new LinkBox(this, m1, m2);
 	routeScene->addItem(linkBox);
 	connections << linkBox;
-	*/
+
 }
 
 
 void Route::delConnection(MachineBox *m1, MachineBox *m2)
 {
-	/*
 	foreach (LinkBox *linkBox, connections) {
 		if ((linkBox->m1 == m1 and linkBox->m2 == m2) or (linkBox->m1 == m2 and linkBox->m2 == m1)) {
 			connections.removeOne(linkBox);
@@ -141,7 +129,6 @@ void Route::delConnection(MachineBox *m1, MachineBox *m2)
 			delete linkBox;
 		}
 	}
-	*/
 }
 
 
@@ -172,27 +159,26 @@ void Route::connectionMove(int x1, int y1, int x2, int y2)
 
 void Route::connectionFinish(MachineBox *m1, int x, int y)
 {
-	/*
 	extraline->hide();
-	foreach (MachineBox *m2, machines.values()) {
+
+	foreach (MachineBox *m2, machineBoxes) {
 		// out << "Check #" << m1->id() << " #" << m2->id() << endl;
 		if (x >= m2->x() - 50 and x <= m2->x() + 50 and y >= m2->y() - 25 and y <= m2->y() + 25) {
-			int flag = store->flipConnection(m1->id(), m2->id());
+			int flag = core->toggleConnection(m1->m, m2->m);
 			// out << "Connection " << flag << endl;
 
-			if (store->orderMachines() == 1) { // Loop detected
-				QMessageBox::critical(this, "Connection creates loop", "Sorry, but the new connection will create a loop and therefore it can't be inserted");
-				store->flipConnection(m1->id(), m2->id());
-			} else {
+			if (core->orderMachines()) {
 				if (flag == 0) {
-					addConnection(m1->id(), m2->id());
+					addConnection(m1, m2);
 				} else if (flag == 1) {
 					delConnection(m1, m2);
 				}
+			} else { // Loop detected
+				QMessageBox::critical(this->parentWidget(), "Connection creates loop", "Sorry, but the new connection will create a loop and therefore it can't be inserted");
+				core->toggleConnection(m1->m, m2->m);
 			}
 
 			return;
 		}
 	}
-	*/
 }

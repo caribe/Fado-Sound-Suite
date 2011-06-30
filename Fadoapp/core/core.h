@@ -70,7 +70,7 @@ public:
 
 	// Methods
 
-	int orderMachines();
+	bool orderMachines();
 	int toggleConnection(Machine *from, Machine *to);
 
 signals:

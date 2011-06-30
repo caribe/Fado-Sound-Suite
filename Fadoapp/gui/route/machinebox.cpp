@@ -1,7 +1,8 @@
 #include "machinebox.h"
 
-MachineBox::MachineBox(Machine *machine)
+MachineBox::MachineBox(Route *route, Machine *machine)
 {
+	this->route = route;
 	this->m = machine;
 
 	// Box
@@ -56,13 +57,13 @@ MachineBox::MachineBox(Machine *machine)
 void MachineBox::mousePressEvent(QGraphicsSceneMouseEvent *e) {
 	if (e->button() == Qt::LeftButton) {
 		if (e->modifiers() == Qt::ControlModifier) {
-			dragMode = 2;
-			// parent->connectionStart();
+			dragMode = DragConnection;
+			route->connectionStart();
 			QPointF pos = e->scenePos();
-			// parent->connectionMove(m->x, m->y, pos.x(), pos.y());
+			route->connectionMove(m->x, m->y, pos.x(), pos.y());
 		} else {
 			QGraphicsRectItem::mousePressEvent(e);
-			dragMode = 1;
+			dragMode = DragBox;
 			setCursor(Qt::ClosedHandCursor);
 		}
 	}
@@ -70,37 +71,35 @@ void MachineBox::mousePressEvent(QGraphicsSceneMouseEvent *e) {
 
 
 void MachineBox::mouseMoveEvent(QGraphicsSceneMouseEvent *e) {
-	if (dragMode == 1) {
+	if (dragMode == DragBox) {
 		QGraphicsRectItem::mouseMoveEvent(e);
-		// parent->moveConnection(this);
-	} else if (dragMode == 2) {
+		route->moveConnection(this);
+	} else if (dragMode == DragConnection) {
 		QPointF pos = e->scenePos();
-		// parent->connectionMove(m->x, m->y, pos.x(), pos.y());
+		route->connectionMove(m->x, m->y, pos.x(), pos.y());
 	}
 }
 
 
 void MachineBox::mouseReleaseEvent(QGraphicsSceneMouseEvent *e) {
-	if (dragMode == 1) {
+	if (dragMode == DragBox) {
 		QGraphicsRectItem::mouseReleaseEvent(e);
 		setCursor(Qt::OpenHandCursor);
 		QPointF pos = this->pos();
 		m->x = pos.x();
 		m->y = pos.y();
-	} else if (dragMode == 2) {
+	} else if (dragMode == DragConnection) {
 		QPointF pos = e->scenePos();
-		// parent->connectionFinish(this, pos.x(), pos.y());
+		route->connectionFinish(this, pos.x(), pos.y());
 	}
 }
 
 
 void MachineBox::keyPressEvent(QKeyEvent *e) {
 	if (e->key() == Qt::Key_Delete and (m->author != "Core" or m->name != "output")) {
-		/*
-		if (QMessageBox::question(this->parent, "Are you sure?", "Are you sure to delete this machine?", QMessageBox::Ok, QMessageBox::Cancel) == QMessageBox::Ok) {
-			parent->delMachine(this);
+		if (QMessageBox::question(route, "Are you sure?", "Are you sure to delete this machine?", QMessageBox::Ok, QMessageBox::Cancel) == QMessageBox::Ok) {
+			route->delMachine(this);
 		}
-		*/
 	} else {
 		e->ignore();
 	}
