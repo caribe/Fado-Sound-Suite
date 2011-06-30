@@ -12,8 +12,6 @@
 
 #include <jack/jack.h>
 
-#define PI_2 6.28318530718
-
 class Core;
 
 #include "updates.h"
@@ -30,48 +28,58 @@ Q_OBJECT
 
 public:
 	explicit Core(QObject *parent = 0);
+
+	// Funtionalities
+
+	QString pluginsPath;
 	void loadPlugins();
+
+	Master *master;
+	QString filename;
+
+	Updates *updates;
+	int checkUpdates();
+
+	// Jack handling
+
 	int jack_init();
 	int load(QString filename);
 	int start(bool record);
 	int stop();
 	int save();
 	int save(QString filename);
-	int optimizeMachines();
-	int checkUpdates();
-
-	Updates *updates;
-	Master *master;
-	QString errstr;
-	QString filename;
 
 	jack_client_t *client;
 	jack_port_t *input_port[4];
 	jack_port_t *output_port[4];
 
-	QString pluginsPath;
-
-	// Store
-
-	QStandardItemModel *gearsTree;
+	// *** Store
 
 	int beat_per_pattern, total_patterns;
-
-	QList<QPluginLoader *> gears;
-	QList<Machine *> machines;
-	QMultiHash<int, int> connections;
-
-	QMultiHash<int, int> oconn;
-	QMultiHash<int, int> iconn;
-	QList<int> order;
-
 	int sampling_rate, buffer_size;
 
-	int optimizeMachines(QHash<int, int> &changes);
+	// Gears
+	QStandardItemModel *gearsTree;
+	QList<QPluginLoader *> gears;
+
+	// Gears instances (machines)
+	QList<Machine *> machines;
+
+	// Machine connections
+	QMultiHash<Machine *, Machine *> connections;
+
+	// Machine render order
+	QList<Machine *> order;
+
+	// Working structures
+	QMultiHash<int, int> oconn;
+	QMultiHash<int, int> iconn;
+
+	// Methods
+
 	int orderMachines();
-
+	int optimizeMachines(QHash<int, int> &changes);
 	int flipConnection(int from, int to);
-
 
 signals:
 	void messageCritical(const QString &title, const QString &text);

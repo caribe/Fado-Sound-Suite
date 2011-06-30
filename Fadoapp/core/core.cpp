@@ -81,7 +81,7 @@ int Core::jack_init()
 	// try to become a client of the JACK server
 	jack_status_t jack_status;
 	if ((client = jack_client_open("fado", JackUseExactName, &jack_status, "default")) == 0) {
-		// emit messageCritical("Jack server not running", "Error " + QString::number(jack_status));
+		emit messageCritical(tr("Jack server not running"), "Error " + QString::number(jack_status));
 		return 1;
 	}
 
@@ -116,7 +116,6 @@ int Core::jack_init()
 
 int Core::load(QString filename)
 {
-	errstr = "";
 	this->filename = filename;
 	qDebug() << "Loading config... (" << filename << ")" << endl;
 
@@ -124,13 +123,13 @@ int Core::load(QString filename)
 	config = Config::load(filename, this);
 
 	if (config != 0) {
-		errstr = "Cannot load config (" + filename + ")\nERROR CODE " + config;
+		emit messageCritical(tr("Error"), "Cannot load config (" + filename + ")\nERROR CODE " + config);
 		return config;
 	}
 
 	switch (orderMachines()) {
 		case 1:
-			errstr = "Cannot establish this connection because it would create a loop...";
+			emit messageCritical(tr("Error"), "Cannot establish this connection because it would create a loop...");
 			return 1;
 	}
 
@@ -153,7 +152,6 @@ int Core::save(QString filename)
 
 int Core::start(bool record)
 {
-	errstr = "";
 	master = (Master *)machines.value(0);
 	if (master) {
 		if (master->init(this) == 0) {
@@ -161,7 +159,7 @@ int Core::start(bool record)
 		}
 		return 0;
 	} else {
-		errstr = "No master?";
+		emit messageCritical(tr("Error"), "No master?");
 		return 1;
 	}
 }
@@ -169,46 +167,10 @@ int Core::start(bool record)
 
 int Core::stop()
 {
-	errstr = "";
 	master->stop();
 	Encoder::encode("/tmp/record.raw", "./record.ogg", 48000, 2, 0);
 	return 0;
 }
-
-
-
-int Core::optimizeMachines()
-{
-	QHash<int, int> changes;
-	optimizeMachines(changes);
-
-	/*
-		route->machines[i] = route->machines[order[i]];
-		route->machines.remove(order[i]);
-*/
-
-	orderMachines();
-
-	// mainWindow->refreshMachines();
-}
-
-
-int Core::checkUpdates()
-{
-	if (!updates) updates = new Updates(this);
-	updates->check();
-}
-
-
-int jack_process(jack_nframes_t nframes, void *arg)
-{
-	Core *core = (Core *)arg;
-	if (core->master) core->master->process(nframes);
-	return 0;
-}
-
-
-void jack_shutdown(void *arg) {}
 
 
 
@@ -243,8 +205,40 @@ int Core::optimizeMachines(QHash<int, int> &changes)
 		}
 	}
 */
+	/*
+		route->machines[i] = route->machines[order[i]];
+		route->machines.remove(order[i]);
+*/
+
+	orderMachines();
+
+	// mainWindow->refreshMachines();
+
+
 	return 0;
 }
+
+
+int Core::checkUpdates()
+{
+	if (!updates) updates = new Updates(this);
+	updates->check();
+}
+
+
+int jack_process(jack_nframes_t nframes, void *arg)
+{
+	Core *core = (Core *)arg;
+	if (core->master) core->master->process(nframes);
+	return 0;
+}
+
+
+void jack_shutdown(void *arg) {}
+
+
+
+
 
 
 int Core::orderMachines()

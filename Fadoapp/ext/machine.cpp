@@ -1,10 +1,9 @@
-/*
 #include "machine.h"
 
 int Machine::preprocess(jack_nframes_t nframes, int process)
 {
 	for (unsigned int j = 0; j < nframes; j++) li[j] = ri[j] = 0;
-
+/*
 	foreach (int i, store->iconn[id]) {
 		jack_default_audio_sample_t *lx = store->machines[i]->lx;
 		jack_default_audio_sample_t *rx = store->machines[i]->rx;
@@ -15,7 +14,7 @@ int Machine::preprocess(jack_nframes_t nframes, int process)
 			ri[j] += rx[j] * perc;
 		}
 	}
-
+*/
 	if (process > 0) this->process(nframes);
 	return 0;
 }
@@ -122,4 +121,3 @@ QString Machine::validate(QString param, QString value)
 
 	return value;
 }
-*/

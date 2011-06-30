@@ -70,7 +70,6 @@ Playback::Playback(Core *core)
 void Playback::buttonPlay()
 {
 	if (core->start(false) != 0) {
-		QMessageBox::critical(this, "Cannot start", core->errstr);
 		state = 0;
 	} else {
 		state = 1;
@@ -82,7 +81,6 @@ void Playback::buttonPlay()
 void Playback::buttonRec()
 {
 	if (core->start(true) != 0) {
-		QMessageBox::critical(this, "Cannot start", core->errstr);
 		state = 0;
 	} else {
 		state = 2;
@@ -93,9 +91,6 @@ void Playback::buttonRec()
 
 void Playback::buttonStop()
 {
-	if (core->stop() != 0) {
-		QMessageBox::critical(this, "Cannot stop", core->errstr);
-	}
 	state = 0;
 }
 

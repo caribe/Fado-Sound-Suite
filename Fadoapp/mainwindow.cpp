@@ -174,9 +174,7 @@ void MainWindow::menuFileSaveAsSlot() {
 
 	if (filename == "") return;
 
-	if (core->save(filename) != 0) {
-		QMessageBox::critical(this, "Save failed", core->errstr);
-	} else {
+	if (core->save(filename) == 0) {
 		setWindowTitle("Fado - "+filename);
 	}
 }

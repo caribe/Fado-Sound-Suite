@@ -8,6 +8,8 @@
 
 #include "param.h"
 
+#define PI_2 6.28318530718
+
 class Machine {
 
 	public:
