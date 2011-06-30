@@ -9,9 +9,7 @@ Core::Core(QObject *parent) : QObject(parent)
 	total_patterns = 16;
 	gearsTree = new QStandardItemModel();
 
-
-	loadPlugins();
-
+	// loadPlugins();
 	// jack_init();
 }
 
@@ -25,12 +23,12 @@ void Core::loadPlugins()
 
 	item = new QStandardItem(QIcon(":/machine"), "Line Input");
 	item->setEditable(false);
-	item->data() = -1;
+	item->data() = -2;
 	gearsTree->appendRow(item);
 
 	item = new QStandardItem(QIcon(":/machine"), "File Input");
 	item->setEditable(false);
-	item->data() = -2;
+	item->data() = -3;
 	gearsTree->appendRow(item);
 
 	// Plugins
@@ -61,7 +59,6 @@ void Core::loadPlugins()
 				item = new QStandardItem(QIcon(":/machine"), machine->name);
 				item->setEditable(false);
 				item->data() = id;
-
 				gearsTree->appendRow(item);
 
 				// delete machine;
@@ -174,51 +171,6 @@ int Core::stop()
 
 
 
-int Core::optimizeMachines(QHash<int, int> &changes)
-{
-	/*
-	int max = 0;
-	int i;
-
-	foreach (i, machines.values()) if (i > max) max = i;
-	QList<int> order;
-
-	for (i = 0; i <= max; i++) if (machines.contains(i)) order.append(i);
-
-	for (i = 0; i < order.size(); i++) if (order[i] != i) {
-		machines[i] = machines[order[i]];
-		machines.remove(order[i]);
-		machines[i]->id = i;
-
-		changes[order[i]] = i;
-
-		foreach (int j, connections.keys()) {
-			if (j == order[i]) {
-				connections[i] = connections[j];
-				connections.remove(j);
-			} else {
-				foreach (int k, connections[j].keys()) if (k == order[i]) {
-					connections[i][k] = connections[j][k];
-					connections[j].remove(k);
-				}
-			}
-		}
-	}
-*/
-	/*
-		route->machines[i] = route->machines[order[i]];
-		route->machines.remove(order[i]);
-*/
-
-	orderMachines();
-
-	// mainWindow->refreshMachines();
-
-
-	return 0;
-}
-
-
 int Core::checkUpdates()
 {
 	if (!updates) updates = new Updates(this);
@@ -239,92 +191,77 @@ void jack_shutdown(void *arg) {}
 
 
 
-
-
 int Core::orderMachines()
 {
-	/*
-	QHash<int, QList<int> > oconn;
-	QHash<int, QList<int> > iconn;
-	QList<int> order;
-
-	// oconn and iconn keys must exists
-	foreach (int i, machines.keys()) {
-		if (oconn.contains(i) == false) oconn[i].clear();
-		if (iconn.contains(i) == false) iconn[i].clear();
-	}
+	QHash<Machine *, QList<Machine *> > iconns;
+	QHash<Machine *, QList<Machine *> > oconns;
+	QList<Machine *> order;
 
 	// oconn e iconn initialization
-	foreach (int i, connections.keys()) {
-		foreach (int j, connections[i].keys()) {
-			oconn[i] << j;
-			iconn[j] << i;
-		}
+	foreach (Machine *machine, machines) {
+		iconns[machine] << machine->connectionDst.keys();
+		oconns[machine] << machine->connectionDst.keys();
 	}
 
-	this->iconn = iconn;
-	this->oconn = oconn;
+	// *** Ordering machines to elaboration
 
-	int watchdog = machines.keys().length();
+	int watchdog = machines.length();
 
-	// *** Ordening machines to elaboration
+	while (iconns.size() > 0 and --watchdog >= 0) { // While there are machines to check
 
-	while (iconn.size() > 0 and --watchdog >= 0) { // While there are machines to check
-		QList<int> iconnKeys = iconn.keys();
-		for (int i = 0; i < iconnKeys.length(); i++) { // Cycle on in-connections hash
-			if (iconn[iconnKeys[i]].length() == 0) { // If there are unmanaged in-connections
-				QList<int> oconnValues = oconn.value(iconnKeys[i]);
-				for (int j = 0; j < oconnValues.length(); j++) { // Get out-connections of this machine
-					QList<int> t;
-					QList<int> iconnValues = iconn.value(oconnValues[j]);
-					for (int k = 0; k < iconnValues.length(); k++) { // Cycle on in-connections of child machines
-						if (iconnValues[k] != iconnKeys[i]) { // Recreates the set without the machine
-							t.append(iconnValues[k]);
-						}
-					}
-					iconn[oconnValues[j]] = t;
+		QList<Machine *> machines = iconns.keys();
+		foreach (Machine *machine, machines) {
+			if (iconns[machine].length() == 0) { // Search machine with no pending inputs
+
+				foreach (Machine *dst, oconns[machine]) { // Removes the machine from the inputs of the connected machines
+					iconns[dst].removeOne(machine);
 				}
 
-				order << iconnKeys[i];
-				iconn.remove(iconnKeys[i]);
-				oconn.remove(iconnKeys[i]);
+				order << machine;
+				iconns.remove(machine);
+				oconns.remove(machine);
 			}
 		}
+
 	}
 
 	// Loop
 	if (watchdog < 0) return 1;
 
 	this->order = order;
-*/
+
 	return 0;
 }
 
 
 
-int Core::flipConnection(int from, int to)
+int Core::toggleConnection(Machine *m1, Machine *m2)
 {
-	/*
-	if (connections.contains(from) and connections[from].contains(to)) {
-		connections[from].remove(to);
-		if (connections[from].isEmpty()) connections.remove(from);
+	if (m1->connectionDst.contains(m2)) {
+		Volume *volume = m1->connectionDst[m2];
+		m1->connectionDst.remove(m2);
+		m2->connectionSrc.remove(m1);
+		delete volume;
 		orderMachines();
 		return 1;
-	} else if (connections.contains(to) and connections[to].contains(from)) {
-		connections[to].remove(from);
-		if (connections[to].isEmpty()) connections.remove(to);
-		orderMachines();
-		return 1;
-	} else {
-		Machine *f = machines[from];
-		Machine *t = machines[to];
-
-		if (f->author == "Core" and f->name == "output") return 2;
-		if (t->type == "generator") return 2;
-
-		connections[from][to] = 100;
-		orderMachines();
-		return 0;
 	}
-	*/
+
+	if (m1->connectionSrc.contains(m2)) {
+		Volume *volume = m1->connectionSrc[m2];
+		m1->connectionSrc.contains(m2);
+		m2->connectionDst.contains(m1);
+		delete volume;
+		orderMachines();
+		return 1;
+	}
+
+	if (m1->id == -1) return 2; // Master
+	if (m2->type == Machine::MachineGenerator) return 2;
+
+	Volume *volume = new Volume();
+	m1->connectionDst[m2] = volume;
+	m2->connectionSrc[m1] = volume;
+
+	orderMachines();
+	return 0;
 }

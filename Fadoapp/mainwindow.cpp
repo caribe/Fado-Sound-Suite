@@ -3,13 +3,15 @@
 
 MainWindow::MainWindow() : QMainWindow() {
 
-	setWindowTitle("Fado");
+	setWindowTitle(tr("Fado"));
 	setWindowIcon(QIcon(":/001_08.png"));
 
 	settingsLoad();
 
 	core = new Core();
 	connect(core, SIGNAL(messageCritical(QString,QString)), SLOT(messageCritical(QString,QString)));
+	core->loadPlugins();
+	// core->jack_init();
 
 	// *** tabs ***
 
@@ -101,38 +103,39 @@ MainWindow::MainWindow() : QMainWindow() {
 	connect(menuHelpAbout, SIGNAL(triggered()), this, SLOT(menuHelpAboutSlot()));
 	menuHelp->addAction(menuHelpAbout);
 
+	// Resetting everything
 	menuFileNewSlot();
 }
 
 
 void MainWindow::menuFileCloseSlot() {
-	/*
-	foreach (Machine *m, core->store->machines.values()) route->delMachine(m);
-	core->store->machines.clear();
-	*/
+
+	foreach (Machine *m, core->machines) route->delMachine(m);
+	core->machines.clear();
+
 }
 
 void MainWindow::menuFileNewSlot() {
-	/*
+
 	menuFileCloseSlot();
 
+	core->total_patterns = 20;
+	core->beat_per_pattern = 16;
+
 	Master *tx = new Master();
-	tx->id = 0;
+	tx->id = -1;
 	tx->x = 100;
 	tx->y = 100;
-	tx->store = getStore();
-	core->store->machines[tx->id] = tx;
-	tx->patterns[0];
-	core->store->total_patterns = 20;
-	core->store->beat_per_pattern = 16;
 	tx->track_first = 0;
-	tx->track_last = core->store->total_patterns - 1;
+	tx->track_last = core->total_patterns - 1;
+
+	core->machines.append(tx);
 
 	route->addMachine((Machine *)tx);
 	refreshMachines();
 
-	setWindowTitle("Fado");
-	*/
+	setWindowTitle(tr("Fado"));
+
 }
 
 

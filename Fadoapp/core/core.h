@@ -65,21 +65,13 @@ public:
 	// Gears instances (machines)
 	QList<Machine *> machines;
 
-	// Machine connections
-	QMultiHash<Machine *, Machine *> connections;
-
 	// Machine render order
 	QList<Machine *> order;
-
-	// Working structures
-	QMultiHash<int, int> oconn;
-	QMultiHash<int, int> iconn;
 
 	// Methods
 
 	int orderMachines();
-	int optimizeMachines(QHash<int, int> &changes);
-	int flipConnection(int from, int to);
+	int toggleConnection(Machine *from, Machine *to);
 
 signals:
 	void messageCritical(const QString &title, const QString &text);

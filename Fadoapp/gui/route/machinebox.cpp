@@ -32,11 +32,11 @@ MachineBox::MachineBox(Machine *machine)
 			}
 			longname = m->name;
 		}
-	} else if (m->type == "generator") {
+	} else if (m->type == Machine::MachineGenerator) {
 		backgrounds << QColor(0x80, 0xff, 0x80) << QColor(0xbf, 0xff, 0xbf);
 		longname = m->author + "." + m->name;
 		boxText->setHtml("<center>"+m->author+"<br/><b>"+m->name+"</b></center>");
-	} else if (m->type == "effect") {
+	} else if (m->type == Machine::MachineEffect) {
 		backgrounds << QColor(0xff, 0xaa, 0x00) << QColor(0xff, 0xd5, 0x00);
 		longname = m->author + "." + m->name;
 		boxText->setHtml("<center>"+m->author+"<br/><b>"+m->name+"</b></center>");
@@ -44,7 +44,7 @@ MachineBox::MachineBox(Machine *machine)
 
 	// Style
 
-	setBrush(QBrush(backgrounds[0]));
+	// setBrush(QBrush(backgrounds[0]));
 	setFlag(QGraphicsItem::ItemIsFocusable, true);
 	setFlag(QGraphicsItem::ItemIsMovable, true);
 	// setCursor(Qt::OpenHandCursor);
