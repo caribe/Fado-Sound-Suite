@@ -5,6 +5,7 @@
 #include <QGraphicsSceneMouseEvent>
 #include <QKeyEvent>
 #include <QBrush>
+#include <QCursor>
 
 class MachineBox;
 
@@ -32,8 +33,6 @@ class MachineBox : public QGraphicsRectItem
 
 		void hoverEnterEvent(QGraphicsSceneHoverEvent *event);
 		void hoverLeaveEvent(QGraphicsSceneHoverEvent *event);
-
-		int id();
 };
 
 #endif

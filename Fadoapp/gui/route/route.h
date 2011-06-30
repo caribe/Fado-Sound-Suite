@@ -28,7 +28,7 @@ class Route : public QSplitter
 		QGridLayout grid;
 		QGraphicsView *routeEditor;
 		QGraphicsScene *routeScene;
-		QHash<int, MachineBox *> machines;
+		QHash<Machine *, MachineBox *> machineBoxes;
 		QLinkedList<LinkBox *> connections;
 		QGraphicsPathItem *extraline;
 

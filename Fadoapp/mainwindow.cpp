@@ -123,7 +123,6 @@ void MainWindow::menuFileNewSlot() {
 	core->beat_per_pattern = 16;
 
 	Master *tx = new Master();
-	tx->id = -1;
 	tx->x = 100;
 	tx->y = 100;
 	tx->track_first = 0;
@@ -132,7 +131,8 @@ void MainWindow::menuFileNewSlot() {
 	core->machines.append(tx);
 
 	route->addMachine((Machine *)tx);
-	refreshMachines();
+	core->orderMachines();
+	// refreshMachines();
 
 	setWindowTitle(tr("Fado"));
 

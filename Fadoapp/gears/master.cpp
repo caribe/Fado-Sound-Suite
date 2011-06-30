@@ -4,18 +4,18 @@
 
 Master::Master()
 {
-	/*
-	type = Machine::t_output;
-
-	type = "core";
+	type = Machine::MachineMaster;
 	name = "output";
 	author = "Core";
 	description = "Master Output";
 
 	addParam(new Param("bpm", "Beats per minute", Param::int_t, 50, 1000));
-	*/
 }
 
+
+Machine *Master::factory() {
+	return new Master();
+}
 
 
 int Master::init(Core *core)

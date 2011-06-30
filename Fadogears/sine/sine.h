@@ -18,7 +18,9 @@ private:
 public:
 	Sine();
 	void reconfig();
+	Machine *factory();
 	int process(jack_nframes_t nframes);
+
 };
 
 #endif // SINE_H

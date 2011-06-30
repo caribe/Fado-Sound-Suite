@@ -11,6 +11,7 @@ class LineInput : public Machine {
 		LineInput();
 		void reconfig();
 		int process(jack_nframes_t nframes);
+		Machine *factory();
 };
 
 #endif

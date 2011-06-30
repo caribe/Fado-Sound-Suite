@@ -33,6 +33,7 @@ class Master : public Machine {
 		int stop();
 		int jack_process(jack_nframes_t nframes);
 		int process(jack_nframes_t nframes);
+		Machine *factory();
 };
 
 #endif

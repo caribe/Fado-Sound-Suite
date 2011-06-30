@@ -34,83 +34,80 @@ Route::Route(Core *core)
 
 void Route::newMachine(const QModelIndex &index)
 {
-	/*
 	int id = index.data(Qt::UserRole + 1).toInt();
 
-	Machine *machine;
+	Machine *machine = 0;
 
-	if (id > 0) {
-		machine = qobject_cast<Machine *>(store->gears[id]->instance());
-	} else if (id == -1){
-		machine  = (Machine *)new LineInput();
+	if (id >= 0) {
+		machine = core->gears[id]->factory();
 	} else if (id == -2) {
-		machine  = (Machine *)new FileInput();
+		machine = (Machine *)new LineInput();
+	} else if (id == -3) {
+		machine = (Machine *)new FileInput();
+	} else {
+		qDebug() << "Unknown machine" << id;
 	}
 
-	machine->id = store->machines.length();
-	store->machines.append(machine);
-
-	addMachine(machine);
-
-	// mainWindow->refreshMachines();
-	*/
+	if (machine) {
+		machine->x = machine->y = -1; // Default position
+		core->machines.append(machine);
+		core->orderMachines();
+		addMachine(machine);
+	}
 }
 
 
 
 void Route::addMachine(Machine *machine)
 {
-	MachineBox *box = new MachineBox(machine);
-	machines[machine->id] = box;
-	routeScene->addItem(box);
-	qDebug() << "Added machine #" << machine->id << endl;
+	MachineBox *machineBox = new MachineBox(machine);
+	machineBoxes[machine] = machineBox;
+	routeScene->addItem(machineBox);
+	qDebug() << "Added machine #" << machine->name;
 }
 
 
 
 void Route::delMachine(Machine *machine)
 {
-	if (machines.contains(machine->id)) delMachine(machines[machine->id]);
+	if (machineBoxes.contains(machine)) {
+
+		qDebug() << "Remove #" << machine->name << endl;
+
+		// Removing connections
+
+/*
+		foreach (LinkBox *linkBox, connections) {
+			if (linkBox->m1 == machine or linkBox->m2 == machine) {
+				connections.removeOne(linkBox);
+				delete linkBox;
+			}
+		}
+*/
+
+		foreach (Machine *dst, machine->connectionDst.keys()) core->toggleConnection(machine, dst);
+		foreach (Machine *src, machine->connectionSrc.keys()) core->toggleConnection(src, machine);
+
+		// Machine destruction
+
+		delete machineBoxes[machine]; // Destroys the MachineBox
+		machineBoxes.remove(machine); // Removes the hash entry
+
+		core->machines.removeOne(machine); // Deletes the machine from store list
+		delete machine; // Destroys the machine instance
+
+		// Graph update
+
+		core->orderMachines();
+
+	}
 }
 
 
 
-void Route::delMachine(MachineBox *machine)
+void Route::delMachine(MachineBox *machineBox)
 {
-	/*
-	qDebug() << "Remove #" << machine->id() << endl;
-	machines.remove(machine->id());
-	store->machines.remove(machine->id());
-	// routeEditor->layout->removeWidget(machine);
-
-	foreach (int from, store->connections.keys()) {
-		if (from == machine->m->id) {
-			store->connections.remove(from);
-		} else {
-			foreach (int to, store->connections[from].keys()) {
-				if (to == machine->m->id) store->connections[from].remove(to);
-			}
-			if (store->connections.values(from).isEmpty()) store->connections.remove(from);
-		}
-	}
-
-	foreach (LinkBox *linkBox, connections) {
-		if (linkBox->m1 == machine or linkBox->m2 == machine) {
-			connections.removeOne(linkBox);
-			delete linkBox;
-		}
-	}
-
-	delete machine->m;
-	delete machine;
-
-	mainWindow->core->optimizeMachines();
-	QList<MachineBox *> temp = machines.values();
-	machines.clear();
-	foreach (MachineBox *m, temp) {
-		machines[m->id()] = m;
-	}
-	*/
+	delMachine(machineBox->m);
 }
 
 

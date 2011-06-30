@@ -8,9 +8,6 @@ Core::Core(QObject *parent) : QObject(parent)
 	beat_per_pattern = 16;
 	total_patterns = 16;
 	gearsTree = new QStandardItemModel();
-
-	// loadPlugins();
-	// jack_init();
 }
 
 
@@ -23,12 +20,12 @@ void Core::loadPlugins()
 
 	item = new QStandardItem(QIcon(":/machine"), "Line Input");
 	item->setEditable(false);
-	item->data() = -2;
+	item->setData(-2);
 	gearsTree->appendRow(item);
 
 	item = new QStandardItem(QIcon(":/machine"), "File Input");
 	item->setEditable(false);
-	item->data() = -3;
+	item->setData(-3);
 	gearsTree->appendRow(item);
 
 	// Plugins
@@ -50,18 +47,16 @@ void Core::loadPlugins()
 
 			if (lib->load()) {
 				int id = gears.length();
-				gears.append(lib);
 
 				Machine *machine = qobject_cast<Machine *>(lib->instance());
+				gears.append(machine);
 
-				qDebug() << "Loaded" << machine->name;
+				qDebug() << "Loaded" << machine->name << id;
 
 				item = new QStandardItem(QIcon(":/machine"), machine->name);
 				item->setEditable(false);
-				item->data() = id;
+				item->setData(id);
 				gearsTree->appendRow(item);
-
-				// delete machine;
 
 			} else {
 				qDebug() << "Error" << lib->errorString();
@@ -199,6 +194,7 @@ int Core::orderMachines()
 
 	// oconn e iconn initialization
 	foreach (Machine *machine, machines) {
+		qDebug() << machine->name;
 		iconns[machine] << machine->connectionDst.keys();
 		oconns[machine] << machine->connectionDst.keys();
 	}
@@ -255,8 +251,8 @@ int Core::toggleConnection(Machine *m1, Machine *m2)
 		return 1;
 	}
 
-	if (m1->id == -1) return 2; // Master
-	if (m2->type == Machine::MachineGenerator) return 2;
+	if (m1->type == Machine::MachineMaster) return 2; // Master
+	if (m2->type == Machine::MachineGenerator or m2->type == Machine::MachineInput) return 2; // Generators and inputs
 
 	Volume *volume = new Volume();
 	m1->connectionDst[m2] = volume;

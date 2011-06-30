@@ -2,17 +2,20 @@
 
 FileInput::FileInput()
 {
-	/*
-	type = Machine::t_input;
+	type = Machine::MachineInput;
 
-	type = "generator";
 	author = "Core";
 	name = "fileinput";
 	description = "Input";
-
+/*
 	addParam(new Param("file", "File name path", Param::string_t, 0, 0));
 	addParam(new Param("seek", "Position inside file", Param::int_t, 0, 1000000));
 	*/
+}
+
+
+Machine *FileInput::factory() {
+	return new FileInput();
 }
 
 

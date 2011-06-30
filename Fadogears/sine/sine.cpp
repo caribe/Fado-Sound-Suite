@@ -3,6 +3,8 @@
 Sine::Sine() {
 
 	name = "My Sine";
+	type = Machine::MachineGenerator;
+
 /*
 	addParam(new Param("freq", "The sine frequency", Param::float_t, 50, 20000));
 	addParam(new Param("vol", "The sine volume", Param::float_t, 0, 1));
@@ -12,6 +14,10 @@ Sine::Sine() {
 */
 	rotor = 0;
 
+}
+
+Machine *Sine::factory() {
+	return new Sine();
 }
 
 void Sine::reconfig() {

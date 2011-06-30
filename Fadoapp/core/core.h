@@ -60,7 +60,7 @@ public:
 
 	// Gears
 	QStandardItemModel *gearsTree;
-	QList<QPluginLoader *> gears;
+	QList<Machine *> gears;
 
 	// Gears instances (machines)
 	QList<Machine *> machines;

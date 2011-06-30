@@ -18,20 +18,18 @@ MachineBox::MachineBox(Machine *machine)
 	boxText->setPos(-50, -20);
 	boxText->setTextWidth(100);
 
-	if (m->author == "Core") {
-		if (m->name == "output") {
-			backgrounds << QColor(0x80, 0xb3, 0xff) << QColor(0xbf, 0xd9, 0xff);
-			boxText->setHtml("<center><b>Master</b></center>");
-			longname = "Master";
-		} else {
-			backgrounds << QColor(0xff, 0x80, 0xdf) << QColor(0xff, 0xbf, 0xf0);
-			if (m->name == "lineinput") {
-				boxText->setHtml("<center><b>Input</b></center>");
-			} else if (m->name == "fileinput") {
-				boxText->setHtml("<center><b>File</b></center>");
-			}
-			longname = m->name;
+	if (m->type == Machine::MachineMaster) {
+		backgrounds << QColor(0x80, 0xb3, 0xff) << QColor(0xbf, 0xd9, 0xff);
+		boxText->setHtml("<center><b>Master</b></center>");
+		longname = "Master";
+	} else if (m->type == Machine::MachineInput) {
+		backgrounds << QColor(0xff, 0x80, 0xdf) << QColor(0xff, 0xbf, 0xf0);
+		if (m->name == "lineinput") {
+			boxText->setHtml("<center><b>Input</b></center>");
+		} else if (m->name == "fileinput") {
+			boxText->setHtml("<center><b>File</b></center>");
 		}
+		longname = m->name;
 	} else if (m->type == Machine::MachineGenerator) {
 		backgrounds << QColor(0x80, 0xff, 0x80) << QColor(0xbf, 0xff, 0xbf);
 		longname = m->author + "." + m->name;
@@ -44,10 +42,10 @@ MachineBox::MachineBox(Machine *machine)
 
 	// Style
 
-	// setBrush(QBrush(backgrounds[0]));
+	setBrush(QBrush(backgrounds[0]));
 	setFlag(QGraphicsItem::ItemIsFocusable, true);
 	setFlag(QGraphicsItem::ItemIsMovable, true);
-	// setCursor(Qt::OpenHandCursor);
+	setCursor(Qt::OpenHandCursor);
 
 	// Events
 
@@ -65,7 +63,7 @@ void MachineBox::mousePressEvent(QGraphicsSceneMouseEvent *e) {
 		} else {
 			QGraphicsRectItem::mousePressEvent(e);
 			dragMode = 1;
-			// setCursor(Qt::ClosedHandCursor);
+			setCursor(Qt::ClosedHandCursor);
 		}
 	}
 }
@@ -85,7 +83,7 @@ void MachineBox::mouseMoveEvent(QGraphicsSceneMouseEvent *e) {
 void MachineBox::mouseReleaseEvent(QGraphicsSceneMouseEvent *e) {
 	if (dragMode == 1) {
 		QGraphicsRectItem::mouseReleaseEvent(e);
-		// setCursor(Qt::OpenHandCursor);
+		setCursor(Qt::OpenHandCursor);
 		QPointF pos = this->pos();
 		m->x = pos.x();
 		m->y = pos.y();
@@ -129,10 +127,4 @@ void MachineBox::hoverLeaveEvent(QGraphicsSceneHoverEvent * event)
 	setBrush(QBrush(backgrounds[0]));
 	clearFocus();
 	// parent->mainWindow->status->clearMessage();
-}
-
-
-int MachineBox::id()
-{
-	return m->id;
 }

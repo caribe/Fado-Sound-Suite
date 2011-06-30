@@ -15,6 +15,7 @@ class FileInput : public Machine {
 		int process(jack_nframes_t nframes);
 		void init();
 		void finish();
+		Machine *factory();
 
 		QHash<QString, float *> filebuffer;
 		QString filename;
