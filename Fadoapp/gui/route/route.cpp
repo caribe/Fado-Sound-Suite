@@ -40,6 +40,7 @@ void Route::newMachine(const QModelIndex &index)
 
 	if (id >= 0) {
 		machine = core->gears[id]->factory();
+		qDebug() << "Created" << machine;
 	} else if (id == -2) {
 		machine = (Machine *)new LineInput();
 	} else if (id == -3) {
@@ -76,14 +77,12 @@ void Route::delMachine(Machine *machine)
 
 		// Removing connections
 
-/*
 		foreach (LinkBox *linkBox, connections) {
-			if (linkBox->m1 == machine or linkBox->m2 == machine) {
+			if (linkBox->m1->m == machine or linkBox->m2->m == machine) {
 				connections.removeOne(linkBox);
 				delete linkBox;
 			}
 		}
-*/
 
 		foreach (Machine *dst, machine->connectionDst.keys()) core->toggleConnection(machine, dst);
 		foreach (Machine *src, machine->connectionSrc.keys()) core->toggleConnection(src, machine);
@@ -94,7 +93,7 @@ void Route::delMachine(Machine *machine)
 		machineBoxes.remove(machine); // Removes the hash entry
 
 		core->machines.removeOne(machine); // Deletes the machine from store list
-		delete machine; // Destroys the machine instance
+		// delete machine; // Destroys the machine instance
 
 		// Graph update
 
@@ -116,17 +115,24 @@ void Route::addConnection(MachineBox *m1, MachineBox *m2)
 	LinkBox *linkBox = new LinkBox(this, m1, m2);
 	routeScene->addItem(linkBox);
 	connections << linkBox;
-
 }
+
+
+
+void Route::delConnection(LinkBox *linkBox)
+{
+	connections.removeOne(linkBox);
+	routeScene->removeItem(linkBox);
+	delete linkBox;
+}
+
 
 
 void Route::delConnection(MachineBox *m1, MachineBox *m2)
 {
 	foreach (LinkBox *linkBox, connections) {
 		if ((linkBox->m1 == m1 and linkBox->m2 == m2) or (linkBox->m1 == m2 and linkBox->m2 == m1)) {
-			connections.removeOne(linkBox);
-			routeScene->removeItem(linkBox);
-			delete linkBox;
+			delConnection(linkBox);
 		}
 	}
 }
@@ -181,4 +187,18 @@ void Route::connectionFinish(MachineBox *m1, int x, int y)
 			return;
 		}
 	}
+}
+
+
+
+void Route::slotDisplayStatus(const QString &status)
+{
+	emit signalDisplayStatus(status);
+}
+
+
+
+void Route::slotClearStatus()
+{
+	emit signalClearStatus();
 }

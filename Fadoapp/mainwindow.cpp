@@ -32,6 +32,9 @@ MainWindow::MainWindow() : QMainWindow() {
 
 	status = statusBar();
 
+	connect(route, SIGNAL(signalDisplayStatus(QString)), status, SLOT(showMessage(QString)));
+	connect(route, SIGNAL(signalClearStatus()), status, SLOT(clearMessage()));
+
 	// *** Actions ***
 
 	QAction *actionTabRoute = new QAction(QIcon(":/machines"), tr("Machines"), this);

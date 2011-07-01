@@ -13,23 +13,22 @@ class LinkBox;
 
 class LinkBox : public QGraphicsPathItem
 {
-	public:
-		LinkBox(Route *route, MachineBox *m1, MachineBox *m2);
+public:
+	LinkBox(Route *route, MachineBox *m1, MachineBox *m2);
 
-		Route *route;
+	Route *route;
+	MachineBox *m1, *m2;
 
-		void repos();
+	void repos();
 
-		MachineBox *m1, *m2;
-		QList<QColor> backgrounds;
-		int value;
-		QPainterPath *basePath;
-		float px, py, pr;
+	QList<QColor> backgrounds;
+	QPainterPath basePath;
+	float px, py, pr;
 
-		void hoverEnterEvent(QGraphicsSceneHoverEvent *event);
-		void hoverLeaveEvent(QGraphicsSceneHoverEvent *event);
-		void keyPressEvent(QKeyEvent *event);
-		void wheelEvent(QGraphicsSceneWheelEvent *event);
+	void hoverEnterEvent(QGraphicsSceneHoverEvent *event);
+	void hoverLeaveEvent(QGraphicsSceneHoverEvent *event);
+	void keyPressEvent(QKeyEvent *event);
+	void wheelEvent(QGraphicsSceneWheelEvent *event);
 };
 
 #endif

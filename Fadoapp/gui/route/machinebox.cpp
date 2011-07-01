@@ -96,8 +96,8 @@ void MachineBox::mouseReleaseEvent(QGraphicsSceneMouseEvent *e) {
 
 
 void MachineBox::keyPressEvent(QKeyEvent *e) {
-	if (e->key() == Qt::Key_Delete and (m->author != "Core" or m->name != "output")) {
-		if (QMessageBox::question(route, "Are you sure?", "Are you sure to delete this machine?", QMessageBox::Ok, QMessageBox::Cancel) == QMessageBox::Ok) {
+	if (e->key() == Qt::Key_Delete and m->type != Machine::MachineMaster) {
+		if (QMessageBox::question(route->parentWidget(), "Are you sure?", "Are you sure to delete this machine?", QMessageBox::Ok, QMessageBox::Cancel) == QMessageBox::Ok) {
 			route->delMachine(this);
 		}
 	} else {
@@ -117,7 +117,7 @@ void MachineBox::hoverEnterEvent(QGraphicsSceneHoverEvent * event)
 {
 	setBrush(QBrush(backgrounds[1]));
 	setFocus(Qt::MouseFocusReason);
-	// parent->mainWindow->status->showMessage(m->type+"."+m->author+"."+m->name);
+	route->slotDisplayStatus(m->type+"."+m->author+"."+m->name);
 }
 
 
@@ -125,5 +125,5 @@ void MachineBox::hoverLeaveEvent(QGraphicsSceneHoverEvent * event)
 {
 	setBrush(QBrush(backgrounds[0]));
 	clearFocus();
-	// parent->mainWindow->status->clearMessage();
+	route->slotClearStatus();
 }

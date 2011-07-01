@@ -194,8 +194,7 @@ bool Core::orderMachines()
 
 	// oconn e iconn initialization
 	foreach (Machine *machine, machines) {
-		qDebug() << machine->name;
-		iconns[machine] << machine->connectionDst.keys();
+		iconns[machine] << machine->connectionSrc.keys();
 		oconns[machine] << machine->connectionDst.keys();
 	}
 

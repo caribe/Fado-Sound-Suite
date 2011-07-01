@@ -4,22 +4,21 @@ LinkBox::LinkBox(Route *route, MachineBox *m1, MachineBox *m2)
 {
 	this->m1 = m1;
 	this->m2 = m2;
+	this->route = route;
 
 	setAcceptHoverEvents(true);
 	setFlag(QGraphicsItem::ItemIsFocusable, true);
 
-	// backgrounds << QColor(0x00, 0x00, 0x00) << QColor(0x33, 0x33, 0x33);
 	backgrounds << QColor(0x00, 0x00, 0x00) << QColor(0x80, 0x80, 0x80);
 	setBrush(QBrush(backgrounds[0]));
 	setCursor(Qt::PointingHandCursor);
 
-	basePath = new QPainterPath(QPointF(10, 0));
-	basePath->lineTo(-5, -10);
-	basePath->lineTo(-5, 10);
-	basePath->closeSubpath();
+	basePath = QPainterPath(QPointF(10, 0));
+	basePath.lineTo(-5, -10);
+	basePath.lineTo(-5, 10);
+	basePath.closeSubpath();
 
 	px = py = 0;
-	value = 100;
 
 	repos();
 }
@@ -66,7 +65,7 @@ void LinkBox::repos()
 	path->lineTo(dd / 2, 0);
 	path->moveTo(-5, 0);
 	path->lineTo(-dd / 2, 0);
-	path->addPath(*basePath);
+	path->addPath(basePath);
 	setPath(*path);
 }
 
@@ -75,7 +74,7 @@ void LinkBox::hoverEnterEvent(QGraphicsSceneHoverEvent * event)
 {
 	setBrush(QBrush(backgrounds[1]));
 	setFocus(Qt::MouseFocusReason);
-	// route->mainWindow->status->showMessage("Connection "+QString::number(store->connections[m1->m->id][m2->m->id])+"%");
+	route->slotDisplayStatus("Connection "+QString::number(m1->m->connectionDst[m2->m]->rx)+"%");
 }
 
 
@@ -83,47 +82,42 @@ void LinkBox::hoverLeaveEvent(QGraphicsSceneHoverEvent * event)
 {
 	setBrush(QBrush(backgrounds[0]));
 	clearFocus();
-	// route->mainWindow->status->clearMessage();
+	route->slotClearStatus();
 }
 
 
 void LinkBox::keyPressEvent(QKeyEvent *event)
 {
-	/*
 	if (event->key() == Qt::Key_Delete) {
-		route->core->toggleConnection(m1->m, m2->m);
-		route->delConnection(m1, m2);
+		route->delConnection(this);
 	} else if (event->key() == Qt::Key_Plus) {
-		int value = store->connections[m1->m->id][m2->m->id];
-		value++;
-		if (value > 100) value = 100;
-		// route->mainWindow->status->showMessage("Connection "+QString::number(value)+"%");
-		route->connections[m1->m->id][m2->m->id] = value;
+		Volume *volume = m1->m->connectionDst[m2->m];
+		volume->rx++;
+		if (volume->rx > 100) volume->rx = 100;
+		route->slotDisplayStatus("Connection "+QString::number(volume->rx)+"%");
 	} else if (event->key() == Qt::Key_Minus) {
-		int value = store->connections[m1->m->id][m2->m->id];
-		value--;
-		if (value < 0) value = 0;
-		// route->mainWindow->status->showMessage("Connection "+QString::number(value)+"%");
-		store->connections[m1->m->id][m2->m->id] = value;
+		Volume *volume = m1->m->connectionDst[m2->m];
+		volume->rx--;
+		if (volume->rx < 0) volume->rx = 0;
+		route->slotDisplayStatus("Connection "+QString::number(volume->rx)+"%");
 	}
-	*/
 }
 
 
 void LinkBox::wheelEvent(QGraphicsSceneWheelEvent *event) {
-	/*
+
 	if (event->orientation() == Qt::Vertical) {
-		int value = store->connections[m1->m->id][m2->m->id];
+		Volume *volume = m1->m->connectionDst[m2->m];
+
 		if (event->delta() > 0) {
-			value += 5;
-			if (value > 100) value = 100;
+			volume->rx += 5;
+			if (volume->rx > 100) volume->rx = 100;
 		} else if (event->delta() < 0) {
-			value -= 5;
-			if (value < 0) value = 0;
+			volume->rx -= 5;
+			if (volume->rx < 0) volume->rx = 0;
 		}
-		// route->mainWindow->status->showMessage("Connection "+QString::number(value)+"%");
-		store->connections[m1->m->id][m2->m->id] = value;
+
+		route->slotDisplayStatus("Connection "+QString::number(volume->rx)+"%");
 		event->accept();
 	}
-	*/
 }

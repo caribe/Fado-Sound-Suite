@@ -24,10 +24,11 @@ class Route : public QSplitter
 
 	public:
 		Route(QWidget *parent, Core *core);
+		Core *core;
 
-		QGridLayout grid;
 		QGraphicsView *routeEditor;
 		QGraphicsScene *routeScene;
+
 		QHash<Machine *, MachineBox *> machineBoxes;
 		QLinkedList<LinkBox *> connections;
 		QGraphicsPathItem *extraline;
@@ -38,6 +39,8 @@ class Route : public QSplitter
 
 		void addConnection(MachineBox *m1, MachineBox *m2);
 		void delConnection(MachineBox *m1, MachineBox *m2);
+		void delConnection(LinkBox *lb);
+
 		void moveConnection(MachineBox *m);
 		void delConnection(Machine *m1, Machine *m2);
 
@@ -45,11 +48,16 @@ class Route : public QSplitter
 		void connectionMove(int x1, int y1, int x2, int y2);
 		void connectionFinish(MachineBox *, int x, int y);
 
-		Core *core;
+	signals:
+		void signalDisplayStatus(const QString &);
+		void signalClearStatus();
+
+	public slots:
+		void slotDisplayStatus(const QString &);
+		void slotClearStatus();
 
 	private slots:
 		void newMachine(const QModelIndex &index);
-
 };
 
 
