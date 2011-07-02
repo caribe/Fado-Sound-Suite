@@ -65,6 +65,7 @@ void Route::addMachine(Machine *machine)
 	machineBoxes[machine] = machineBox;
 	routeScene->addItem(machineBox);
 	qDebug() << "Added machine #" << machine->name;
+	emit machinesChanged();
 }
 
 

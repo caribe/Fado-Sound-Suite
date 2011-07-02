@@ -15,7 +15,7 @@ Track::Track(Core *core) {
 	toolbarLayout->setContentsMargins(0, 0, 0, 0);
 	toolbarLayout->setSpacing(3);
 
-	QPushButton *addButton = new QPushButton(QIcon("icons/add.png"), "Add Row", toolbar);
+	QPushButton *addButton = new QPushButton(QIcon(":/icons/add.png"), "Add Row", toolbar);
 	toolbarLayout->addWidget(addButton);
 	connect(addButton, SIGNAL(clicked()), this, SLOT(addButtonSlot()));
 	QPushButton *delButton = new QPushButton(QIcon("icons/delete.png"), "Del Row", toolbar);

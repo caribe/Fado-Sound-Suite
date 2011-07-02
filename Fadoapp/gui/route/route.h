@@ -51,6 +51,7 @@ class Route : public QSplitter
 	signals:
 		void signalDisplayStatus(const QString &);
 		void signalClearStatus();
+		void machinesChanged();
 
 	public slots:
 		void slotDisplayStatus(const QString &);

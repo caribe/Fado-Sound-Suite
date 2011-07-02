@@ -8,10 +8,10 @@ Playback::Playback(Core *core)
 	grid->setSpacing(3);
 	grid->setContentsMargins(3, 3, 3, 3);
 
-	QPushButton *play = new QPushButton(QIcon("icons/playback/play-icon"), "Play", this);
-	QPushButton *rec = new QPushButton(QIcon("icons/playback/record-icon"), "Rec", this);
-	QPushButton *stop = new QPushButton(QIcon("icons/playback/stop-icon"), "Stop", this);
-	QPushButton *view = new QPushButton("View", this);
+	QPushButton *play = new QPushButton(QIcon(":/control.png"), tr("Play"), this);
+	QPushButton *rec = new QPushButton(QIcon(":/control-record.png"), tr("Rec"), this);
+	QPushButton *stop = new QPushButton(QIcon(":/control-stop-square.png"), tr("Stop"), this);
+	QPushButton *view = new QPushButton(QIcon(":/chart.png"), tr("View"), this);
 
 	connect(play, SIGNAL(clicked()), this, SLOT(buttonPlay()));
 	connect(rec,  SIGNAL(clicked()), this, SLOT(buttonRec()));

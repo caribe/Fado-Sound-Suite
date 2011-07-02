@@ -1,6 +1,6 @@
 #include "pattern.h"
 
-Pattern::Pattern(Core *core) {
+Pattern::Pattern(QWidget *widget, Core *core) : QWidget(widget) {
 	this->core = core;
 
 	activeMachine = 0;
@@ -15,13 +15,13 @@ Pattern::Pattern(Core *core) {
 	toolbarLayout->setContentsMargins(0, 0, 0, 0);
 	toolbarLayout->setSpacing(3);
 
-	QPushButton *addButton = new QPushButton(QIcon("icons/add.png"), "Add Pattern", toolbar);
+	QPushButton *addButton = new QPushButton(QIcon(":/table--plus.png"), "Add Pattern", toolbar);
 	toolbarLayout->addWidget(addButton);
 	connect(addButton, SIGNAL(clicked()), this, SLOT(addPattern()));
-	QPushButton *delButton = new QPushButton(QIcon("icons/delete.png"), "Del Pattern", toolbar);
+	QPushButton *delButton = new QPushButton(QIcon(":/table--minus.png"), "Del Pattern", toolbar);
 	toolbarLayout->addWidget(delButton);
 	connect(delButton, SIGNAL(clicked()), this, SLOT(delPattern()));
-	QPushButton *renButton = new QPushButton(QIcon("icons/standard/001_45.png"), "Rename Pattern", toolbar);
+	QPushButton *renButton = new QPushButton(QIcon(":/table--pensil.png"), "Rename Pattern", toolbar);
 	toolbarLayout->addWidget(renButton);
 	connect(renButton, SIGNAL(clicked()), this, SLOT(renPattern()));
 	toolbarLayout->insertStretch(-1);
@@ -108,33 +108,26 @@ Pattern::Pattern(Core *core) {
 
 void Pattern::refreshMachines()
 {
-	/*
 	machineCombo->clear();
-	foreach (int i, core->machines.keys()) {
-		machineCombo->addItem(core->machines[i]->author+"."+core->machines[i]->name, QVariant(i));
+	foreach (Machine *machine, core->machines) {
+		machineCombo->addItem(machine->author+"."+machine->name);
 	}
-	*/
 }
 
 
 void Pattern::machineChange(int index) {
-	/*
-	int i = machineCombo->itemData(index).toInt();
-
-	if (core->machines.contains(i)) {
-		activeMachine = core->machines[i];
+	if (index >= 0 and index < core->machines.length()) {
+		activeMachine = core->machines[index];
 		cols.clear();
 		foreach (QString name, activeMachine->params.keys()) cols << name;
 		refreshPatterns();
 	}
-	*/
 }
 
 
-void Pattern::refreshPatterns() {
-	/*
-	if (!activeMachine) return;
-
+void Pattern::refreshPatterns()
+{
+	return;
 	patternCombo->clear();
 
 	foreach (int pattern, activeMachine->patterns.keys()) {
@@ -148,7 +141,6 @@ void Pattern::refreshPatterns() {
 	tableview->reset();
 
 	activeCol(-1);
-	*/
 }
 
 
@@ -158,7 +150,6 @@ void Pattern::patternChange(int index) {
 
 void Pattern::activeCol(int col)
 {
-	/*
 	if (!activeMachine) return;
 
 	if (col == -1) {
@@ -178,13 +169,11 @@ void Pattern::activeCol(int col)
 		detailMax->show();
 		detailMax->setText("Max: <b>" + QString::number(activeMachine->params[param]->max) + "</b>");
 	}
-	*/
 }
 
 
 void Pattern::addPattern()
 {
-	/*
 	if (!activeMachine) return;
 
 	int i;
@@ -195,15 +184,13 @@ void Pattern::addPattern()
 		patternCombo->setCurrentIndex(i);
 		renPattern();
 	} else {
-		QMessageBox::critical(mainWindow, "Too much patterns", "You can have only 1024 patterns for each machine");
+		emit messageCritical(tr("Too much patterns"), tr("You can have only 1024 patterns for each machine"));
 	}
-	*/
 }
 
 
 void Pattern::renPattern()
 {
-	/*
 	int index = patternCombo->currentIndex();
 	if (!activeMachine or index < 0) return;
 	
@@ -220,20 +207,17 @@ void Pattern::renPattern()
 
 	if (ok == true) {
 		activeMachine->patterns[pattern][-1]["name"] = newName;
-		mainWindow->refreshPatterns();
+		this->refreshPatterns();
 		patternCombo->setCurrentIndex(index);
 	}
-	*/
 }
 
 
 void Pattern::delPattern()
 {
-	/*
 	if (!activeMachine or patternCombo->currentIndex() < 0) return;
 	activeMachine->patterns.remove(patternCombo->itemData(patternCombo->currentIndex()).toInt());
 	refreshPatterns();
-	*/
 }
 
 

@@ -1,20 +1,22 @@
 #ifndef GUI_PATTERN_H
 #define GUI_PATTERN_H
 
-#include <QFrame>
+#include <QWidget>
 #include <QGridLayout>
 #include <QHBoxLayout>
 #include <QPushButton>
 #include <QComboBox>
 #include <QGroupBox>
 #include <QLabel>
+#include <QInputDialog>
+#include <QLineEdit>
 
 class Pattern;
 
 #include "core/core.h"
 #include "patterntable.h"
 
-class Pattern : public QFrame
+class Pattern : public QWidget
 {
 	Q_OBJECT
 	
@@ -32,8 +34,8 @@ class Pattern : public QFrame
 		QLabel *detailMax;
 		QLabel *detailDesc;
 
-		Pattern(Core *core);
-		void refreshMachines();
+		Pattern(QWidget *widget, Core *core);
+		void refresh();
 		void refreshPatterns();
 
 		QList<QString> cols;
@@ -44,10 +46,15 @@ class Pattern : public QFrame
 		void patternChange(int index);
 	
 	public slots:
+		void refreshMachines();
+
 		void activeCol(int col);
 		void addPattern();
 		void delPattern();
 		void renPattern();
+
+	signals:
+		void messageCritical(const QString &title, const QString &text);
 };
 
 #endif

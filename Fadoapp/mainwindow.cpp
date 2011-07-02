@@ -19,7 +19,7 @@ MainWindow::MainWindow() : QMainWindow() {
 	tabs->setTabPosition(QTabWidget::West);
 
 	route = new Route(this, core);
-	pattern  = new Pattern(core);
+	pattern  = new Pattern(this, core);
 	track = new Track(core);
 	playback = new Playback(core);
 
@@ -34,6 +34,10 @@ MainWindow::MainWindow() : QMainWindow() {
 
 	connect(route, SIGNAL(signalDisplayStatus(QString)), status, SLOT(showMessage(QString)));
 	connect(route, SIGNAL(signalClearStatus()), status, SLOT(clearMessage()));
+
+	connect(tabs, SIGNAL(currentChanged(int)), SLOT(tabChanged(int)));
+
+	connect(route, SIGNAL(machinesChanged()), pattern, SLOT(refreshMachines()));
 
 	// *** Actions ***
 
@@ -63,27 +67,27 @@ MainWindow::MainWindow() : QMainWindow() {
 
 	QMenu *menuFile = menu->addMenu("&File");
 
-	QAction *menuFileNew = new QAction(QIcon(":/layout_add.png"), "&New", this);
+	QAction *menuFileNew = new QAction(QIcon(":/document.png"), tr("&New"), this);
 	menuFileNew->setShortcut(QKeySequence::New);
 	connect(menuFileNew, SIGNAL(triggered()), this, SLOT(menuFileNewSlot()));
 	menuFile->addAction(menuFileNew);
 
-	QAction *menuFileOpen = new QAction(QIcon(":/folder.png"), "&Open", this);
+	QAction *menuFileOpen = new QAction(QIcon(":/folder-open-document.png"), tr("&Open"), this);
 	menuFileOpen->setShortcut(QKeySequence::Open);
 	connect(menuFileOpen, SIGNAL(triggered()), this, SLOT(menuFileOpenSlot()));
 	menuFile->addAction(menuFileOpen);
 
-	QAction *menuFileSave = new QAction(QIcon(":/disk.png"), "&Save", this);
+	QAction *menuFileSave = new QAction(QIcon(":/disk.png"), tr("&Save"), this);
 	menuFileSave->setShortcut(QKeySequence::Save);
 	connect(menuFileSave, SIGNAL(triggered()), this, SLOT(menuFileSaveSlot()));
 	menuFile->addAction(menuFileSave);
 
-	QAction *menuFileSaveAs = new QAction(QIcon(":/disk.png"), "Save &as...", this);
-	menuFileSave->setShortcut(QKeySequence::SaveAs);
+	QAction *menuFileSaveAs = new QAction(QIcon(":/disk--pencil.png"), tr("Save &as..."), this);
+	menuFileSaveAs->setShortcut(QKeySequence::SaveAs);
 	connect(menuFileSaveAs, SIGNAL(triggered()), this, SLOT(menuFileSaveAsSlot()));
 	menuFile->addAction(menuFileSaveAs);
 
-	QAction *menuFileQuit = new QAction(QIcon(":/001_05.png"), "&Quit", this);
+	QAction *menuFileQuit = new QAction(QIcon(":/cross-button.png"), tr("&Quit"), this);
 	menuFileQuit->setShortcut(QKeySequence::Quit);
 	connect(menuFileQuit, SIGNAL(triggered()), this, SLOT(close()));
 	menuFile->addAction(menuFileQuit);
@@ -98,11 +102,11 @@ MainWindow::MainWindow() : QMainWindow() {
 
 	QMenu *menuHelp = menu->addMenu("&Help");
 
-	QAction *menuHelpUpdates = new QAction(QIcon(":/001_10.png"), "Check for updates", this);
+	QAction *menuHelpUpdates = new QAction(QIcon(":/001_10.png"), tr("Check for updates"), this);
 	connect(menuHelpUpdates, SIGNAL(triggered()), this, SLOT(menuHelpUpdatesSlot()));
 	menuHelp->addAction(menuHelpUpdates);
 
-	QAction *menuHelpAbout = new QAction(QIcon(":/001_10.png"), "About Fado", this);
+	QAction *menuHelpAbout = new QAction(QIcon(":/question.png"), tr("About Fado"), this);
 	connect(menuHelpAbout, SIGNAL(triggered()), this, SLOT(menuHelpAboutSlot()));
 	menuHelp->addAction(menuHelpAbout);
 
@@ -273,4 +277,13 @@ void MainWindow::settingsLoad()
 
 void MainWindow::messageCritical(const QString &title, const QString &text) {
 	QMessageBox::critical(this, title, text);
+}
+
+
+
+void MainWindow::tabChanged(int index)
+{
+	if (index == 1) {
+		pattern->refreshPatterns();
+	}
 }
