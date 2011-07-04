@@ -13,13 +13,12 @@ void PatternTableData::reload() {
 
 int PatternTableData::columnCount(const QModelIndex& parent) const
 {
-	/*
-	if (pattern->activeMachine) {
-		return pattern->activeMachine->params.size();
-	} else {
+	Machine *machine = pattern->currentMachine();
+	if (machine == 0) {
 		return 0;
+	} else {
+		return machine->params.size();
 	}
-	*/
 }
 
 
@@ -33,70 +32,52 @@ int PatternTableData::rowCount(const QModelIndex& parent) const
 
 QVariant PatternTableData::data(const QModelIndex& index, int role) const
 {
-	/*
-	if (index.isValid() == false) {
-		return QVariant();
-	} else if (role != Qt::DisplayRole and role != Qt::EditRole) { 
-		return QVariant();
+	Machine *machine = pattern->currentMachine();
+
+	if (machine != 0 and index.isValid() and (role == Qt::DisplayRole or role== Qt::EditRole)) {
+		MachinePattern *pat = pattern->currentPattern();
+		if (pat != 0) {
+			int row = index.row();
+			int col = index.column();
+			if (pat->params.length() > row and pat->params[row].length() > col) {
+				return pat->params[index.row()][index.column()];
+			} else {
+				return QVariant();
+			}
+		}
 	}
 
-	if (!pattern->activeMachine) return QVariant();
-
-	int pat = pattern->currentPattern();
-	int row = index.row();
-	int col = index.column();
-	QString colName = headerData(col, Qt::Horizontal, Qt::DisplayRole).toString();
-
-	if (pattern->activeMachine->patterns.contains(pat)
-		and pattern->activeMachine->patterns[pat].contains(row)
-		and pattern->activeMachine->patterns[pat][row].contains(colName)
-	) {
-		return QVariant(pattern->activeMachine->patterns[pat][row][colName]);
-	}
-	*/
 	return QVariant();
 }
 
 
 Qt::ItemFlags PatternTableData::flags(const QModelIndex & index) const
 {
-	/*
-	QString paramName = pattern->cols[index.column()];
+	Machine *machine = pattern->currentMachine();
+	if (machine == 0) return 0;
 
-	if (pattern->activeMachine->params[paramName]->type == pattern->activeMachine->params[paramName]->note_t) {
+	if (machine->params[index.column()]->type == Param::ParamNote) {
 		return Qt::ItemIsSelectable | Qt::ItemIsEnabled;
 	} else {
 		return Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsEnabled;
 	}
-	*/
 }
 
 
 bool PatternTableData::setData(const QModelIndex& index, const QVariant & value, int role)
 {
-	/*
-	int pat = pattern->currentPattern();
+	Machine *machine = pattern->currentMachine();
+	if (machine == 0) return 0;
+
+	MachinePattern *pat = pattern->currentPattern();
 	int row = index.row();
 	int col = index.column();
 
-	QString colName = headerData(col, Qt::Horizontal, Qt::DisplayRole).toString();
 	QString strValue = value.toString();
 
-	strValue = pattern->activeMachine->validate(colName, strValue);
+	strValue = machine->validate(col, strValue);
 
-	if (strValue == "") {
-		if (pattern->activeMachine->patterns[pat].contains(row)
-			and pattern->activeMachine->patterns[pat][row].contains(colName)
-		) {
-			pattern->activeMachine->patterns[pat][row].remove(colName);
-			if (pattern->activeMachine->patterns[pat][row].size() == 0) {
-				pattern->activeMachine->patterns[pat].remove(row);
-			}
-		}
-	} else {
-		pattern->activeMachine->patterns[pat][row][colName] = strValue;
-	}
-	*/
+	pat->params[row][col] = strValue;
 }
 
 
@@ -105,9 +86,11 @@ QVariant PatternTableData::headerData(int section, Qt::Orientation orientation, 
 	if (role != Qt::DisplayRole) { 
 		return QVariant();
 	} else if (orientation == Qt::Horizontal) {
-		return QVariant(pattern->cols[section]);
+		Machine *machine = pattern->currentMachine();
+		if (machine == 0) return QVariant();
+		return machine->params[section]->name;
 	} else if (orientation == Qt::Vertical) {
-		return QVariant(section);
+		return section;
 	}
 }
 

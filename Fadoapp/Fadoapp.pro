@@ -72,4 +72,6 @@ OTHER_FILES += \
     resources/table--plus.png \
     resources/table--pencil.png \
     resources/table--minus.png \
-    resources/question.png
+    resources/question.png \
+    resources/minus.png \
+    resources/plus.png

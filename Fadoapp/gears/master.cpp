@@ -9,7 +9,7 @@ Master::Master()
 	author = "Core";
 	description = "Master Output";
 
-	addParam(new Param("bpm", "Beats per minute", Param::int_t, 50, 1000));
+	addParam(new Param("bpm", "Beats per minute", Param::ParamInt, 50, 1000));
 }
 
 

@@ -1,7 +1,6 @@
 #ifndef GUI_TRACK_H
 #define GUI_TRACK_H
 
-#include <QFrame>
 #include <QListWidget>
 #include <QPushButton>
 #include <QGridLayout>
@@ -13,18 +12,18 @@ class Track;
 #include "gears/master.h"
 #include "tracktable.h"
 
-class Track : public QFrame
+class Track : public QWidget
 {
 	Q_OBJECT
 
 	public:
-		Track(Core *core);
+		Track(QWidget *parent, Core *core);
 		
 		Core *core;
 		QListWidget *hintList;
 		TrackTable *tracksTable;
-		int activeMachine;
 
+		Machine *currentMachine();
 		void refreshMachines();
 		void refreshPatterns();
 

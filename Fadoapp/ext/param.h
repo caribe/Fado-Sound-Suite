@@ -6,19 +6,20 @@
 class Param
 {
 	public:
-		enum types { int_t, float_t, freq_t, note_t, string_t };
+		enum types { ParamInt, ParamFloat, ParamFreq, ParamNote, ParamString };
 		static const int notes[];
 
 		QString name, description;
-		int type;
+		types type;
 		int min;
 		int max;
 		float floatValue;
 		int intValue;
 		QString strValue;
 
-		Param(QString name, QString description, int type, int min, int max);
-		Param(QString name, QString description, int type);
+		Param(QString name, QString description, types type, int min, int max);
+		Param(QString name, QString description, types type);
+		Param() {}
 
 		void setInt(int value);
 		void setFloat(float value);

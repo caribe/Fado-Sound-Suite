@@ -18,12 +18,12 @@ class MainWindow;
 
 #include "core/core.h"
 
-class Playback : public QFrame
+class Playback : public QWidget
 {
 	Q_OBJECT
 
 	public:
-		Playback(Core *core);
+		Playback(QWidget *parent, Core *core);
 		Core *core;
 		QGraphicsScene *scenef, *scenet;
 		QScrollBar *scrollBar;

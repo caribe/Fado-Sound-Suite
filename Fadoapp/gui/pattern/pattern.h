@@ -21,8 +21,9 @@ class Pattern : public QWidget
 	Q_OBJECT
 	
 	public:
+		Pattern(QWidget *widget, Core *core);
+
 		Core *core;
-		Machine *activeMachine;
 		PatternTable *tableview;
 		QComboBox *machineCombo;
 		QComboBox *patternCombo;
@@ -34,12 +35,11 @@ class Pattern : public QWidget
 		QLabel *detailMax;
 		QLabel *detailDesc;
 
-		Pattern(QWidget *widget, Core *core);
 		void refresh();
 		void refreshPatterns();
 
-		QList<QString> cols;
-		int currentPattern();
+		Machine *currentMachine();
+		MachinePattern *currentPattern();
 
 	private slots:
 		void machineChange(int index);

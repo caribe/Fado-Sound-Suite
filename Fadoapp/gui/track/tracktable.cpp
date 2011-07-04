@@ -49,27 +49,25 @@ void TrackTable::keyPressEvent(QKeyEvent *event)
 
 void TrackTable::setValue(int value)
 {
-	/*
-	QModelIndex index = currentIndex();
+	Machine *machine = track->currentMachine();
+	if (machine == 0) return;
+
+	QModelIndex index = this->currentIndex();
 
 	int row = index.row();
 	int row2 = (row + 1) % model->rowCount();
 
 	if (value == -3) {
-		store->machines[track->activeMachine]->track.remove(row);
-	} else if (value == -2 or value == -1 or store->machines[track->activeMachine]->patterns.contains(value)) {
-		store->machines[track->activeMachine]->track[row] = value;
+		machine->track.remove(row);
 	} else {
-		return;
+		// machine->track[row]-> = value;
 	}
 
 	setCurrentIndex(index.sibling(row2, index.column()));
-	*/
 }
 
 
 void TrackTable::currentColumnChangedSlot(const QModelIndex &current, const QModelIndex &previous)
 {
-	track->activeMachine = current.column();
 	track->refreshPatterns();
 }

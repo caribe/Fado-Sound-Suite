@@ -11,7 +11,7 @@ const int Param::notes[] = {
 };
 
 
-Param::Param(QString name, QString description, int type, int min, int max)
+Param::Param(QString name, QString description, Param::types type, int min, int max)
 {
 	this->name = name;
 	this->description = description;
@@ -21,7 +21,7 @@ Param::Param(QString name, QString description, int type, int min, int max)
 }
 
 
-Param::Param(QString name, QString description, int type)
+Param::Param(QString name, QString description, Param::types type)
 {
 	Param(name, description, type, 0, 0);
 }
@@ -45,9 +45,9 @@ void Param::setInt(int value)
 
 void Param::set(int value)
 {
-	if (this->type == int_t) {
+	if (this->type == ParamInt) {
 		return setInt(value);
-	} else if (this->type == float_t) {
+	} else if (this->type == ParamFloat) {
 		return setFloat(value);
 	}
 }
@@ -55,9 +55,9 @@ void Param::set(int value)
 
 void Param::set(double value)
 {
-	if (this->type == int_t) {
+	if (this->type == ParamInt) {
 		return setInt(value);
-	} else if (this->type == float_t) {
+	} else if (this->type == ParamFloat) {
 		return setFloat(value);
 	}
 }
@@ -65,9 +65,9 @@ void Param::set(double value)
 
 void Param::set(float value)
 {
-	if (this->type == int_t) {
+	if (this->type == ParamInt) {
 		return setInt(value);
-	} else if (this->type == float_t) {
+	} else if (this->type == ParamFloat) {
 		return setFloat(value);
 	}
 }
@@ -75,9 +75,9 @@ void Param::set(float value)
 
 void Param::set(QString value)
 {
-	if (this->type == int_t) {
+	if (this->type == ParamInt) {
 		return setInt(value.toInt());
-	} else if (this->type == float_t) {
+	} else if (this->type == ParamFloat) {
 		return setFloat(value.toFloat());
 	} else {
 		strValue = value;

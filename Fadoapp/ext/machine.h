@@ -5,6 +5,7 @@
 
 #include <QHash>
 #include <QtPlugin>
+#include <QVariantList>
 
 #include "param.h"
 
@@ -17,6 +18,18 @@ public:
 
 	Volume() {
 		rx = lx = 100;
+	}
+};
+
+class MachinePattern {
+public:
+	QString name;
+	QList<QList<QString> > params;
+	enum PatternType { StandardPattern, MutePattern, BreakPattern };
+	PatternType type;
+
+	MachinePattern() {
+		type = StandardPattern;
 	}
 };
 
@@ -39,27 +52,39 @@ public:
 	int x, y;
 
 	MachineType type;
-	QString name, description, author, version;
+	QString name, description, author;
+	int version;
 
-	QHash <QString, Param *> params;
-	QList <QString> keys;
-	QHash<int, QHash<int, QHash<QString, QString> > > patterns;
+	QList<Param *> params;
+	QList<MachinePattern *> patterns;
 
 	// Connections
 	QHash<Machine *, Volume *> connectionSrc;
 	QHash<Machine *, Volume *> connectionDst;
 
-	QHash<int, int> track;
+	QHash<int, MachinePattern *> track;
 
-	QString validate(QString param, QString value);
+	QString validate(int index, QString value);
 	int preprocess(jack_nframes_t nframes);
 	int preprocess(jack_nframes_t nframes, int process);
 
 	void setName(const QString &name);
 	void setDescription(const QString &description);
-	void addParam(Param *param);
-	Param *getParam(QString name);
 
+	MachinePattern *addPattern(const QString &name);
+
+	Param *getParam(int index);
+	void addParam(Param *param);
+	void addParam(QString name, QString description, Param::types type, int min, int max)
+	{
+		Param *param = new Param();
+		param->name = name;
+		param->description = description;
+		param->type = type;
+		param->min = min;
+		param->max = max;
+		params.append(param);
+	}
 };
 
 Q_DECLARE_INTERFACE(Machine, "org.altervista.saitfainder.fado.Machine/1.0")

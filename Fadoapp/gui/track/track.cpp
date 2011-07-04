@@ -1,8 +1,8 @@
 #include "track.h"
 
-Track::Track(Core *core) {
+Track::Track(QWidget *parent, Core *core) : QWidget(parent)
+{
 	this->core = core;
-	activeMachine = 0;
 
 	QGridLayout *grid = new QGridLayout(this);
 	grid->setContentsMargins(3, 3, 3, 3);
@@ -15,20 +15,23 @@ Track::Track(Core *core) {
 	toolbarLayout->setContentsMargins(0, 0, 0, 0);
 	toolbarLayout->setSpacing(3);
 
-	QPushButton *addButton = new QPushButton(QIcon(":/icons/add.png"), "Add Row", toolbar);
+	QPushButton *addButton = new QPushButton(QIcon(":/plus.png"), "Add Row", toolbar);
 	toolbarLayout->addWidget(addButton);
 	connect(addButton, SIGNAL(clicked()), this, SLOT(addButtonSlot()));
-	QPushButton *delButton = new QPushButton(QIcon("icons/delete.png"), "Del Row", toolbar);
+
+	QPushButton *delButton = new QPushButton(QIcon(":/minus.png"), "Del Row", toolbar);
 	toolbarLayout->addWidget(delButton);
 	connect(delButton, SIGNAL(clicked()), this, SLOT(delButtonSlot()));
+
 	QPushButton *frsButton = new QPushButton(QIcon("icons/control_start.png"), "First Row", toolbar);
 	toolbarLayout->addWidget(frsButton);
 	connect(frsButton, SIGNAL(clicked()), this, SLOT(frsButtonSlot()));
+
 	QPushButton *lstButton = new QPushButton(QIcon("icons/control_end.png"), "Last Row", toolbar);
 	toolbarLayout->addWidget(lstButton);
 	connect(lstButton, SIGNAL(clicked()), this, SLOT(lstButtonSlot()));
 	toolbarLayout->insertStretch(-1);
-	
+
 	grid->addWidget(toolbar, 0, 0);
 	
 	// Tracks
@@ -62,8 +65,8 @@ void Track::refreshMachines()
 
 void Track::refreshPatterns()
 {
-	/*
-	if (store->machines.contains(activeMachine) == false) return;
+	Machine *machine = currentMachine();
+	if (machine == 0) return;
 
 	hintList->clear();
 	hintList->addItem(". <mute>");
@@ -71,30 +74,9 @@ void Track::refreshPatterns()
 
 	mapping.clear();
 
-	foreach (int i, store->machines[activeMachine]->patterns.keys()) {
-		QListWidgetItem *item = new QListWidgetItem();
-
-		item->setData(Qt::UserRole, QVariant(i));
-
-		if (store->machines[activeMachine]->patterns[i].contains(-1) and store->machines[activeMachine]->patterns[i][-1].contains("name")) {
-			mapping[store->machines[activeMachine]->patterns[i][-1]["name"]] = i;
-			if (i < 10) {
-				item->setText(QString::number(i) + ". " + store->machines[activeMachine]->patterns[i][-1]["name"]);
-			} else {
-				item->setText(store->machines[activeMachine]->patterns[i][-1]["name"]);
-			}
-		} else {
-			mapping["Pattern "+QString::number(i)] = i;
-			if (i < 10) {
-				item->setText(QString::number(i) + ". Pattern "+QString::number(i));
-			} else {
-				item->setText("Pattern "+QString::number(i));
-			}
-		}
-
-		hintList->addItem(item);
+	foreach (MachinePattern *pat, machine->patterns) {
+		hintList->addItem(pat->name);
 	}
-	*/
 }
 
 
@@ -119,13 +101,12 @@ void Track::addButtonSlot()
 
 void Track::delButtonSlot()
 {
-	/*
 	int row = tracksTable->currentIndex().row();
-	if (row == -1) row = store->total_patterns - 1;
-	if (store->total_patterns <= 1) return;
-	store->total_patterns--;
+	if (row == -1) row = core->total_patterns - 1;
+	if (core->total_patterns <= 1) return;
+	core->total_patterns--;
 
-	foreach (Machine *m, store->machines.values()) {
+	foreach (Machine *m, core->machines) {
 		QList<int> tracks = m->track.keys();
 		qSort(tracks);
 		foreach (int i, tracks) {
@@ -138,14 +119,13 @@ void Track::delButtonSlot()
 		}
 	}
 
-	Master *m = (Master *)store->machines[0];
+	Master *m = (Master *)core->machines[0];
 	if (m->track_first > row) m->track_first--;
 	if (m->track_last > row) m->track_last--;
-	if (m->track_first >= store->total_patterns) m->track_first = store->total_patterns - 1;
-	if (m->track_last  >= store->total_patterns) m->track_last  = store->total_patterns - 1;
+	if (m->track_first >= core->total_patterns) m->track_first = core->total_patterns - 1;
+	if (m->track_last  >= core->total_patterns) m->track_last  = core->total_patterns - 1;
 
 	tracksTable->refresh();
-	*/
 }
 
 
@@ -167,4 +147,12 @@ void Track::lstButtonSlot()
 	if (row < m->track_first) row = m->track_first;
 	m->track_last = row;
 	tracksTable->refresh();
+}
+
+
+Machine *Track::currentMachine()
+{
+	QModelIndex index = tracksTable->currentIndex();
+	if (index.isValid()) return core->machines[index.row()];
+	return 0;
 }

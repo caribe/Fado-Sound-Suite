@@ -20,8 +20,8 @@ MainWindow::MainWindow() : QMainWindow() {
 
 	route = new Route(this, core);
 	pattern  = new Pattern(this, core);
-	track = new Track(core);
-	playback = new Playback(core);
+	track = new Track(this, core);
+	playback = new Playback(this, core);
 
 	tabs->addTab(route,    QIcon(":/machines"), tr("Machines"));
 	tabs->addTab(pattern,  QIcon(":/patterns"), tr("Patterns"));
@@ -37,7 +37,7 @@ MainWindow::MainWindow() : QMainWindow() {
 
 	connect(tabs, SIGNAL(currentChanged(int)), SLOT(tabChanged(int)));
 
-	connect(route, SIGNAL(machinesChanged()), pattern, SLOT(refreshMachines()));
+	connect(route, SIGNAL(machinesChanged()), SLOT(refreshMachines()));
 
 	// *** Actions ***
 
@@ -165,8 +165,6 @@ void MainWindow::menuFileOpenSlot() {
 		}
 	}
 
-	// Toglie eventuali buchi
-	core->optimizeMachines();
 	*/
 }
 

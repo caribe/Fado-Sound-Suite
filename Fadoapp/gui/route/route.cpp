@@ -8,6 +8,7 @@ Route::Route(QWidget *parent, Core *core) : QSplitter(parent)
 
 	QTreeView *routeTree = new QTreeView(this);
 	routeTree->setModel(core->gearsTree);
+	routeTree->model()->setHeaderData(0, Qt::Horizontal, tr("Machines"));
 	connect(routeTree, SIGNAL(doubleClicked(QModelIndex)), SLOT(newMachine(QModelIndex)));
 
 	// Editor

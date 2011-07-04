@@ -1,7 +1,8 @@
 #ifndef CORE_CONFIG_H
 #define CORE_CONFIG_H
 
-#include <QtXml/QDomDocument>
+#include <QDomDocument>
+#include <QDebug>
 
 class Config;
 

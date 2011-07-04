@@ -1,9 +1,7 @@
 #include "core/config.h"
 
 int Config::load(QString filename, Core *core) {
-	/*
-	QTextStream out(stdout);
-
+/*
 	MachineFactory tm;
 	Machine *tx;
 	int track_first, track_last;
@@ -33,9 +31,9 @@ int Config::load(QString filename, Core *core) {
 			for (int j = 0; j < settingNodes.length(); j++) if (settingNodes.item(j).isElement()) {
 				QDomElement settingElement = settingNodes.item(j).toElement();
 				if (settingElement.tagName() == "beat-per-pattern") {
-					store->beat_per_pattern = settingElement.text().toInt();
+					core->beat_per_pattern = settingElement.text().toInt();
 				} else if (settingElement.tagName() == "patterns") {
-					store->total_patterns = settingElement.text().toInt();
+					core->total_patterns = settingElement.text().toInt();
 					track_first = settingElement.attribute("first", "0").toInt();
 					track_last  = settingElement.attribute("last", settingElement.text()).toInt();
 				}
@@ -61,16 +59,16 @@ int Config::load(QString filename, Core *core) {
 						tx->id = machineElement.attribute("id").toInt();
 						tx->x = machineElement.attribute("x").toInt();
 						tx->y = machineElement.attribute("y").toInt();
-						tx->store = store;
-						store->machines[tx->id]= tx;
+						tx->core = core;
+						core->machines[tx->id]= tx;
 					} else {
-						if (store->factory[type].contains(author) && store->factory[type][author].contains(name)) {
-							tx = store->factory[type][author][name]();
+						if (core->factory[type].contains(author) && core->factory[type][author].contains(name)) {
+							tx = core->factory[type][author][name]();
 							tx->id = machineElement.attribute("id").toInt();
 							tx->x = machineElement.attribute("x").toInt();
 							tx->y = machineElement.attribute("y").toInt();
-							tx->store = store;
-							store->machines[tx->id]= tx;
+							tx->core = core;
+							core->machines[tx->id]= tx;
 						} else {
 							out << "No machine called " << type << "." << author << "." << name << "\n";
 							continue;
@@ -117,23 +115,23 @@ int Config::load(QString filename, Core *core) {
 			for (int j = 0; j < connectionNodes.length(); j++) if (connectionNodes.item(j).isElement()) {
 				QDomElement connectionElement = connectionNodes.item(j).toElement();
 				if (connectionElement.tagName() == "connection") {
-					store->connections[connectionElement.attribute("from").toInt()][connectionElement.attribute("to").toInt()] = connectionElement.attribute("value", "100").toInt();
+					core->connections[connectionElement.attribute("from").toInt()][connectionElement.attribute("to").toInt()] = connectionElement.attribute("value", "100").toInt();
 				}
 			}
 		}
 	}
 
 
-	foreach (int i, store->machines.keys()) {
-		Machine *m = store->machines[i];
+	foreach (int i, core->machines.keys()) {
+		Machine *m = core->machines[i];
 		out << "Tracks " << m->name << endl;
 		for (int j = 0; j < m->track.keys().length(); j++) {
 			out << "\t" << m->track.keys().value(j) << "\t" << m->track.value(m->track.keys().value(j)) << endl;
 		}
 	}
 
-	foreach (int i, store->machines.keys()) {
-		Machine *m = store->machines[i];
+	foreach (int i, core->machines.keys()) {
+		Machine *m = core->machines[i];
 		out << "Patterns " << m->name << endl;
 		m->patterns.size();
 
@@ -142,20 +140,20 @@ int Config::load(QString filename, Core *core) {
 		}
 	}
 
-	Master *master = (Master *)store->machines[0];
+	Master *master = (Master *)core->machines[0];
 	master->track_first = track_first;
 	master->track_last = track_last;
 
-	out << "Beat per pattern: " << store->beat_per_pattern << endl;
+	out << "Beat per pattern: " << core->beat_per_pattern << endl;
 */
 	return 0;
 }
 
 
 int Config::save(QString filename, Core *core) {
-	/*
+/*
 	QTextStream out(stdout);
-	Master *master = (Master *)store->machines[0];
+	Master *master = (Master *)core->machines[0];
 
 	QDomDocument doc("config");
 
@@ -169,17 +167,17 @@ int Config::save(QString filename, Core *core) {
 	QDomElement settingsPatterns = doc.createElement("patterns");
 	settingsPatterns.setAttribute("first", QString::number(master->track_first));
 	settingsPatterns.setAttribute("last", QString::number(master->track_last));
-	settingsPatterns.appendChild(doc.createTextNode(QString::number(store->total_patterns)));
+	settingsPatterns.appendChild(doc.createTextNode(QString::number(core->total_patterns)));
 	settings.appendChild(settingsPatterns);
 
 	QDomElement settingsBPM = doc.createElement("beat-per-pattern");
-	settingsBPM.appendChild(doc.createTextNode(QString::number(store->beat_per_pattern)));
+	settingsBPM.appendChild(doc.createTextNode(QString::number(core->beat_per_pattern)));
 	settings.appendChild(settingsBPM);
 
 	QDomElement machines = doc.createElement("machines");
 	root.appendChild(machines);
 
-	foreach (Machine *machine, store->machines.values()) {
+	foreach (Machine *machine, core->machines.values()) {
 		QDomElement machine_el = doc.createElement("machine");
 		machine_el.setAttribute("id", machine->id);
 		machine_el.setAttribute("x", machine->x);
@@ -223,12 +221,12 @@ int Config::save(QString filename, Core *core) {
 	}
 
 	QDomElement connections_el = doc.createElement("connections");
-	foreach (int from, store->connections.keys()) {
-		foreach (int to, store->connections[from].keys()) {
+	foreach (int from, core->connections.keys()) {
+		foreach (int to, core->connections[from].keys()) {
 			QDomElement connection_el = doc.createElement("connection");
 			connection_el.setAttribute("from", from);
 			connection_el.setAttribute("to", to);
-			connection_el.setAttribute("value", store->connections[from][to]);
+			connection_el.setAttribute("value", core->connections[from][to]);
 			connections_el.appendChild(connection_el);
 		}
 	}

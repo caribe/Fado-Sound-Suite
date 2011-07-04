@@ -2,18 +2,17 @@
 
 Sine::Sine() {
 
+	author = "Caribe";
 	name = "My Sine";
+	description = "A simple sine signal";
 	type = Machine::MachineGenerator;
 
-/*
-	addParam(new Param("freq", "The sine frequency", Param::float_t, 50, 20000));
-	addParam(new Param("vol", "The sine volume", Param::float_t, 0, 1));
+	addParam("freq", "The sine frequency", Param::ParamFloat, 50, 20000);
+	addParam("offset", "The sine offset", Param::ParamInt, 0, 100);
 
-	params["freq"]->set(1000.0);
-	params["vol"]->set(1.0);
-*/
+	// params["freq"]->set(1000.0);
+
 	rotor = 0;
-
 }
 
 Machine *Sine::factory() {
@@ -28,9 +27,8 @@ void Sine::reconfig() {
 
 int Sine::process(jack_nframes_t nframes) {
 
-	float vol = params["vol"]->getFloat();
 	for (unsigned int i = 0; i < nframes; i++, rotor += rotor_step) {
-		lx[i] = rx[i] = std::cos(rotor) * vol;
+		lx[i] = rx[i] = std::cos(rotor);
 		if (rotor > PI_2) rotor -= PI_2;
 	}
 

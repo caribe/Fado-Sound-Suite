@@ -1,6 +1,6 @@
 #include "playback.h"
 
-Playback::Playback(Core *core)
+Playback::Playback(QWidget *parent, Core *core) : QWidget(parent)
 {
 	this->core = core;
 

@@ -33,8 +33,6 @@ class MainWindow : public QMainWindow
 		Pattern *pattern;
 		Playback *playback;
 
-		void optimizeMachines();
-		void refreshMachines();
 		void refreshPatterns();
 		
 		QTabWidget *tabs;
@@ -51,6 +49,7 @@ class MainWindow : public QMainWindow
 		void setTabByAction();
 		void messageCritical(const QString &title, const QString &text);
 		void tabChanged(int index);
+		void refreshMachines();
 
 		void menuFileCloseSlot();
 		void menuFileNewSlot();

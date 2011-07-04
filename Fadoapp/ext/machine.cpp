@@ -41,37 +41,36 @@ void Machine::setDescription(const QString &description)
 
 void Machine::addParam(Param *param)
 {
-	params.insert(param->name, param);
-	keys.append(param->name);
+	params.append(param);
 }
 
 
-Param *Machine::getParam(QString name)
+
+Param *Machine::getParam(int index)
 {
-	return params.value(name);
+	return params[index];
 }
 
 
-QString Machine::validate(QString param, QString value)
+QString Machine::validate(int param, QString value)
 {
-	if (params.contains(param) == false) return "";
 	if (value == "") return "";
 
-	if (params[param]->type == Param::int_t or params[param]->type == Param::freq_t) {
+	if (params[param]->type == Param::ParamInt or params[param]->type == Param::ParamFreq) {
 		int intValue = value.toInt();
 		if (intValue < params[param]->min) intValue = params[param]->min;
 		if (intValue > params[param]->max) intValue = params[param]->max;
 		return QString::number(intValue);
 	}
 
-	if (params[param]->type == Param::float_t) {
+	if (params[param]->type == Param::ParamFloat) {
 		float floatVal = value.toFloat();
 		if (floatVal < params[param]->min) floatVal = params[param]->min;
 		if (floatVal > params[param]->max) floatVal = params[param]->max;
 		return QString::number(floatVal);
 	}
 
-	if (params[param]->type == Param::note_t) {
+	if (params[param]->type == Param::ParamNote) {
 		QChar note, octave;
 		bool mid;
 		int pos = 0;
@@ -121,4 +120,21 @@ QString Machine::validate(QString param, QString value)
 	}
 
 	return value;
+}
+
+
+MachinePattern *Machine::addPattern(const QString &name)
+{
+	int pl = params.length();
+
+	MachinePattern *pattern = new MachinePattern();
+	pattern->name = name;
+
+	for (int i = 0; i < 16; i++) {
+		QList<QString> patternRow;
+		for (int j = 0; j < pl; j++) patternRow << QString();
+		pattern->params << patternRow;
+	}
+
+	patterns.append(pattern);
 }

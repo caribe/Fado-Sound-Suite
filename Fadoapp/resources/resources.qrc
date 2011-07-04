@@ -22,5 +22,7 @@
         <file>folder-open-document.png</file>
         <file>resources.qrc</file>
         <file>question.png</file>
+        <file>plus.png</file>
+        <file>minus.png</file>
     </qresource>
 </RCC>

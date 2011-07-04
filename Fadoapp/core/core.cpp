@@ -16,17 +16,39 @@ void Core::loadPlugins()
 {
 	QStandardItem *item;
 
+	// Base folders
+
+	QStandardItem *coreFolder = new QStandardItem(tr("Core"));
+	coreFolder->setEditable(false);
+	coreFolder->setData(-100);
+	gearsTree->appendRow(coreFolder);
+
+	QStandardItem *generatorsFolder = new QStandardItem(tr("Generators"));
+	generatorsFolder->setEditable(false);
+	generatorsFolder->setData(-100);
+	gearsTree->appendRow(generatorsFolder);
+
+	QStandardItem *effectsFolder = new QStandardItem(tr("Effects"));
+	effectsFolder->setEditable(false);
+	effectsFolder->setData(-100);
+	gearsTree->appendRow(effectsFolder);
+
+	// Buffers
+
+	QHash<QString, QStandardItem *> generatorsBuffer;
+	QHash<QString, QStandardItem *> effectsBuffer;
+
 	// Standard gears
 
 	item = new QStandardItem(QIcon(":/machine"), "Line Input");
 	item->setEditable(false);
 	item->setData(-2);
-	gearsTree->appendRow(item);
+	coreFolder->appendRow(item);
 
 	item = new QStandardItem(QIcon(":/machine"), "File Input");
 	item->setEditable(false);
 	item->setData(-3);
-	gearsTree->appendRow(item);
+	coreFolder->appendRow(item);
 
 	// Plugins
 
@@ -56,12 +78,37 @@ void Core::loadPlugins()
 				item = new QStandardItem(QIcon(":/machine"), machine->name);
 				item->setEditable(false);
 				item->setData(id);
-				gearsTree->appendRow(item);
+
+				if (machine->type == Machine::MachineGenerator) {
+					if (generatorsBuffer.contains(machine->author) == false) {
+						QStandardItem *item = new QStandardItem(machine->author);
+						item->setEditable(false);
+						item->setData(-100);
+						generatorsBuffer[machine->author] = item;
+					}
+					generatorsBuffer[machine->author]->appendRow(item);
+				} else if (machine->type == Machine::MachineEffect) {
+					if (effectsBuffer.contains(machine->author) == false) {
+						QStandardItem *item = new QStandardItem(machine->author);
+						item->setEditable(false);
+						item->setData(-100);
+						effectsBuffer[machine->author] = item;
+					}
+					effectsBuffer[machine->author]->appendRow(item);
+				}
 
 			} else {
 				qDebug() << "Error" << lib->errorString();
 			}
 		}
+	}
+
+	foreach (QStandardItem *item, generatorsBuffer.values()) {
+		generatorsFolder->appendRow(item);
+	}
+
+	foreach (QStandardItem *item, effectsBuffer.values()) {
+		effectsFolder->appendRow(item);
 	}
 }
 
