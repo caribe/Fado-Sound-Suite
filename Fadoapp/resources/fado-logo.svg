@@ -1,0 +1,26 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+
+<svg width="256" height="256" version="1.1" xmlns="http://www.w3.org/2000/svg">
+
+<defs>
+	<linearGradient id="orange_red" x1="0%" y1="0%" x2="0%" y2="100%">
+		<stop offset="0%" style="stop-color:#70DFFF;stop-opacity:1"/>
+		<stop offset="100%" style="stop-color:#48ACFF;stop-opacity:1"/>
+	</linearGradient>
+</defs>
+
+<g transform="translate(128, 128)">
+	<rect x="-120" y="-120" rx="20" width="230" height="230" fill="url(#orange_red)" stroke-width="10" stroke="#41A4ED"/>
+	<rect x="-110" y="-110" rx="10" width="210" height="210" style="fill:none;stroke-width:10; stroke:white"/>
+
+	<g>
+		<ellipse cx="-50" cy="60" rx="35" ry="20" fill="white"/>
+		<ellipse cx="40" cy="20" rx="35" ry="20" fill="white"/>
+		<path d="M-20,60 l0,-120 l90,-20 l0,100 m0,-80 l-90,20" fill="none" stroke="white" stroke-width="10"/>
+	</g>
+
+</g>
+
+</svg>
+
