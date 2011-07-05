@@ -68,6 +68,11 @@ public:
 	// Machine render order
 	QList<Machine *> order;
 
+	// Patterns
+
+	MachinePattern *mutePattern;
+	MachinePattern *breakPattern;
+
 	// Methods
 
 	bool orderMachines();

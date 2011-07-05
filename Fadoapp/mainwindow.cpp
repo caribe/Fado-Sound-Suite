@@ -4,7 +4,7 @@
 MainWindow::MainWindow() : QMainWindow() {
 
 	setWindowTitle(tr("Fado"));
-	setWindowIcon(QIcon(":/001_08.png"));
+	setWindowIcon(QIcon(":/logo"));
 
 	settingsLoad();
 
@@ -20,7 +20,7 @@ MainWindow::MainWindow() : QMainWindow() {
 
 	route = new Route(this, core);
 	pattern  = new Pattern(this, core);
-	track = new Track(this, core);
+	track = new Tracks(this, core);
 	playback = new Playback(this, core);
 
 	tabs->addTab(route,    QIcon(":/machines"), tr("Machines"));
@@ -109,6 +109,33 @@ MainWindow::MainWindow() : QMainWindow() {
 	QAction *menuHelpAbout = new QAction(QIcon(":/question.png"), tr("About Fado"), this);
 	connect(menuHelpAbout, SIGNAL(triggered()), this, SLOT(menuHelpAboutSlot()));
 	menuHelp->addAction(menuHelpAbout);
+
+
+	// Toolbars
+
+	QToolBar *toolbarPatterns = new QToolBar(tr("Patterns Tools"));
+	toolbarPatterns->addAction(QIcon(":/table--plus.png"), tr("Add Pattern"), pattern, SLOT(addPattern()));
+	toolbarPatterns->addAction(QIcon(":/table--minus.png"), tr("Delete Pattern"), pattern, SLOT(delPattern()));
+	toolbarPatterns->addAction(QIcon(":/table--pencil.png"), tr("Rename Pattern"), pattern, SLOT(renPattern()));
+
+	QToolBar *toolbarTracks = new QToolBar(tr("Sequences Tools"));
+	toolbarTracks->addAction(QIcon(":/plus.png"), tr("Add Row"), track, SLOT(addButtonSlot()));
+	toolbarTracks->addAction(QIcon(":/minus.png"), tr("Del Row"), track, SLOT(delButtonSlot()));
+	toolbarTracks->addAction(QIcon(":/control-stop.png"), tr("First Row"), track, SLOT(frsButtonSlot()));
+	toolbarTracks->addAction(QIcon(":/control-stop-180.png"), tr("Last Row"), track, SLOT(lstButtonSlot()));
+	toolbarTracks->addAction(QIcon(":/cross.png"), tr("Delete"), track, SLOT(deleteButtonSlot()));
+	toolbarTracks->addAction(QIcon(":/slash.png"), tr("Mute"), track, SLOT(muteButtonSlot()));
+	toolbarTracks->addAction(QIcon(":/control-stop-square.png"), tr("Break"), track, SLOT(breakButtonSlot()));
+
+	QToolBar *toolbarPlayback = new QToolBar(tr("Playback Tools"));
+	toolbarPlayback->addAction(QIcon(":/control.png"), tr("Play"), playback, SLOT(buttonPlay()));
+	toolbarPlayback->addAction(QIcon(":/control-record.png"), tr("Record"), playback, SLOT(buttonRec()));
+	toolbarPlayback->addAction(QIcon(":/control-stop-square.png"), tr("Stop"), playback, SLOT(buttonStop()));
+	toolbarPlayback->addAction(QIcon(":/system-monitor.png"), tr("View"), playback, SLOT(buttonView()));
+
+	addToolBar(toolbarPatterns);
+	addToolBar(toolbarTracks);
+	addToolBar(toolbarPlayback);
 
 	// Resetting everything
 	menuFileNewSlot();

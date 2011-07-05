@@ -28,9 +28,8 @@ SOURCES += main.cpp\
     gui/route/route.cpp \
     gui/route/machinebox.cpp \
     gui/route/linkbox.cpp \
-    gui/track/tracktabledata.cpp \
-    gui/track/tracktable.cpp \
-    gui/track/track.cpp
+    gui/track/tracks.cpp \
+    gui/track/tracksmodel.cpp
 
 HEADERS  += mainwindow.h \
     core/updates.h \
@@ -49,9 +48,8 @@ HEADERS  += mainwindow.h \
     gui/route/route.h \
     gui/route/machinebox.h \
     gui/route/linkbox.h \
-    gui/track/tracktabledata.h \
-    gui/track/tracktable.h \
-    gui/track/track.h
+    gui/track/tracks.h \
+    gui/track/tracksmodel.h
 
 RESOURCES += \
     resources/resources.qrc
@@ -74,4 +72,19 @@ OTHER_FILES += \
     resources/table--minus.png \
     resources/question.png \
     resources/minus.png \
-    resources/plus.png
+    resources/plus.png \
+    resources/fado-logo.svg \
+    resources/slash.png \
+    resources/folder-open-document.png \
+    resources/document.png \
+    resources/disk.png \
+    resources/disk--pencil.png \
+    resources/cross-button.png \
+    resources/control.png \
+    resources/control-stop.png \
+    resources/control-stop-square.png \
+    resources/control-stop-180.png \
+    resources/control-record.png \
+    resources/user.png \
+    resources/system-monitor.png \
+    resources/cross.png

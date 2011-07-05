@@ -8,23 +8,6 @@ Playback::Playback(QWidget *parent, Core *core) : QWidget(parent)
 	grid->setSpacing(3);
 	grid->setContentsMargins(3, 3, 3, 3);
 
-	QPushButton *play = new QPushButton(QIcon(":/control.png"), tr("Play"), this);
-	QPushButton *rec = new QPushButton(QIcon(":/control-record.png"), tr("Rec"), this);
-	QPushButton *stop = new QPushButton(QIcon(":/control-stop-square.png"), tr("Stop"), this);
-	QPushButton *view = new QPushButton(QIcon(":/chart.png"), tr("View"), this);
-
-	connect(play, SIGNAL(clicked()), this, SLOT(buttonPlay()));
-	connect(rec,  SIGNAL(clicked()), this, SLOT(buttonRec()));
-	connect(stop, SIGNAL(clicked()), this, SLOT(buttonStop()));
-	connect(view, SIGNAL(clicked()), this, SLOT(buttonView()));
-
-	grid->setColumnStretch(0, 1);
-	grid->addWidget(play, 0, 1);
-	grid->addWidget(rec, 0, 2);
-	grid->addWidget(stop, 0, 3);
-	grid->addWidget(view, 0, 4);
-	grid->setColumnStretch(6, 1);
-
 	file = new QFile();
 
 	scrollBar = new QScrollBar(Qt::Horizontal);

@@ -7,28 +7,6 @@ Pattern::Pattern(QWidget *widget, Core *core) : QWidget(widget) {
 	grid->setSpacing(3);
 	grid->setContentsMargins(3, 3, 3, 3);
 
-	// Tools
-	QFrame *toolbar = new QFrame();
-	QHBoxLayout *toolbarLayout = new QHBoxLayout(toolbar);
-	toolbarLayout->setContentsMargins(0, 0, 0, 0);
-	toolbarLayout->setSpacing(3);
-
-	QPushButton *addButton = new QPushButton(QIcon(":/table--plus.png"), tr("Add Pattern"), toolbar);
-	toolbarLayout->addWidget(addButton);
-	connect(addButton, SIGNAL(clicked()), this, SLOT(addPattern()));
-
-	QPushButton *delButton = new QPushButton(QIcon(":/table--minus.png"), tr("Del Pattern"), toolbar);
-	toolbarLayout->addWidget(delButton);
-	connect(delButton, SIGNAL(clicked()), this, SLOT(delPattern()));
-
-	QPushButton *renButton = new QPushButton(QIcon(":/table--pencil.png"), tr("Rename Pattern"), toolbar);
-	toolbarLayout->addWidget(renButton);
-	connect(renButton, SIGNAL(clicked()), this, SLOT(renPattern()));
-
-	toolbarLayout->insertStretch(-1);
-
-	grid->addWidget(toolbar, 0, 0);
-
 	// Area centrale
 	QFrame *menu = new QFrame(this);
 	QGridLayout *menuGrid = new QGridLayout(menu);

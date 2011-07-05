@@ -8,6 +8,14 @@ Core::Core(QObject *parent) : QObject(parent)
 	beat_per_pattern = 16;
 	total_patterns = 16;
 	gearsTree = new QStandardItemModel();
+
+	mutePattern = new MachinePattern();
+	mutePattern->type = MachinePattern::MutePattern;
+	mutePattern->name = "Mute";
+
+	breakPattern = new MachinePattern();
+	breakPattern->type = MachinePattern::BreakPattern;
+	breakPattern->name = "Break";
 }
 
 
@@ -81,7 +89,7 @@ void Core::loadPlugins()
 
 				if (machine->type == Machine::MachineGenerator) {
 					if (generatorsBuffer.contains(machine->author) == false) {
-						QStandardItem *item = new QStandardItem(machine->author);
+						QStandardItem *item = new QStandardItem(QIcon(":/user.png"), machine->author);
 						item->setEditable(false);
 						item->setData(-100);
 						generatorsBuffer[machine->author] = item;
@@ -89,7 +97,7 @@ void Core::loadPlugins()
 					generatorsBuffer[machine->author]->appendRow(item);
 				} else if (machine->type == Machine::MachineEffect) {
 					if (effectsBuffer.contains(machine->author) == false) {
-						QStandardItem *item = new QStandardItem(machine->author);
+						QStandardItem *item = new QStandardItem(QIcon(":/user.png"), machine->author);
 						item->setEditable(false);
 						item->setData(-100);
 						effectsBuffer[machine->author] = item;
