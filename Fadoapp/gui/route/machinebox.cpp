@@ -15,31 +15,23 @@ MachineBox::MachineBox(Route *route, Machine *machine)
 
 	// Label
 
-	QGraphicsTextItem *boxText = new QGraphicsTextItem(this);
-	boxText->setPos(-50, -20);
+	boxText = new QGraphicsTextItem(this);
+	boxText->setPos(-50, -10);
 	boxText->setTextWidth(100);
 
 	if (m->type == Machine::MachineMaster) {
 		backgrounds << QColor(0x80, 0xb3, 0xff) << QColor(0xbf, 0xd9, 0xff);
-		boxText->setHtml("<center><b>Master</b></center>");
-		longname = "Master";
 	} else if (m->type == Machine::MachineInput) {
 		backgrounds << QColor(0xff, 0x80, 0xdf) << QColor(0xff, 0xbf, 0xf0);
-		if (m->name == "lineinput") {
-			boxText->setHtml("<center><b>Input</b></center>");
-		} else if (m->name == "fileinput") {
-			boxText->setHtml("<center><b>File</b></center>");
+	} else {
+		if (m->type == Machine::MachineGenerator) {
+			backgrounds << QColor(0x80, 0xff, 0x80) << QColor(0xbf, 0xff, 0xbf);
+		} else if (m->type == Machine::MachineEffect) {
+			backgrounds << QColor(0xff, 0xaa, 0x00) << QColor(0xff, 0xd5, 0x00);
 		}
-		longname = m->name;
-	} else if (m->type == Machine::MachineGenerator) {
-		backgrounds << QColor(0x80, 0xff, 0x80) << QColor(0xbf, 0xff, 0xbf);
-		longname = m->author + "." + m->name;
-		boxText->setHtml("<center>"+m->author+"<br/><b>"+m->name+"</b></center>");
-	} else if (m->type == Machine::MachineEffect) {
-		backgrounds << QColor(0xff, 0xaa, 0x00) << QColor(0xff, 0xd5, 0x00);
-		longname = m->author + "." + m->name;
-		boxText->setHtml("<center>"+m->author+"<br/><b>"+m->name+"</b></center>");
 	}
+
+	refreshName();
 
 	// Style
 
@@ -108,8 +100,7 @@ void MachineBox::keyPressEvent(QKeyEvent *e) {
 
 void MachineBox::mouseDoubleClickEvent(QGraphicsSceneMouseEvent * event) 
 {
-	// parent->mainWindow->tabs->setCurrentIndex(1);
-	// parent->mainWindow->pattern->machineCombo->setCurrentIndex(id());
+	route->slotDisplayPatterns(m);
 }
 
 
@@ -117,7 +108,19 @@ void MachineBox::hoverEnterEvent(QGraphicsSceneHoverEvent * event)
 {
 	setBrush(QBrush(backgrounds[1]));
 	setFocus(Qt::MouseFocusReason);
-	route->slotDisplayStatus(m->type+"."+m->author+"."+m->name);
+
+	QString typeName;
+	if (m->type == Machine::MachineMaster) {
+		typeName = "Master";
+	} else if (m->type == Machine::MachineInput) {
+		typeName = "Input";
+	} else if (m->type == Machine::MachineGenerator) {
+		typeName = "Generator";
+	} else if (m->type == Machine::MachineEffect) {
+		typeName = "Effect";
+	}
+
+	route->slotDisplayStatus(typeName+" / "+m->author+" / "+m->name);
 }
 
 
@@ -126,4 +129,39 @@ void MachineBox::hoverLeaveEvent(QGraphicsSceneHoverEvent * event)
 	setBrush(QBrush(backgrounds[0]));
 	clearFocus();
 	route->slotClearStatus();
+}
+
+
+void MachineBox::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
+{
+	QMenu menu;
+	QAction *renameAction = menu.addAction(QIcon(":pencil.png"), route->tr("Rename"));
+	QAction *deleteAction = menu.addAction(QIcon(":cross.png"), route->tr("Delete"));
+	QAction *selectedAction = menu.exec(event->screenPos());
+
+	if (selectedAction == deleteAction) {
+		route->delMachine(this);
+	} else if (selectedAction == renameAction) {
+		route->renMachine(this);
+	}
+}
+
+
+void MachineBox::refreshName()
+{
+	if (m->alias.isNull()) {
+		if (m->type == Machine::MachineMaster) {
+			boxText->setHtml("<center><b>Master</b></center>");
+		} else if (m->type == Machine::MachineInput) {
+			if (m->name == "lineinput") {
+				boxText->setHtml("<center><b>Mic</b></center>");
+			} else if (m->name == "fileinput") {
+				boxText->setHtml("<center><b>File</b></center>");
+			}
+		} else {
+			boxText->setHtml("<center><b>"+m->name+"</b></center>");
+		}
+	} else {
+		boxText->setHtml("<center><b>"+m->alias+"</b></center>");
+	}
 }

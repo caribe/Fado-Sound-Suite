@@ -87,4 +87,5 @@ OTHER_FILES += \
     resources/control-record.png \
     resources/user.png \
     resources/system-monitor.png \
-    resources/cross.png
+    resources/cross.png \
+    resources/pencil.png

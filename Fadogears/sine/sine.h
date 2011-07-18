@@ -17,7 +17,7 @@ private:
 
 public:
 	Sine();
-	void reconfig();
+	void reconfig(const int sampling_rate);
 	Machine *factory();
 	int process(jack_nframes_t nframes);
 

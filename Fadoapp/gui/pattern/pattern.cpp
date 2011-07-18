@@ -224,3 +224,12 @@ Machine *Pattern::currentMachine()
 		return core->machines[index];
 	}
 }
+
+
+void Pattern::displayPatterns(Machine *m)
+{
+	int i = core->machines.indexOf(m);
+	if (i > -1) {
+		machineCombo->setCurrentIndex(i);
+	}
+}

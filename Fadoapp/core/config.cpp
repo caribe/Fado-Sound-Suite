@@ -1,10 +1,13 @@
 #include "core/config.h"
 
 int Config::load(QString filename, Core *core) {
-/*
-	MachineFactory tm;
-	Machine *tx;
-	int track_first, track_last;
+
+	qDebug() << "Ready to load" << filename;
+
+	// Salva la cartella corrente
+	QFileInfo fileinfo(filename);
+	QSettings settings;
+	settings.setValue("state/cwd", fileinfo.path());
 
 	// Caricamento file XML
 	QFile file(filename);
@@ -12,148 +15,145 @@ int Config::load(QString filename, Core *core) {
 	QByteArray xml = file.readAll();
 	file.close();
 
+	qDebug() << "Ready to analyze";
+
 	QDomDocument doc("config");
 	
 	QString errorMsg;
 	int errorLine, errorColumn;
 	if (doc.setContent(xml, false, &errorMsg, &errorLine, &errorColumn) == false) {
-		out << errorMsg << " at line " << errorLine << " column " << errorColumn << endl;
+		qDebug() << errorMsg << " at line " << errorLine << " column " << errorColumn;
 		return 2;
 	}
 
 	if (doc.documentElement().attribute("version") != "1.0") return 10;
 
-	QDomNodeList rootNodes = doc.documentElement().childNodes();
-	for (int i = 0; i < rootNodes.length(); i++) if (rootNodes.item(i).isElement()) {
-		QDomElement rootElement = rootNodes.item(i).toElement();
+	for (QDomElement rootElement = doc.documentElement().firstChildElement(); !rootElement.isNull(); rootElement = rootElement.nextSiblingElement()) {
+
 		if (rootElement.tagName() == "settings") {
-			QDomNodeList settingNodes = rootElement.childNodes();
-			for (int j = 0; j < settingNodes.length(); j++) if (settingNodes.item(j).isElement()) {
-				QDomElement settingElement = settingNodes.item(j).toElement();
-				if (settingElement.tagName() == "beat-per-pattern") {
-					core->beat_per_pattern = settingElement.text().toInt();
-				} else if (settingElement.tagName() == "patterns") {
-					core->total_patterns = settingElement.text().toInt();
-					track_first = settingElement.attribute("first", "0").toInt();
-					track_last  = settingElement.attribute("last", settingElement.text()).toInt();
+
+			QDomElement beatPerPattern = rootElement.firstChildElement("beat-per-pattern");
+			if (!beatPerPattern.isNull()) {
+				core->beat_per_pattern = beatPerPattern.text().toInt();
+			}
+
+			QDomElement patterns = rootElement.firstChildElement("patterns");
+			if (!patterns.isNull()) {
+				core->total_patterns = patterns.text().toInt();
+				core->track_first = patterns.attribute("first", "0").toInt();
+				core->track_last  = patterns.attribute("last", patterns.text()).toInt();
+			}
+
+		} else if (rootElement.tagName() == "machine") {
+
+			Machine *machine = NULL;
+
+			QString type = rootElement.attribute("type");
+			QString author = rootElement.attribute("author");
+			QString name = rootElement.attribute("name");
+
+			if (type == "master") {
+				machine = (Machine *)new Master();
+			} else if (type == "input") {
+				if (name == "lineinput") {
+					machine = (Machine *)new LineInput();
+				} else if (name == "fileinput") {
+					machine = (Machine *)new FileInput();
+				}
+			} else {
+				QStandardItem *generators;
+				if (type == "generator") {
+					generators = core->gearsTree->invisibleRootItem()->child(1);
+				} else if (type == "effect") {
+					generators = core->gearsTree->invisibleRootItem()->child(2);
+				}
+
+				if (generators->rowCount()) {
+					for (int i = 0; i < generators->rowCount(); i++) {
+						if (generators->child(i)->text() == author) {
+							for (int j = 0; j < generators->child(i)->rowCount(); j++) {
+								if (generators->child(i)->child(j)->text() == name) {
+									int id = generators->child(i)->child(j)->data(Qt::UserRole + 1).toInt();
+									machine = core->gears[id]->factory();
+									break;
+								}
+							}
+							break;
+						}
+					}
 				}
 			}
-		} else if (rootElement.tagName() == "machines") {
-			QDomNodeList machineNodes = rootElement.childNodes();
-			for (int j = 0; j < machineNodes.length(); j++) if (machineNodes.item(j).isElement()) {
-				QDomElement machineElement = machineNodes.item(j).toElement();
-				if (machineElement.tagName() == "machine") {
 
-					QString type = machineElement.attribute("type");
-					QString author = machineElement.attribute("author");
-					QString name = machineElement.attribute("name");
+			if (machine == NULL) {
+				qDebug() << "Machine not found";
+			}
 
-					if (author == "Core") {
-						if (name == "output") {
-							tx = (Machine *)new Master();
-						} else if (name == "lineinput") {
-							tx = (Machine *)new LineInput();
-						} else if (name == "fileinput") {
-							tx = (Machine *)new FileInput();
+			machine->alias = rootElement.attribute("alias");
+			machine->x = rootElement.attribute("x").toInt();
+			machine->y = rootElement.attribute("y").toInt();
+
+			core->machines << machine;
+
+			QHash<QString, MachinePattern *> patternMap;
+
+			QDomElement patternsEl = rootElement.firstChildElement("patterns");
+			if (!patternsEl.isNull()) {
+				for (QDomElement patternEl = patternsEl.firstChildElement("pattern"); !patternEl.isNull(); patternEl = patternEl.nextSiblingElement("pattern")) {
+					MachinePattern *pattern = new MachinePattern();
+					pattern->name = patternEl.attribute("name");
+					patternMap[patternEl.attribute("id")] = pattern;
+					for (QDomElement patternRowEl = patternEl.firstChildElement("row"); !patternRowEl.isNull(); patternRowEl = patternRowEl.nextSiblingElement("row")) {
+						int row = patternRowEl.attribute("row", "0").toInt();
+						pattern->params[row].empty();
+						for (QDomElement patternRowValueEl = patternRowEl.firstChildElement("value"); !patternRowValueEl.isNull(); patternRowValueEl = patternRowValueEl.nextSiblingElement("value")) {
+							int i = patternRowValueEl.attribute("i").toInt();
+							pattern->params[row][i] = patternRowValueEl.text();
 						}
-						tx->id = machineElement.attribute("id").toInt();
-						tx->x = machineElement.attribute("x").toInt();
-						tx->y = machineElement.attribute("y").toInt();
-						tx->core = core;
-						core->machines[tx->id]= tx;
+					}
+					machine->patterns << pattern;
+				}
+			}
+
+			QDomElement trackEl = rootElement.firstChildElement("track");
+			if (!trackEl.isNull()) {
+				for (QDomElement patternEl = trackEl.firstChildElement("pattern"); !patternEl.isNull(); patternEl = patternEl.nextSiblingElement("pattern")) {
+					int row = patternEl.attribute("row").toInt();
+					QString type = patternEl.attribute("type");
+					if (type == "mute") {
+						machine->track[row] = core->mutePattern;
+					} else if (type == "break") {
+						machine->track[row] = core->breakPattern;
 					} else {
-						if (core->factory[type].contains(author) && core->factory[type][author].contains(name)) {
-							tx = core->factory[type][author][name]();
-							tx->id = machineElement.attribute("id").toInt();
-							tx->x = machineElement.attribute("x").toInt();
-							tx->y = machineElement.attribute("y").toInt();
-							tx->core = core;
-							core->machines[tx->id]= tx;
-						} else {
-							out << "No machine called " << type << "." << author << "." << name << "\n";
-							continue;
-						}
-					}
-
-					QDomNodeList machineChilds = machineElement.childNodes();
-
-					for (int k = 0; k < machineChilds.length(); k++) if (machineChilds.item(k).isElement()) {
-						QDomElement machineChild = machineChilds.item(k).toElement();
-						if (machineChild.tagName() == "patterns") {
-							QDomNodeList patternChilds = machineChild.childNodes();
-							for (int l = 0; l < patternChilds.length(); l++) if (patternChilds.item(l).isElement()) {
-								QDomElement patternElement = patternChilds.item(l).toElement();
-								if (patternElement.tagName() == "pattern") {
-									QString patternName = patternElement.attribute("name", "");
-									if (patternName != "") tx->patterns[patternElement.attribute("id").toInt()][-1]["name"] = patternName;
-									QDomNodeList patternValues = patternElement.childNodes();
-									for (int m = 0; m < patternValues.length(); m++) if (patternValues.item(m).isElement()) {
-										QDomElement patternValue = patternValues.item(m).toElement();
-										if (patternValue.tagName() == "row") {
-											QDomNodeList patternParams = patternValue.childNodes();
-											for (int n = 0; n < patternParams.length(); n++) if (patternParams.item(n).isElement()) {
-												tx->patterns[patternElement.attribute("id").toInt()][patternValue.attribute("id").toInt()][patternParams.item(n).toElement().tagName()] = patternParams.item(n).toElement().text();
-											}
-										}
-									}
-								}
-							}
-						} else if (machineChild.tagName() == "tracks") {
-							QDomNodeList tracksChilds = machineChild.childNodes();
-							for (int l = 0; l < tracksChilds.length(); l++) if (tracksChilds.item(l).isElement()) {
-								QDomElement trackElement = tracksChilds.item(l).toElement();
-								if (trackElement.tagName() == "pattern") {
-									tx->track[trackElement.attribute("row").toInt()] = trackElement.text().toInt();
-								}
-							}
-						}
+						machine->track[row] = patternMap[patternEl.attribute("pattern")];
 					}
 				}
 			}
+
 		} else if (rootElement.tagName() == "connections") {
-			QDomNodeList connectionNodes = rootElement.childNodes();
-			for (int j = 0; j < connectionNodes.length(); j++) if (connectionNodes.item(j).isElement()) {
-				QDomElement connectionElement = connectionNodes.item(j).toElement();
-				if (connectionElement.tagName() == "connection") {
-					core->connections[connectionElement.attribute("from").toInt()][connectionElement.attribute("to").toInt()] = connectionElement.attribute("value", "100").toInt();
-				}
+
+			for (QDomElement connectionEl = rootElement.firstChildElement("connection"); !connectionEl.isNull(); connectionEl = connectionEl.nextSiblingElement("connection")) {
+				Volume *volume = new Volume();
+				volume->lx = connectionEl.attribute("lx").toInt();
+				volume->rx = connectionEl.attribute("rx").toInt();
+				Machine *src = core->machines[connectionEl.attribute("from").toInt()];
+				Machine *dst = core->machines[connectionEl.attribute("to").toInt()];
+				src->connectionDst[dst] = volume;
+				dst->connectionSrc[src] = volume;
 			}
+
 		}
 	}
 
-
-	foreach (int i, core->machines.keys()) {
-		Machine *m = core->machines[i];
-		out << "Tracks " << m->name << endl;
-		for (int j = 0; j < m->track.keys().length(); j++) {
-			out << "\t" << m->track.keys().value(j) << "\t" << m->track.value(m->track.keys().value(j)) << endl;
-		}
-	}
-
-	foreach (int i, core->machines.keys()) {
-		Machine *m = core->machines[i];
-		out << "Patterns " << m->name << endl;
-		m->patterns.size();
-
-		for (int j = 0; j < m->patterns.keys().length(); j++) {
-			out << "\t" << m->patterns.keys().value(j) << endl;
-		}
-	}
-
-	Master *master = (Master *)core->machines[0];
-	master->track_first = track_first;
-	master->track_last = track_last;
-
-	out << "Beat per pattern: " << core->beat_per_pattern << endl;
-*/
 	return 0;
 }
 
 
 int Config::save(QString filename, Core *core) {
-/*
-	QTextStream out(stdout);
-	Master *master = (Master *)core->machines[0];
+
+	// Salva la cartella corrente
+	QFileInfo fileinfo(filename);
+	QSettings qsettings;
+	qsettings.setValue("state/cwd", fileinfo.path());
 
 	QDomDocument doc("config");
 
@@ -165,8 +165,8 @@ int Config::save(QString filename, Core *core) {
 	root.appendChild(settings);
 
 	QDomElement settingsPatterns = doc.createElement("patterns");
-	settingsPatterns.setAttribute("first", QString::number(master->track_first));
-	settingsPatterns.setAttribute("last", QString::number(master->track_last));
+	settingsPatterns.setAttribute("first", QString::number(core->track_first));
+	settingsPatterns.setAttribute("last", QString::number(core->track_last));
 	settingsPatterns.appendChild(doc.createTextNode(QString::number(core->total_patterns)));
 	settings.appendChild(settingsPatterns);
 
@@ -174,68 +174,103 @@ int Config::save(QString filename, Core *core) {
 	settingsBPM.appendChild(doc.createTextNode(QString::number(core->beat_per_pattern)));
 	settings.appendChild(settingsBPM);
 
-	QDomElement machines = doc.createElement("machines");
-	root.appendChild(machines);
+	QHash<Machine *, int> machineMapping;
+	int nextMachineId = 0;
 
-	foreach (Machine *machine, core->machines.values()) {
+	foreach (Machine *machine, core->machines) {
+		machineMapping[machine] = nextMachineId++;
+	}
+
+	QDomElement connectionsEl = doc.createElement("connections");
+
+	foreach (Machine *machine, core->machines) {
 		QDomElement machine_el = doc.createElement("machine");
-		machine_el.setAttribute("id", machine->id);
+		machine_el.setAttribute("id", machineMapping[machine]);
 		machine_el.setAttribute("x", machine->x);
 		machine_el.setAttribute("y", machine->y);
-		machine_el.setAttribute("type", machine->type);
+		if (machine->type == Machine::MachineMaster) {
+			machine_el.setAttribute("type", "master");
+		} else if (machine->type == Machine::MachineInput) {
+			machine_el.setAttribute("type", "input");
+		} else if (machine->type == Machine::MachineGenerator) {
+			machine_el.setAttribute("type", "generator");
+		} else if (machine->type == Machine::MachineEffect) {
+			machine_el.setAttribute("type", "effect");
+		}
 		machine_el.setAttribute("author", machine->author);
 		machine_el.setAttribute("name", machine->name);
+		if (!machine->alias.isNull()) machine_el.setAttribute("alias", machine->alias);
 
 		QDomElement patterns_el = doc.createElement("patterns");
-		foreach (int pattern, machine->patterns.keys()) {
+		int nextPatternId = 0;
+		QHash<MachinePattern *, QString> patternMapping;
+
+		foreach (MachinePattern *pattern, machine->patterns) {
+			QString patternId = QString("%1-%2").arg(machineMapping[machine]).arg(nextPatternId++);
+			patternMapping[pattern] = patternId;
+
 			QDomElement pattern_el = doc.createElement("pattern");
-			pattern_el.setAttribute("id", pattern);
-			foreach (int row, machine->patterns[pattern].keys()) {
-				if (row == -1) {
-					pattern_el.setAttribute("name", machine->patterns[pattern][row]["name"]);
-				} else {
-					QDomElement row_el = doc.createElement("row");
-					row_el.setAttribute("id", row);
-					pattern_el.appendChild(row_el);
-					foreach (QString value, machine->patterns[pattern][row].keys()) {
-						QDomElement value_el = doc.createElement(value);
-						value_el.appendChild(doc.createTextNode(machine->patterns[pattern][row][value]));
-						row_el.appendChild(value_el);
+			pattern_el.setAttribute("id", patternId);
+			pattern_el.setAttribute("name", pattern->name);
+
+			if (pattern->type == MachinePattern::StandardPattern) {
+				foreach (int row, pattern->params.keys()) {
+					QDomElement patternrow_el = doc.createElement("row");
+					patternrow_el.setAttribute("row", row);
+					foreach (int paramKey, pattern->params[row].keys()) {
+						QDomElement value_el = doc.createElement("value");
+						value_el.setAttribute("i", QString::number(paramKey));
+						value_el.appendChild(doc.createTextNode(pattern->params[row][paramKey]));
+						patternrow_el.appendChild(value_el);
 					}
+					pattern_el.appendChild(patternrow_el);
 				}
 			}
 			patterns_el.appendChild(pattern_el);
 		}
+
 		machine_el.appendChild(patterns_el);
 
-		QDomElement tracks_el = doc.createElement("tracks");
+		// Tracks
+		QDomElement tracksEl = doc.createElement("track");
 		foreach (int track, machine->track.keys()) {
-			QDomElement track_el = doc.createElement("pattern");
-			track_el.setAttribute("row", track);
-			track_el.appendChild(doc.createTextNode(QString::number(machine->track[track])));
-			tracks_el.appendChild(track_el);
-		}
-		machine_el.appendChild(tracks_el);
+			MachinePattern *pattern = machine->track[track];
+			if (pattern == NULL) continue;
 
-		machines.appendChild(machine_el);
+			QDomElement trackEl = doc.createElement("pattern");
+			trackEl.setAttribute("row", track);
+
+			if (pattern->type == MachinePattern::MutePattern) {
+				trackEl.setAttribute("type", "mute");
+			} else if (pattern->type == MachinePattern::BreakPattern) {
+				trackEl.setAttribute("type", "break");
+			} else {
+				trackEl.setAttribute("pattern", patternMapping[pattern]);
+			}
+
+			tracksEl.appendChild(trackEl);
+		}
+		machine_el.appendChild(tracksEl);
+
+		// Connections
+		foreach (Machine *dst, machine->connectionDst.keys()) {
+			QDomElement connectionEl = doc.createElement("connection");
+			connectionEl.setAttribute("from", machineMapping[machine]);
+			connectionEl.setAttribute("to", machineMapping[dst]);
+			connectionEl.setAttribute("lx", machine->connectionDst[dst]->lx);
+			connectionEl.setAttribute("rx", machine->connectionDst[dst]->rx);
+			connectionsEl.appendChild(connectionEl);
+		}
+
+		root.appendChild(machine_el);
 	}
 
-	QDomElement connections_el = doc.createElement("connections");
-	foreach (int from, core->connections.keys()) {
-		foreach (int to, core->connections[from].keys()) {
-			QDomElement connection_el = doc.createElement("connection");
-			connection_el.setAttribute("from", from);
-			connection_el.setAttribute("to", to);
-			connection_el.setAttribute("value", core->connections[from][to]);
-			connections_el.appendChild(connection_el);
-		}
-	}
-	root.appendChild(connections_el);
+	root.appendChild(connectionsEl);
 
 	QFile file(filename);
 	file.open(QIODevice::WriteOnly);
 	file.write(doc.toByteArray());
 	file.close();
-*/
+
 	return 0;
 }

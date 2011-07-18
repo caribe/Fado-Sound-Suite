@@ -10,8 +10,6 @@ Sine::Sine() {
 	addParam("freq", "The sine frequency", Param::ParamFloat, 50, 20000);
 	addParam("offset", "The sine offset", Param::ParamInt, 0, 100);
 
-	// params["freq"]->set(1000.0);
-
 	rotor = 0;
 }
 
@@ -19,9 +17,9 @@ Machine *Sine::factory() {
 	return new Sine();
 }
 
-void Sine::reconfig() {
+void Sine::reconfig(const int sampling_rate) {
 
-	// rotor_step = PI_2 / (core->sampling_rate / params["freq"]->getFloat()); // Sample rate / Frequency / (2*PI)
+	rotor_step = PI_2 / (sampling_rate / params[0]->floatValue); // Sample rate / Frequency / (2*PI)
 
 }
 

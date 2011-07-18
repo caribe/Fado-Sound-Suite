@@ -1,8 +1,9 @@
 #ifndef CORE_FILEINPUT_H
 #define CORE_FILEINPUT_H
 
-#include <sndfile.h>
+#include <QDebug>
 
+#include <sndfile.h>
 
 #include "ext/machine.h"
 
@@ -11,7 +12,7 @@ class FileInput : public Machine {
 
 	public:
 		FileInput();
-		void reconfig();
+		void reconfig(const int sampling_rate);
 		int process(jack_nframes_t nframes);
 		void init();
 		void finish();

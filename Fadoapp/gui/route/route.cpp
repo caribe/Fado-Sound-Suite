@@ -30,6 +30,7 @@ Route::Route(QWidget *parent, Core *core) : QSplitter(parent)
 	addWidget(routeEditor);
 
 	setStretchFactor(1, 1);
+
 }
 
 
@@ -75,7 +76,7 @@ void Route::delMachine(Machine *machine)
 {
 	if (machineBoxes.contains(machine)) {
 
-		qDebug() << "Remove #" << machine->name << endl;
+		qDebug() << "Remove #" << machine->name;
 
 		// Removing connections
 
@@ -94,7 +95,7 @@ void Route::delMachine(Machine *machine)
 		delete machineBoxes[machine]; // Destroys the MachineBox
 		machineBoxes.remove(machine); // Removes the hash entry
 
-		core->machines.removeOne(machine); // Deletes the machine from store list
+		core->machines.removeOne(machine); // Deletes the machine from core list
 		// delete machine; // Destroys the machine instance
 
 		// Graph update
@@ -109,6 +110,12 @@ void Route::delMachine(Machine *machine)
 void Route::delMachine(MachineBox *machineBox)
 {
 	delMachine(machineBox->m);
+}
+
+
+void Route::addConnection(Machine *m1, Machine *m2)
+{
+	addConnection(machineBoxes[m1], machineBoxes[m2]);
 }
 
 
@@ -170,10 +177,10 @@ void Route::connectionFinish(MachineBox *m1, int x, int y)
 	extraline->hide();
 
 	foreach (MachineBox *m2, machineBoxes) {
-		// out << "Check #" << m1->id() << " #" << m2->id() << endl;
+		// out << "Check #" << m1->id() << " #" << m2->id();
 		if (x >= m2->x() - 50 and x <= m2->x() + 50 and y >= m2->y() - 25 and y <= m2->y() + 25) {
 			int flag = core->toggleConnection(m1->m, m2->m);
-			// out << "Connection " << flag << endl;
+			// out << "Connection " << flag;
 
 			if (core->orderMachines()) {
 				if (flag == 0) {
@@ -203,4 +210,30 @@ void Route::slotDisplayStatus(const QString &status)
 void Route::slotClearStatus()
 {
 	emit signalClearStatus();
+}
+
+
+void Route::slotDisplayPatterns(Machine *m)
+{
+	emit signalDisplayPatterns(m);
+}
+
+
+void Route::renMachine(MachineBox *machineBox)
+{
+	QString oldAlias;
+
+	if (machineBox->m->alias.isNull()) {
+		oldAlias = machineBox->m->name;
+	} else {
+		oldAlias = machineBox->m->alias;
+	}
+
+	QString newAlias = QInputDialog::getText(this, tr("Rename machine"), tr("New name"), QLineEdit::Normal, oldAlias);
+
+	if (!newAlias.isNull() and !newAlias.isEmpty()) {
+		machineBox->m->alias = newAlias;
+		machineBox->refreshName();
+		qDebug() << "Renamed" << newAlias;
+	}
 }

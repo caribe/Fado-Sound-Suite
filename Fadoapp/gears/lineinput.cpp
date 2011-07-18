@@ -13,7 +13,7 @@ Machine *LineInput::factory() {
 	return new LineInput();
 }
 
-void LineInput::reconfig() {}
+void LineInput::reconfig(const int sampling_rate) {}
 
 
-int LineInput::process(jack_nframes_t nframes) {}
+int LineInput::process(jack_nframes_t nframes) { return 0; }

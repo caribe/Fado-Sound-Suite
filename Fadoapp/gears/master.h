@@ -20,15 +20,13 @@ class Master : public Machine {
 
 		int period_per_beat;
 		int period_counter, beat_counter, pattern_counter;
-		int track_first, track_last;
 		Core *core;
 		jack_client_t *client;
 		jack_port_t **input_port;
 		jack_port_t **output_port;
 
-		// Master(Store *store);
 		int init(Core *core);
-		void reconfig();
+		void reconfig(const int sampling_rate);
 		int go(jack_client_t *client, jack_port_t **input_port, jack_port_t **output_port, bool record);
 		int stop();
 		int jack_process(jack_nframes_t nframes);

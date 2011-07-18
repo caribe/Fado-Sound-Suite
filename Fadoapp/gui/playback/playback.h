@@ -27,7 +27,6 @@ class Playback : public QWidget
 		Core *core;
 		QGraphicsScene *scenef, *scenet;
 		QScrollBar *scrollBar;
-		int state;
 		QFile *file;
 		QGraphicsPolygonItem *tlx, *trx, *flx;
 

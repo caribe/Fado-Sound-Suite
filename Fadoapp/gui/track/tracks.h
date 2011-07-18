@@ -27,6 +27,9 @@ class Tracks : public QSplitter
 		Machine *currentMachine();
 		void refreshMachines();
 
+	private:
+		void selectNext();
+
 	public slots:
 		void refreshPatterns();
 		void addButtonSlot();

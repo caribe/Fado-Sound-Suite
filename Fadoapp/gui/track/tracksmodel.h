@@ -23,6 +23,7 @@ class TracksModel : public QAbstractTableModel
 		QVariant headerData(int section, Qt::Orientation orientation, int role) const;
 
 		void reload();
+		void clear(const QModelIndex &index);
 };
 
 #endif

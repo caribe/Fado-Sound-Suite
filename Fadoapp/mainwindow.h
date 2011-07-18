@@ -51,6 +51,7 @@ class MainWindow : public QMainWindow
 		void messageCritical(const QString &title, const QString &text);
 		void tabChanged(int index);
 		void refreshMachines();
+		void slotDisplayPatterns(Machine *m);
 
 		void menuFileCloseSlot();
 		void menuFileNewSlot();

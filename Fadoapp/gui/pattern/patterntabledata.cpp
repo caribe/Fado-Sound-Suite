@@ -39,7 +39,7 @@ QVariant PatternTableData::data(const QModelIndex& index, int role) const
 		if (pat != 0) {
 			int row = index.row();
 			int col = index.column();
-			if (pat->params.length() > row and pat->params[row].length() > col) {
+			if (pat->params.contains(row) and pat->params[row].contains(col)) {
 				return pat->params[index.row()][index.column()];
 			} else {
 				return QVariant();
@@ -78,19 +78,23 @@ bool PatternTableData::setData(const QModelIndex& index, const QVariant & value,
 	strValue = machine->validate(col, strValue);
 
 	pat->params[row][col] = strValue;
+
+	return true;
 }
 
 
 QVariant PatternTableData::headerData(int section, Qt::Orientation orientation, int role) const
 {
-	if (role != Qt::DisplayRole) { 
-		return QVariant();
-	} else if (orientation == Qt::Horizontal) {
-		Machine *machine = pattern->currentMachine();
-		if (machine == 0) return QVariant();
-		return machine->params[section]->name;
-	} else if (orientation == Qt::Vertical) {
-		return section;
+	if (role == Qt::DisplayRole) {
+		if (orientation == Qt::Horizontal) {
+			Machine *machine = pattern->currentMachine();
+			if (machine == 0) return QVariant();
+			return machine->params[section]->name;
+		} else if (orientation == Qt::Vertical) {
+			return section;
+		}
 	}
+
+	return QVariant();
 }
 

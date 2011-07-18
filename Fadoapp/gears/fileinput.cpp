@@ -7,10 +7,9 @@ FileInput::FileInput()
 	author = "Core";
 	name = "fileinput";
 	description = "Input";
-/*
-	addParam(new Param("file", "File name path", Param::string_t, 0, 0));
-	addParam(new Param("seek", "Position inside file", Param::int_t, 0, 1000000));
-	*/
+
+	addParam(new Param("file", "File name path", Param::ParamString, 0, 0));
+	addParam(new Param("seek", "Position inside file", Param::ParamInt, 0, 1000000));
 }
 
 
@@ -22,34 +21,34 @@ Machine *FileInput::factory() {
 void FileInput::init()
 {
 	SNDFILE *file;
-/*
-	foreach (int pattern, patterns.keys()) {
-		foreach (int row, patterns[pattern].keys()) {
-			if (patterns[pattern][row].contains("file")) {
+
+	foreach (MachinePattern *pattern, patterns) {
+		foreach (int row, pattern->params.keys()) {
+			if (pattern->params[row].contains(0)) {
 				info.format = 0;
-				file = sf_open(patterns[pattern][row]["file"].toUtf8().data(), SFM_READ, &info);
+				file = sf_open(pattern->params[row][0].toLatin1().data(), SFM_READ, &info);
 				if (file == 0) {
-					printf("Cannot open file %s\n", patterns[pattern][row]["file"].toUtf8().data());
+					qDebug() << "Cannot open file" << pattern->params[row][0];
 				} else if (sf_error(file)) {
-					printf("Audio file error: %s\n", sf_strerror(file));
+					qDebug() << "Audio file error" << sf_strerror(file);
 				} else {
-					printf("Samplarate: %d Channels: %d Frames: %d\n", info.samplerate, info.channels, info.frames);
+					qDebug() << "Samplarate:" << info.samplerate << "Channels:" << info.channels << "Frames:" << info.frames;
 
 					float *buf = (float *)malloc(sizeof(float) * info.frames * info.channels);
 					int i = sf_readf_float(file, buf, info.frames);
 					sf_close(file);
 					
 					if (i != info.frames) {
-						printf("Loaded only %d bytes...\n", i);
+						qDebug() << "Loaded only bytes" << i;
 						free(buf);
 					} else {
-						filebuffer[patterns[pattern][row]["file"]] = buf;
+						filebuffer[pattern->params[row][0]] = buf;
 					}
 				}
 			}
 		}
 	}
-*/
+
 }
 
 
@@ -59,7 +58,7 @@ void FileInput::finish() {
 	}
 }
 
-void FileInput::reconfig() {
+void FileInput::reconfig(const int sampling_rate) {
 	/*
 	seek = 0;
 	ratio = (float)info.samplerate / (float)store->sampling_rate;

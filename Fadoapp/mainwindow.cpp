@@ -11,7 +11,7 @@ MainWindow::MainWindow() : QMainWindow() {
 	core = new Core();
 	connect(core, SIGNAL(messageCritical(QString,QString)), SLOT(messageCritical(QString,QString)));
 	core->loadPlugins();
-	// core->jack_init();
+	core->jack_init();
 
 	// *** tabs ***
 
@@ -34,6 +34,7 @@ MainWindow::MainWindow() : QMainWindow() {
 
 	connect(route, SIGNAL(signalDisplayStatus(QString)), status, SLOT(showMessage(QString)));
 	connect(route, SIGNAL(signalClearStatus()), status, SLOT(clearMessage()));
+	connect(route, SIGNAL(signalDisplayPatterns(Machine*)), SLOT(slotDisplayPatterns(Machine*)));
 
 	connect(tabs, SIGNAL(currentChanged(int)), SLOT(tabChanged(int)));
 
@@ -159,8 +160,6 @@ void MainWindow::menuFileNewSlot() {
 	Master *tx = new Master();
 	tx->x = 100;
 	tx->y = 100;
-	tx->track_first = 0;
-	tx->track_last = core->total_patterns - 1;
 
 	core->machines.append(tx);
 
@@ -174,25 +173,22 @@ void MainWindow::menuFileNewSlot() {
 
 
 void MainWindow::menuFileOpenSlot() {
-	/*
-	QString filename = QFileDialog::getOpenFileName(this, "Open Project", "", "Fado project files (*.xml)");
-	if (filename == "") return;
+	QSettings settings;
+	QString filename = QFileDialog::getOpenFileName(this, tr("Open Project"), settings.value("state/cwd", "").toString(), tr("Fado project files (*.fado)"));
+	if (filename.isNull()) return;
 
 	menuFileCloseSlot();
-
-	if (core->load(filename) != 0) {
-		QMessageBox::critical(this, "Open failed", core->errstr);
-	} else {
-		setWindowTitle("Fado - "+filename);
-		foreach (int i, core->store->machines.keys()) route->addMachine(core->store->machines[i]);
-		foreach (int i, core->store->connections.keys()) {
-			foreach (int j, core->store->connections[i].keys()) {
-				route->addConnection(i, j);
+	if (core->load(filename)) {
+		setWindowTitle(tr("%1 - Fado").arg(filename));
+		foreach (Machine *machine, core->machines) route->addMachine(machine);
+		foreach (Machine *m1, core->machines) {
+			foreach (Machine *m2, m1->connectionDst.keys()) {
+				route->addConnection(m1, m2);
 			}
 		}
+		pattern->refreshMachines();
+		track->refreshMachines();
 	}
-
-	*/
 }
 
 
@@ -205,9 +201,9 @@ void MainWindow::menuFileSaveSlot()
 
 
 void MainWindow::menuFileSaveAsSlot() {
-	QString filename = QFileDialog::getSaveFileName(this, "Save Project", "", "Fado project files (*.xml)");
-
-	if (filename == "") return;
+	QSettings settings;
+	QString filename = QFileDialog::getSaveFileName(this, tr("Save Project"), settings.value("state/cwd", "").toString(), tr("Fado project files (*.fado)"));
+	if (filename.isNull()) return;
 
 	if (core->save(filename) == 0) {
 		setWindowTitle("Fado - "+filename);
@@ -218,7 +214,7 @@ void MainWindow::menuFileSaveAsSlot() {
 
 void MainWindow::menuHelpAboutSlot()
 {
-	QMessageBox::about(this, "Fado", "Synthetic music generator and sound processor");
+	QMessageBox::about(this, tr("Fado"), tr("Synthetic music generator and sound processor"));
 }
 
 
@@ -261,6 +257,7 @@ void MainWindow::setTabByAction()
 void MainWindow::closeEvent(QCloseEvent *event)
 {
 	this->settingsSave();
+	event->accept();
 }
 
 
@@ -311,4 +308,11 @@ void MainWindow::tabChanged(int index)
 	if (index == 1) {
 		pattern->refreshPatterns();
 	}
+}
+
+
+void MainWindow::slotDisplayPatterns(Machine *m)
+{
+	pattern->displayPatterns(m);
+	tabs->setCurrentIndex(1);
 }

@@ -30,5 +30,6 @@
         <file>user.png</file>
         <file>system-monitor.png</file>
         <file>cross.png</file>
+        <file>pencil.png</file>
     </qresource>
 </RCC>

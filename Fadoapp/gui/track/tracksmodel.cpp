@@ -29,20 +29,19 @@ QVariant TracksModel::data(const QModelIndex& index, int role) const
 {
 	if (index.isValid()) {
 		if (role == Qt::BackgroundRole) {
-			Master *master = (Master *)core->machines[0];
-			if (master->track_first == index.row()) {
-				if (master->track_last == index.row()) {
+			if (core->track_first == index.row()) {
+				if (core->track_last == index.row()) {
 					return QBrush(QColor(0xff, 0xff, 0x80));
 				} else {
 					return QBrush(QColor(0x80, 0xff, 0x80));
 				}
-			} else if (master->track_last == index.row()) {
+			} else if (core->track_last == index.row()) {
 				return QBrush(QColor(0xff, 0x80, 0x80));
 			}
 		} else if (role == Qt::DisplayRole or role == Qt::EditRole) {
 			Machine *machine = core->machines[index.column()];
-			MachinePattern *pattern = machine->track[index.row()];
-			if (pattern) {
+			if (machine->track.contains(index.row())) {
+				MachinePattern *pattern = machine->track[index.row()];
 				if (pattern->type == MachinePattern::MutePattern) {
 					return QVariant("<mute>");
 				} else if (pattern->type == MachinePattern::BreakPattern) {
@@ -73,4 +72,15 @@ QVariant TracksModel::headerData(int section, Qt::Orientation orientation, int r
 	}
 
 	return QVariant();
+}
+
+
+void TracksModel::clear(const QModelIndex &index) {
+	if (index.isValid()) {
+		Machine *machine = core->machines[index.column()];
+		if (machine != NULL) {
+			machine->track[index.row()] = NULL;
+			dataChanged(index, index);
+		}
+	}
 }

@@ -47,6 +47,7 @@ class Pattern : public QWidget
 	
 	public slots:
 		void refreshMachines();
+		void displayPatterns(Machine *);
 
 		void activeCol(int col);
 		void addPattern();
