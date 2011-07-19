@@ -60,20 +60,38 @@ void Core::loadPlugins()
 
 	// Plugins
 
-	QDir libs(pluginsPath);
-	QStringList dirList = libs.entryList();
+	QDir dir(pluginsPath);
+	loadPluginsFolder(dir, generatorsBuffer, effectsBuffer);
 
-	qDebug() << "Loading machines...";
+	foreach (QStandardItem *item, generatorsBuffer.values()) {
+		generatorsFolder->appendRow(item);
+	}
+
+	foreach (QStandardItem *item, effectsBuffer.values()) {
+		effectsFolder->appendRow(item);
+	}
+}
+
+
+
+void Core::loadPluginsFolder(QDir &dir, QHash<QString, QStandardItem *> &generatorsBuffer, QHash<QString, QStandardItem *> &effectsBuffer)
+{
+	qDebug() << "Loading machines..." << dir.path();
+
+	QStringList dirList = dir.entryList();
 
 	foreach (QString name, dirList) {
 
-		QFileInfo info(pluginsPath + name);
+		if (name.startsWith(".")) continue;
 
-		if (info.isDir() && name != "." && name != "..") {
+		QFileInfo info(dir.path() + "/" + name);
 
-			qDebug() << "Trying " << pluginsPath + name + "/" + name + ".so";
+		if (info.isDir()) {
+			QDir dir(info.filePath());
+			loadPluginsFolder(dir, generatorsBuffer, effectsBuffer);
+		} else if (name.endsWith(".so")) {
 
-			QPluginLoader *lib = new QPluginLoader(pluginsPath + name + "/lib" + name + ".so");
+			QPluginLoader *lib = new QPluginLoader(info.filePath());
 
 			if (lib->load()) {
 				int id = gears.length();
@@ -83,7 +101,7 @@ void Core::loadPlugins()
 
 				qDebug() << "Loaded" << machine->name << id;
 
-				item = new QStandardItem(QIcon(":/machine"), machine->name);
+				QStandardItem *item = new QStandardItem(QIcon(":/machine"), machine->name);
 				item->setEditable(false);
 				item->setData(id);
 
@@ -110,15 +128,8 @@ void Core::loadPlugins()
 			}
 		}
 	}
-
-	foreach (QStandardItem *item, generatorsBuffer.values()) {
-		generatorsFolder->appendRow(item);
-	}
-
-	foreach (QStandardItem *item, effectsBuffer.values()) {
-		effectsFolder->appendRow(item);
-	}
 }
+
 
 
 int Core::jack_init()
