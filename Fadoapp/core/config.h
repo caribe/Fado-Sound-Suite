@@ -2,6 +2,7 @@
 #define CORE_CONFIG_H
 
 #include <QDomDocument>
+#include <QSettings>
 #include <QDebug>
 
 class Config;

@@ -33,6 +33,7 @@ public:
 
 	QString pluginsPath;
 	void loadPlugins();
+	void loadPluginsFolder(QDir &dir, QHash<QString, QStandardItem *> &generatorsBuffer, QHash<QString, QStandardItem *> &effectsBuffer);
 
 	Master *master;
 	QString filename;
@@ -43,7 +44,7 @@ public:
 	// Jack handling
 
 	int jack_init();
-	int load(QString filename);
+	bool load(QString filename);
 	int start(bool record);
 	int stop();
 	int save();
@@ -53,10 +54,11 @@ public:
 	jack_port_t *input_port[4];
 	jack_port_t *output_port[4];
 
-	// *** Store
+	// *** Core
 
-	int beat_per_pattern, total_patterns;
+	int beat_per_pattern, total_patterns, track_first, track_last;
 	int sampling_rate, buffer_size;
+	bool record;
 
 	// Gears
 	QStandardItemModel *gearsTree;
@@ -67,6 +69,11 @@ public:
 
 	// Machine render order
 	QList<Machine *> order;
+
+	// Patterns
+
+	MachinePattern *mutePattern;
+	MachinePattern *breakPattern;
 
 	// Methods
 

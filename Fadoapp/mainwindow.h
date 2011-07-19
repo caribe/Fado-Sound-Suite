@@ -8,6 +8,7 @@
 #include <QMessageBox>
 #include <QKeyEvent>
 #include <QSettings>
+#include <QToolBar>
 #include <QDebug>
 
 //! MainWindow class
@@ -16,7 +17,7 @@ class MainWindow;
 #include "core/core.h"
 
 #include "gui/route/route.h"
-#include "gui/track/track.h"
+#include "gui/track/tracks.h"
 #include "gui/pattern/pattern.h"
 #include "gui/playback/playback.h"
 
@@ -29,7 +30,7 @@ class MainWindow : public QMainWindow
 		Core *core;
 
 		Route *route;
-		Track *track;
+		Tracks *track;
 		Pattern *pattern;
 		Playback *playback;
 
@@ -50,6 +51,7 @@ class MainWindow : public QMainWindow
 		void messageCritical(const QString &title, const QString &text);
 		void tabChanged(int index);
 		void refreshMachines();
+		void slotDisplayPatterns(Machine *m);
 
 		void menuFileCloseSlot();
 		void menuFileNewSlot();

@@ -15,6 +15,7 @@ int Updates::check()
 	QUrl url("http://saitfainder.altervista.org/fado/updates.php");
 	QNetworkRequest req(url);
 	manager->get(req);
+	return 0;
 }
 
 
@@ -36,14 +37,13 @@ void Updates::replyFinished(QNetworkReply *reply)
 		QString version;
 		QHash<QString, QHash<QString, QHash<QString, QString> > > machines;
 
-		QDomNodeList rootNodes = doc.documentElement().childNodes();
-		for (int i = 0; i < rootNodes.length(); i++) if (rootNodes.item(i).isElement()) {
-			QDomElement el = rootNodes.item(i).toElement();
+		QDomElement rootEl = doc.documentElement();
+		for (QDomElement el = rootEl.firstChildElement(); !el.isNull(); el = el.nextSiblingElement()) {
 			if (el.tagName() == "version") {
 				version = el.text();
 			} else if (el.tagName() == "machines") {
 				QDomNodeList machinesNodes = el.childNodes();
-				for (int i = 0; i < machinesNodes.length(); i++) if (machinesNodes.item(i).isElement()) {
+				for (unsigned int i = 0; i < machinesNodes.length(); i++) if (machinesNodes.item(i).isElement()) {
 					QDomElement machinesElement = machinesNodes.item(i).toElement();
 					if (machinesElement.tagName() == "machine") {
 						machines[machinesElement.attribute("type")][machinesElement.attribute("author")][machinesElement.attribute("name")] = machinesElement.text();
@@ -61,9 +61,9 @@ void Updates::replyFinished(QNetworkReply *reply)
 					if (core->store->info[type][author].contains(name)) {
 						QStringList machineInfo = core->store->info[type][author][name]();
 						if (versionCompare(machineInfo[4], machines[type][author][name]) == 1) count++;
-					} else qDebug() << "Unkown machine `" << type << "." << author << "." << name << "`" << endl;
-				} else qDebug() << "Unkown author `" << type << "." << author << "`" << endl;
-			} else qDebug() << "Unkown type `" << type << "`" << endl;
+					} else qDebug() << "Unkown machine `" << type << "." << author << "." << name << "`";
+				} else qDebug() << "Unkown author `" << type << "." << author << "`";
+			} else qDebug() << "Unkown type `" << type << "`";
 		}
 */
 		if (flag) {

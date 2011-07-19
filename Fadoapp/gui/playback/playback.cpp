@@ -8,23 +8,6 @@ Playback::Playback(QWidget *parent, Core *core) : QWidget(parent)
 	grid->setSpacing(3);
 	grid->setContentsMargins(3, 3, 3, 3);
 
-	QPushButton *play = new QPushButton(QIcon(":/control.png"), tr("Play"), this);
-	QPushButton *rec = new QPushButton(QIcon(":/control-record.png"), tr("Rec"), this);
-	QPushButton *stop = new QPushButton(QIcon(":/control-stop-square.png"), tr("Stop"), this);
-	QPushButton *view = new QPushButton(QIcon(":/chart.png"), tr("View"), this);
-
-	connect(play, SIGNAL(clicked()), this, SLOT(buttonPlay()));
-	connect(rec,  SIGNAL(clicked()), this, SLOT(buttonRec()));
-	connect(stop, SIGNAL(clicked()), this, SLOT(buttonStop()));
-	connect(view, SIGNAL(clicked()), this, SLOT(buttonView()));
-
-	grid->setColumnStretch(0, 1);
-	grid->addWidget(play, 0, 1);
-	grid->addWidget(rec, 0, 2);
-	grid->addWidget(stop, 0, 3);
-	grid->addWidget(view, 0, 4);
-	grid->setColumnStretch(6, 1);
-
 	file = new QFile();
 
 	scrollBar = new QScrollBar(Qt::Horizontal);
@@ -61,37 +44,27 @@ Playback::Playback(QWidget *parent, Core *core) : QWidget(parent)
 	flx->setPen(QPen(QColor(0xff, 0, 0), 1));
 	flx->setBrush(QBrush(QColor(0xff, 0x80, 0x80)));
 	scenef->addItem(flx);
-
-	state = 0;
 }
 
 
 
 void Playback::buttonPlay()
 {
-	if (core->start(false) != 0) {
-		state = 0;
-	} else {
-		state = 1;
-	}
+	core->start(false);
 }
 
 
 
 void Playback::buttonRec()
 {
-	if (core->start(true) != 0) {
-		state = 0;
-	} else {
-		state = 2;
-	}
+	core->start(true);
 }
 
 
 
 void Playback::buttonStop()
 {
-	state = 0;
+	core->stop();
 }
 
 
@@ -146,7 +119,7 @@ void Playback::buttonView()
 		in[i/2][0] = buffer[i] / 32768.0;
 		in[i/2][1] = 0;
 	}
-	fftw_execute(p); /* repeat as needed */
+	fftw_execute(p); // repeat as needed
 
 	*lx << QPointF(0, -1);
 	max = 0;
@@ -154,7 +127,7 @@ void Playback::buttonView()
 	for (int i = 0; i < 512; i++) *lx << QPointF(i, (fabs(out[i][0]) * -240 / max) - 1);
 	*lx << QPointF(512, -1);
 
-/*
+
 	for (int i = 0; i < 2048; i+=2) {
 		in[i/2][0] = buffer[i+1] / 32768.0;
 		in[i/2][1] = 0;
@@ -165,7 +138,7 @@ void Playback::buttonView()
 	for (int i = 0; i < 512; i++) if (fabs(out[i][0]) > max) max = fabs(out[i][0]);
 	for (int i = 0; i < 512; i++) *rx << QPointF(i, (fabs(out[i][0]) * 240 / max) + 1);
 	*rx << QPointF(512, 1);
-*/
+
 
 	fftw_destroy_plan(p);
 	fftw_free(in);

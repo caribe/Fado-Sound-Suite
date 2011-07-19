@@ -3,6 +3,7 @@
 
 #include <QGraphicsRectItem>
 #include <QGraphicsSceneMouseEvent>
+#include <QGraphicsSceneContextMenuEvent>
 #include <QKeyEvent>
 #include <QBrush>
 #include <QCursor>
@@ -21,10 +22,10 @@ class MachineBox : public QGraphicsRectItem
 
 		Route *route;
 		Machine *m;
-		QString longname;
 		QColor color;
 		int dragMode;
 		int ix, iy;
+		QGraphicsTextItem *boxText;
 		
 		QHash<int, QGraphicsLineItem *> connections;
 		QList<QColor> backgrounds;
@@ -37,6 +38,10 @@ class MachineBox : public QGraphicsRectItem
 
 		void hoverEnterEvent(QGraphicsSceneHoverEvent *event);
 		void hoverLeaveEvent(QGraphicsSceneHoverEvent *event);
+
+		void contextMenuEvent(QGraphicsSceneContextMenuEvent *event);
+
+		void refreshName();
 };
 
 #endif

@@ -4,18 +4,21 @@
 int Machine::preprocess(jack_nframes_t nframes, int process)
 {
 	for (unsigned int j = 0; j < nframes; j++) li[j] = ri[j] = 0;
-/*
-	foreach (int i, store->iconn[id]) {
-		jack_default_audio_sample_t *lx = store->machines[i]->lx;
-		jack_default_audio_sample_t *rx = store->machines[i]->rx;
-		float perc = store->connections[i][id] / (100.0 * store->iconn[id].length());
+
+	float value = 100.0 * this->connectionSrc.size();
+
+	foreach (Machine *src, this->connectionSrc.keys()) {
+		jack_default_audio_sample_t *lx = src->lx;
+		jack_default_audio_sample_t *rx = src->rx;
+
+		Volume *volume = this->connectionSrc[src];
 
 		for (unsigned int j = 0; j < nframes; j++) {
-			li[j] += lx[j] * perc;
-			ri[j] += rx[j] * perc;
+			li[j] += lx[j] * volume->lx / value;
+			ri[j] += rx[j] * volume->rx / value;
 		}
 	}
-*/
+
 	if (process > 0) this->process(nframes);
 	return 0;
 }
@@ -125,16 +128,8 @@ QString Machine::validate(int param, QString value)
 
 MachinePattern *Machine::addPattern(const QString &name)
 {
-	int pl = params.length();
-
 	MachinePattern *pattern = new MachinePattern();
 	pattern->name = name;
-
-	for (int i = 0; i < 16; i++) {
-		QList<QString> patternRow;
-		for (int j = 0; j < pl; j++) patternRow << QString();
-		pattern->params << patternRow;
-	}
-
 	patterns.append(pattern);
+	return pattern;
 }

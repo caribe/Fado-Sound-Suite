@@ -1,7 +1,7 @@
 #ifndef SINE_H
 #define SINE_H
 
-#include "../../Fadoapp/ext/machine.h"
+#include "../../../Fadoapp/ext/machine.h"
 
 #include <cmath>
 
@@ -17,7 +17,7 @@ private:
 
 public:
 	Sine();
-	void reconfig();
+	void reconfig(const int sampling_rate);
 	Machine *factory();
 	int process(jack_nframes_t nframes);
 

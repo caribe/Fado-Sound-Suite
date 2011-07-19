@@ -8,6 +8,14 @@ Core::Core(QObject *parent) : QObject(parent)
 	beat_per_pattern = 16;
 	total_patterns = 16;
 	gearsTree = new QStandardItemModel();
+
+	mutePattern = new MachinePattern();
+	mutePattern->type = MachinePattern::MutePattern;
+	mutePattern->name = "Mute";
+
+	breakPattern = new MachinePattern();
+	breakPattern->type = MachinePattern::BreakPattern;
+	breakPattern->name = "Break";
 }
 
 
@@ -52,20 +60,38 @@ void Core::loadPlugins()
 
 	// Plugins
 
-	QDir libs(pluginsPath);
-	QStringList dirList = libs.entryList();
+	QDir dir(pluginsPath);
+	loadPluginsFolder(dir, generatorsBuffer, effectsBuffer);
 
-	qDebug() << "Loading machines...";
+	foreach (QStandardItem *item, generatorsBuffer.values()) {
+		generatorsFolder->appendRow(item);
+	}
+
+	foreach (QStandardItem *item, effectsBuffer.values()) {
+		effectsFolder->appendRow(item);
+	}
+}
+
+
+
+void Core::loadPluginsFolder(QDir &dir, QHash<QString, QStandardItem *> &generatorsBuffer, QHash<QString, QStandardItem *> &effectsBuffer)
+{
+	qDebug() << "Loading machines..." << dir.path();
+
+	QStringList dirList = dir.entryList();
 
 	foreach (QString name, dirList) {
 
-		QFileInfo info(pluginsPath + name);
+		if (name.startsWith(".")) continue;
 
-		if (info.isDir() && name != "." && name != "..") {
+		QFileInfo info(dir.path() + "/" + name);
 
-			qDebug() << "Trying " << pluginsPath + name + "/" + name + ".so";
+		if (info.isDir()) {
+			QDir dir(info.filePath());
+			loadPluginsFolder(dir, generatorsBuffer, effectsBuffer);
+		} else if (name.endsWith(".so")) {
 
-			QPluginLoader *lib = new QPluginLoader(pluginsPath + name + "/lib" + name + ".so");
+			QPluginLoader *lib = new QPluginLoader(info.filePath());
 
 			if (lib->load()) {
 				int id = gears.length();
@@ -75,13 +101,13 @@ void Core::loadPlugins()
 
 				qDebug() << "Loaded" << machine->name << id;
 
-				item = new QStandardItem(QIcon(":/machine"), machine->name);
+				QStandardItem *item = new QStandardItem(QIcon(":/machine"), machine->name);
 				item->setEditable(false);
 				item->setData(id);
 
 				if (machine->type == Machine::MachineGenerator) {
 					if (generatorsBuffer.contains(machine->author) == false) {
-						QStandardItem *item = new QStandardItem(machine->author);
+						QStandardItem *item = new QStandardItem(QIcon(":/user.png"), machine->author);
 						item->setEditable(false);
 						item->setData(-100);
 						generatorsBuffer[machine->author] = item;
@@ -89,7 +115,7 @@ void Core::loadPlugins()
 					generatorsBuffer[machine->author]->appendRow(item);
 				} else if (machine->type == Machine::MachineEffect) {
 					if (effectsBuffer.contains(machine->author) == false) {
-						QStandardItem *item = new QStandardItem(machine->author);
+						QStandardItem *item = new QStandardItem(QIcon(":/user.png"), machine->author);
 						item->setEditable(false);
 						item->setData(-100);
 						effectsBuffer[machine->author] = item;
@@ -102,20 +128,13 @@ void Core::loadPlugins()
 			}
 		}
 	}
-
-	foreach (QStandardItem *item, generatorsBuffer.values()) {
-		generatorsFolder->appendRow(item);
-	}
-
-	foreach (QStandardItem *item, effectsBuffer.values()) {
-		effectsFolder->appendRow(item);
-	}
 }
+
 
 
 int Core::jack_init()
 {
-		qDebug() << "Starting Jack..." << endl;
+		qDebug() << "Starting Jack...";
 
 	// try to become a client of the JACK server
 	jack_status_t jack_status;
@@ -124,23 +143,23 @@ int Core::jack_init()
 		return 1;
 	}
 
-		qDebug() << "Define callback..." << endl;
+		qDebug() << "Define callback...";
 
 	// tell the JACK server to call `process()' whenever there is work to be done.
 	jack_set_process_callback(client, ::jack_process, (void *)this);
 
-		qDebug() << "Define shutdown..." << endl;
+		qDebug() << "Define shutdown...";
 
 	// tell the JACK server to call `jack_shutdown()' if it ever shuts down, either entirely, or if it just decides to stop calling us.
 	jack_on_shutdown(client, ::jack_shutdown, (void *)this);
 
-		qDebug() << "Get sample rate..." << endl;
+		qDebug() << "Get sample rate...";
 
 	// display the current sample rate. 
 	sampling_rate = jack_get_sample_rate(client);
 	buffer_size = jack_get_buffer_size(client);
 
-	qDebug() << "Engine sample rate: " << jack_get_sample_rate(client) << endl;
+	qDebug() << "Engine sample rate: " << jack_get_sample_rate(client);
 
 	// create four ports
 	input_port[0] = jack_port_register(client, "input_lx", JACK_DEFAULT_AUDIO_TYPE, JackPortIsInput, 0);
@@ -153,26 +172,25 @@ int Core::jack_init()
 }
 
 
-int Core::load(QString filename)
+bool Core::load(QString filename)
 {
 	this->filename = filename;
-	qDebug() << "Loading config... (" << filename << ")" << endl;
+	qDebug() << "Loading config..." << filename;
 
 	int config = 0;
 	config = Config::load(filename, this);
 
 	if (config != 0) {
-		emit messageCritical(tr("Error"), "Cannot load config (" + filename + ")\nERROR CODE " + config);
-		return config;
+		emit messageCritical(tr("Error"), tr("Cannot load config (%1)\nError code %2").arg(filename).arg(config));
+		return false;
 	}
 
-	switch (orderMachines()) {
-		case 1:
-			emit messageCritical(tr("Error"), "Cannot establish this connection because it would create a loop...");
-			return 1;
+	if (orderMachines()) {
+		return true;
+	} else {
+		emit messageCritical(tr("Error"), tr("Cannot establish this connection because it would create a loop..."));
+		return false;
 	}
-
-	return 0;
 }
 
 
@@ -191,6 +209,7 @@ int Core::save(QString filename)
 
 int Core::start(bool record)
 {
+	this->record = record;
 	master = (Master *)machines.value(0);
 	if (master) {
 		if (master->init(this) == 0) {
@@ -206,8 +225,12 @@ int Core::start(bool record)
 
 int Core::stop()
 {
+	QSettings settings;
+
 	master->stop();
-	Encoder::encode("/tmp/record.raw", "./record.ogg", 48000, 2, 0);
+
+	if (record) Encoder::encode(settings.value("settings/tmpfile", "/tmp/record.raw").toString(), "./record.ogg", 48000, 2, 0);
+
 	return 0;
 }
 
@@ -217,6 +240,7 @@ int Core::checkUpdates()
 {
 	if (!updates) updates = new Updates(this);
 	updates->check();
+	return 0;
 }
 
 

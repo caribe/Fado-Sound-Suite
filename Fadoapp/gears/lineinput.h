@@ -9,7 +9,7 @@ class LineInput : public Machine {
 
 	public:
 		LineInput();
-		void reconfig();
+		void reconfig(const int sampling_rate);
 		int process(jack_nframes_t nframes);
 		Machine *factory();
 };

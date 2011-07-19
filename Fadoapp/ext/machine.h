@@ -24,12 +24,16 @@ public:
 class MachinePattern {
 public:
 	QString name;
-	QList<QList<QString> > params;
+	QHash<int, QHash<int, QString> > params;
 	enum PatternType { StandardPattern, MutePattern, BreakPattern };
 	PatternType type;
 
 	MachinePattern() {
 		type = StandardPattern;
+	}
+
+	MachinePattern(PatternType type) {
+		this->type = type;
 	}
 };
 
@@ -40,7 +44,7 @@ public:
 	// Interface
 	virtual Machine *factory()=0;
 	virtual int process(jack_nframes_t nframes)=0;
-	virtual void reconfig()=0;
+	virtual void reconfig(const int sampling_rate)=0;
 	virtual void init() {}
 	virtual void finish() {}
 
@@ -52,7 +56,7 @@ public:
 	int x, y;
 
 	MachineType type;
-	QString name, description, author;
+	QString name, description, author, alias;
 	int version;
 
 	QList<Param *> params;

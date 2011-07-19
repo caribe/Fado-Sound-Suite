@@ -1,6 +1,6 @@
 #include "core/encoder.h"
 
-int Encoder::encode(char *srcname, char *dstname, int samplerate, int channels, int format) {
+int Encoder::encode(const QString &srcname, const QString &dstname, int samplerate, int channels, int format) {
 	short *buffer = new short[channels*1024];
 	int frames;
 
@@ -9,6 +9,8 @@ int Encoder::encode(char *srcname, char *dstname, int samplerate, int channels, 
 	SNDFILE* src;
 	SNDFILE* dst;
 
+	if (format != 0) return -1;
+
 	// Input file
 
 	sfinfo_src.samplerate = samplerate;
@@ -16,7 +18,7 @@ int Encoder::encode(char *srcname, char *dstname, int samplerate, int channels, 
 	sfinfo_src.format = SF_FORMAT_RAW | SF_FORMAT_PCM_16;
 
 	if (sf_format_check(&sfinfo_src) == 0) return 0x10;
-	if ((src = sf_open(srcname, SFM_READ, &sfinfo_src)) == 0) return 0x11;
+	if ((src = sf_open(srcname.toLatin1().data(), SFM_READ, &sfinfo_src)) == 0) return 0x11;
 
 	// Output file
 
@@ -25,7 +27,7 @@ int Encoder::encode(char *srcname, char *dstname, int samplerate, int channels, 
 	sfinfo_dst.channels = channels;
 
 	if (sf_format_check(&sfinfo_dst) == 0) return 0x20;
-	if ((dst = sf_open(dstname, SFM_WRITE, &sfinfo_dst)) == 0) return 0x21;
+	if ((dst = sf_open(dstname.toLatin1().data(), SFM_WRITE, &sfinfo_dst)) == 0) return 0x21;
 
 	// Conversion
 

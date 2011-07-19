@@ -9,6 +9,8 @@
 #include <QTreeView>
 #include <QMessageBox>
 #include <QDebug>
+#include <QMenu>
+#include <QInputDialog>
 
 class Route;
 
@@ -27,6 +29,7 @@ class Route : public QSplitter
 		Core *core;
 
 		QGraphicsView *routeEditor;
+		QMenu *routeEditorMenu;
 		QGraphicsScene *routeScene;
 
 		QHash<Machine *, MachineBox *> machineBoxes;
@@ -36,7 +39,9 @@ class Route : public QSplitter
 		void addMachine(Machine *machine);
 		void delMachine(MachineBox *machine);
 		void delMachine(Machine *machine);
+		void renMachine(MachineBox *machineBox);
 
+		void addConnection(Machine *m1, Machine *m2);
 		void addConnection(MachineBox *m1, MachineBox *m2);
 		void delConnection(MachineBox *m1, MachineBox *m2);
 		void delConnection(LinkBox *lb);
@@ -48,10 +53,13 @@ class Route : public QSplitter
 		void connectionMove(int x1, int y1, int x2, int y2);
 		void connectionFinish(MachineBox *, int x, int y);
 
+		void slotDisplayPatterns(Machine *m);
+
 	signals:
 		void signalDisplayStatus(const QString &);
 		void signalClearStatus();
 		void machinesChanged();
+		void signalDisplayPatterns(Machine *);
 
 	public slots:
 		void slotDisplayStatus(const QString &);

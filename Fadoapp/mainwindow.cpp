@@ -4,14 +4,14 @@
 MainWindow::MainWindow() : QMainWindow() {
 
 	setWindowTitle(tr("Fado"));
-	setWindowIcon(QIcon(":/001_08.png"));
+	setWindowIcon(QIcon(":/logo"));
 
 	settingsLoad();
 
 	core = new Core();
 	connect(core, SIGNAL(messageCritical(QString,QString)), SLOT(messageCritical(QString,QString)));
 	core->loadPlugins();
-	// core->jack_init();
+	core->jack_init();
 
 	// *** tabs ***
 
@@ -20,7 +20,7 @@ MainWindow::MainWindow() : QMainWindow() {
 
 	route = new Route(this, core);
 	pattern  = new Pattern(this, core);
-	track = new Track(this, core);
+	track = new Tracks(this, core);
 	playback = new Playback(this, core);
 
 	tabs->addTab(route,    QIcon(":/machines"), tr("Machines"));
@@ -34,6 +34,7 @@ MainWindow::MainWindow() : QMainWindow() {
 
 	connect(route, SIGNAL(signalDisplayStatus(QString)), status, SLOT(showMessage(QString)));
 	connect(route, SIGNAL(signalClearStatus()), status, SLOT(clearMessage()));
+	connect(route, SIGNAL(signalDisplayPatterns(Machine*)), SLOT(slotDisplayPatterns(Machine*)));
 
 	connect(tabs, SIGNAL(currentChanged(int)), SLOT(tabChanged(int)));
 
@@ -110,6 +111,33 @@ MainWindow::MainWindow() : QMainWindow() {
 	connect(menuHelpAbout, SIGNAL(triggered()), this, SLOT(menuHelpAboutSlot()));
 	menuHelp->addAction(menuHelpAbout);
 
+
+	// Toolbars
+
+	QToolBar *toolbarPatterns = new QToolBar(tr("Patterns Tools"));
+	toolbarPatterns->addAction(QIcon(":/table--plus.png"), tr("Add Pattern"), pattern, SLOT(addPattern()));
+	toolbarPatterns->addAction(QIcon(":/table--minus.png"), tr("Delete Pattern"), pattern, SLOT(delPattern()));
+	toolbarPatterns->addAction(QIcon(":/table--pencil.png"), tr("Rename Pattern"), pattern, SLOT(renPattern()));
+
+	QToolBar *toolbarTracks = new QToolBar(tr("Sequences Tools"));
+	toolbarTracks->addAction(QIcon(":/plus.png"), tr("Add Row"), track, SLOT(addButtonSlot()));
+	toolbarTracks->addAction(QIcon(":/minus.png"), tr("Del Row"), track, SLOT(delButtonSlot()));
+	toolbarTracks->addAction(QIcon(":/control-stop.png"), tr("First Row"), track, SLOT(frsButtonSlot()));
+	toolbarTracks->addAction(QIcon(":/control-stop-180.png"), tr("Last Row"), track, SLOT(lstButtonSlot()));
+	toolbarTracks->addAction(QIcon(":/cross.png"), tr("Delete"), track, SLOT(deleteButtonSlot()));
+	toolbarTracks->addAction(QIcon(":/slash.png"), tr("Mute"), track, SLOT(muteButtonSlot()));
+	toolbarTracks->addAction(QIcon(":/control-stop-square.png"), tr("Break"), track, SLOT(breakButtonSlot()));
+
+	QToolBar *toolbarPlayback = new QToolBar(tr("Playback Tools"));
+	toolbarPlayback->addAction(QIcon(":/control.png"), tr("Play"), playback, SLOT(buttonPlay()));
+	toolbarPlayback->addAction(QIcon(":/control-record.png"), tr("Record"), playback, SLOT(buttonRec()));
+	toolbarPlayback->addAction(QIcon(":/control-stop-square.png"), tr("Stop"), playback, SLOT(buttonStop()));
+	toolbarPlayback->addAction(QIcon(":/system-monitor.png"), tr("View"), playback, SLOT(buttonView()));
+
+	addToolBar(toolbarPatterns);
+	addToolBar(toolbarTracks);
+	addToolBar(toolbarPlayback);
+
 	// Resetting everything
 	menuFileNewSlot();
 }
@@ -132,8 +160,6 @@ void MainWindow::menuFileNewSlot() {
 	Master *tx = new Master();
 	tx->x = 100;
 	tx->y = 100;
-	tx->track_first = 0;
-	tx->track_last = core->total_patterns - 1;
 
 	core->machines.append(tx);
 
@@ -147,25 +173,22 @@ void MainWindow::menuFileNewSlot() {
 
 
 void MainWindow::menuFileOpenSlot() {
-	/*
-	QString filename = QFileDialog::getOpenFileName(this, "Open Project", "", "Fado project files (*.xml)");
-	if (filename == "") return;
+	QSettings settings;
+	QString filename = QFileDialog::getOpenFileName(this, tr("Open Project"), settings.value("state/cwd", "").toString(), tr("Fado project files (*.fado)"));
+	if (filename.isNull()) return;
 
 	menuFileCloseSlot();
-
-	if (core->load(filename) != 0) {
-		QMessageBox::critical(this, "Open failed", core->errstr);
-	} else {
-		setWindowTitle("Fado - "+filename);
-		foreach (int i, core->store->machines.keys()) route->addMachine(core->store->machines[i]);
-		foreach (int i, core->store->connections.keys()) {
-			foreach (int j, core->store->connections[i].keys()) {
-				route->addConnection(i, j);
+	if (core->load(filename)) {
+		setWindowTitle(tr("%1 - Fado").arg(filename));
+		foreach (Machine *machine, core->machines) route->addMachine(machine);
+		foreach (Machine *m1, core->machines) {
+			foreach (Machine *m2, m1->connectionDst.keys()) {
+				route->addConnection(m1, m2);
 			}
 		}
+		pattern->refreshMachines();
+		track->refreshMachines();
 	}
-
-	*/
 }
 
 
@@ -178,9 +201,9 @@ void MainWindow::menuFileSaveSlot()
 
 
 void MainWindow::menuFileSaveAsSlot() {
-	QString filename = QFileDialog::getSaveFileName(this, "Save Project", "", "Fado project files (*.xml)");
-
-	if (filename == "") return;
+	QSettings settings;
+	QString filename = QFileDialog::getSaveFileName(this, tr("Save Project"), settings.value("state/cwd", "").toString(), tr("Fado project files (*.fado)"));
+	if (filename.isNull()) return;
 
 	if (core->save(filename) == 0) {
 		setWindowTitle("Fado - "+filename);
@@ -191,7 +214,7 @@ void MainWindow::menuFileSaveAsSlot() {
 
 void MainWindow::menuHelpAboutSlot()
 {
-	QMessageBox::about(this, "Fado", "Synthetic music generator and sound processor");
+	QMessageBox::about(this, tr("Fado"), tr("Synthetic music generator and sound processor"));
 }
 
 
@@ -234,6 +257,7 @@ void MainWindow::setTabByAction()
 void MainWindow::closeEvent(QCloseEvent *event)
 {
 	this->settingsSave();
+	event->accept();
 }
 
 
@@ -284,4 +308,11 @@ void MainWindow::tabChanged(int index)
 	if (index == 1) {
 		pattern->refreshPatterns();
 	}
+}
+
+
+void MainWindow::slotDisplayPatterns(Machine *m)
+{
+	pattern->displayPatterns(m);
+	tabs->setCurrentIndex(1);
 }

@@ -15,7 +15,6 @@
         <file>control-stop-square.png</file>
         <file>control.png</file>
         <file>cross-button.png</file>
-        <file>chart.png</file>
         <file>disk--pencil.png</file>
         <file>disk.png</file>
         <file>document.png</file>
@@ -24,5 +23,13 @@
         <file>question.png</file>
         <file>plus.png</file>
         <file>minus.png</file>
+        <file alias="logo">fado-logo.svg</file>
+        <file>control-stop-180.png</file>
+        <file>control-stop.png</file>
+        <file>slash.png</file>
+        <file>user.png</file>
+        <file>system-monitor.png</file>
+        <file>cross.png</file>
+        <file>pencil.png</file>
     </qresource>
 </RCC>

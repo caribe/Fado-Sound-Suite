@@ -20,16 +20,15 @@ Machine *Master::factory() {
 
 int Master::init(Core *core)
 {
-	/*
-	this->store = store;
 
-	for (int i = 0; i < store->order.length(); i++) {
-		if (store->machines.contains(store->order[i]) == false) continue;
-		Machine *m = store->machines[store->order[i]];
-		qDebug() <<"Init " << m->name << endl;
-		m->init();
+	this->core = core;
+	beat_counter = pattern_counter = 0;
+
+	foreach (Machine *machine, core->order) {
+		qDebug() << "Init " << machine->name;
+		machine->init();
 	}
-*/
+
 	return 0;
 }
 
@@ -44,29 +43,29 @@ int Master::go(jack_client_t *client, jack_port_t **input_port, jack_port_t **ou
 
 	// tell the JACK server that we are ready to roll
 	if (jack_activate(client)) {
-		qDebug() << "Cannot activate client" << endl;
+		qDebug() << "Cannot activate client";
 		return 1;
 	}
 
 	// connect the ports. Note: you can't do this before the client is activated, because we can't allow connections to be made to clients that aren't running.
 	if ((ports = jack_get_ports(client, 0, 0, JackPortIsPhysical|JackPortIsOutput)) == 0) {
-		qDebug() << "Cannot find any physical capture ports" << endl;
+		qDebug() << "Cannot find any physical capture ports";
 		return 2;
 	}
 
-	if (jack_connect(client, ports[0], jack_port_name(input_port[0]))) qDebug() << "Cannot connect input ports LX" << endl;
-	if (jack_connect(client, ports[1], jack_port_name(input_port[1]))) qDebug() << "Cannot connect input ports RX" << endl;
+	if (jack_connect(client, ports[0], jack_port_name(input_port[0]))) qDebug() << "Cannot connect input ports LX";
+	if (jack_connect(client, ports[1], jack_port_name(input_port[1]))) qDebug() << "Cannot connect input ports RX";
 
 	free(ports);
 
 	if ((ports = jack_get_ports(client, 0, 0, JackPortIsPhysical|JackPortIsInput)) == 0) {
-		qDebug() << "Cannot find any physical playback ports" << endl;
+		qDebug() << "Cannot find any physical playback ports";
 		return 3;
 	}
 
 	for (int i = 0; ports[i] != 0; i++) {
-		qDebug() <<"Connecting port #" << i << endl;
-		if (jack_connect(client, jack_port_name(output_port[i & 1]), ports[i])) qDebug() << "Cannot connect output ports #" << i << endl;
+		qDebug() <<"Connecting port #" << i;
+		if (jack_connect(client, jack_port_name(output_port[i & 1]), ports[i])) qDebug() << "Cannot connect output ports #" << i;
 	}
 
 	free(ports);
@@ -82,72 +81,75 @@ int Master::go(jack_client_t *client, jack_port_t **input_port, jack_port_t **ou
 
 	period_counter = -1;
 	beat_counter = -1;
-	pattern_counter = track_last;
+	// pattern_counter = track_last;
 
 	return 0;
 }
 
 
-void Master::reconfig() {
-	/*
+void Master::reconfig(const int sampling_rate) {
+
 // 	qDebug() <<params["bpm"]->getInt() << "\t" << store->buffer_size << "\t" << store->sampling_rate << "\n";
-	period_per_beat = (int)((60.0 / params["bpm"]->getInt()) / ((float)store->buffer_size / (float)store->sampling_rate));
-	*/
+	period_per_beat = (int)((60.0 / params[0]->getInt()) / ((float)core->buffer_size / (float)core->sampling_rate));
+
 }
 
 
 int Master::stop()
 {
 	jack_deactivate(client);
-/*
-	for (int i = 0; i < store->order.length(); i++) {
-		if (store->machines.contains(store->order[i]) == false) continue;
-		Machine *m = store->machines[store->order[i]];
-		qDebug() <<"Finish " << m->name << endl;
-		m->finish();
+
+	foreach (Machine *machine, core->order) {
+		qDebug() << "Finish " << machine->name;
+		machine->finish();
 	}
 	
 	if (file) fclose(file);
-*/
+
 	return 0;
 }
 
+
 int Master::process(jack_nframes_t nframes)
 {
-	// qDebug() <<"Period: " << period_counter << " / " << period_per_beat << endl;
-/*
+	// qDebug() <<"Period: " << period_counter << " / " << period_per_beat;
+
 	// It's time to play a new beat
 	if (period_counter == -1 or ++period_counter >= period_per_beat) {
 		period_counter = 0;
 
-		if (beat_counter == -1 or ++beat_counter >= store->beat_per_pattern) {
+		if (beat_counter == -1 or ++beat_counter >= core->beat_per_pattern) {
 			beat_counter = 0;
 			// It's time to play a new pattern!
-			if (++pattern_counter > track_last) {
-				pattern_counter = track_first;
+			if (++pattern_counter > core->track_last) {
+				pattern_counter = core->track_first;
 			}
 		}
 
-		qDebug() <<"Beat: " << beat_counter << " / " << store->beat_per_pattern << endl;
-		qDebug() <<"Pattern: " << pattern_counter << " / " << store->total_patterns << endl;
+		qDebug() << "Beat" << beat_counter << "/" << core->beat_per_pattern;
+		qDebug() << "Pattern" << pattern_counter << "/" << core->total_patterns;
 
-		for (int i = 0; i < store->order.length(); i++) {
-			if (store->machines.contains(store->order[i]) == false) {
-				qDebug() << "Cannot find machine #" << store->order[i] << endl;
-				continue;
-			}
+		foreach (Machine *machine, core->order) {
+			qDebug() << machine->name;
+			if (machine->track.contains(pattern_counter) and machine->track[pattern_counter]->params.contains(beat_counter)) {
+				qDebug() << "Reconfig: " << machine->name;
 
-			Machine *m = store->machines[store->order[i]];
-			qDebug() <<"\t" << m->name << endl;
-			if (m->track.contains(pattern_counter) and m->patterns.contains(m->track[pattern_counter]) and m->patterns[m->track[pattern_counter]].contains(beat_counter)) {
-				qDebug() <<"Reconfig: " << m->name << endl;
-				QHashIterator<QString, QString> j(m->patterns[m->track[pattern_counter]][beat_counter]);
+				QHash<int, QString> params = machine->track[pattern_counter]->params[beat_counter];
+
+				foreach (int key, params.keys()) {
+					qDebug() << key << " => " << params[key];
+					machine->params[key]->set(params[key]);
+				}
+
+/*
+				QHashIterator<QString, QString> j(machine->patterns[machine->track[pattern_counter]][beat_counter]);
 				while (j.hasNext()) {
 					j.next();
-					qDebug() <<"\t" << j.key() << " => " << j.value() << endl;
-					m->params[j.key()]->set(j.value());
+					qDebug() <<"\t" << j.key() << " => " << j.value();
+					machine->params[j.key()]->set(j.value());
 				}
-				m->reconfig();
+*/
+				machine->reconfig(core->sampling_rate);
 			}
 		}
 	}
@@ -161,38 +163,34 @@ int Master::process(jack_nframes_t nframes)
 	jack_default_audio_sample_t *rxo = (jack_default_audio_sample_t *)jack_port_get_buffer(output_port[1], nframes);
 
 	// Calls all machines in the right order
-	for (int i = 0; i < store->order.length(); i++) {
-		if (store->machines.contains(store->order[i]) == false) continue;
-
-		Machine *m = store->machines[store->order[i]];
-
-		if (m->author == "Core") {
-			if (m->name == "lineinput") {
-				memcpy(m->lx, lxi, sizeof(jack_default_audio_sample_t) * nframes);
-				memcpy(m->rx, rxi, sizeof(jack_default_audio_sample_t) * nframes);
-			} else if (m->name == "fileinput") {
-				m->preprocess(nframes);
+	foreach (Machine *machine, core->order) {
+		if (machine->author == "Core") {
+			if (machine->name == "lineinput") {
+				memcpy(machine->lx, lxi, sizeof(jack_default_audio_sample_t) * nframes);
+				memcpy(machine->rx, rxi, sizeof(jack_default_audio_sample_t) * nframes);
+			} else if (machine->name == "fileinput") {
+				machine->preprocess(nframes);
 			} else {
-				m->preprocess(nframes, 0);
+				machine->preprocess(nframes, 0);
 			}
 		} else {
-			m->preprocess(nframes);
+			machine->preprocess(nframes);
 		}
 	}
 
 	// Output copy
-	memcpy(lxo, store->machines[0]->li, sizeof(jack_default_audio_sample_t) * nframes);
-	memcpy(rxo, store->machines[0]->ri, sizeof(jack_default_audio_sample_t) * nframes);
+	memcpy(lxo, core->machines[0]->li, sizeof(jack_default_audio_sample_t) * nframes);
+	memcpy(rxo, core->machines[0]->ri, sizeof(jack_default_audio_sample_t) * nframes);
 
 	// If recording writes to file
 	if (file) {
-		for (int i = 0; i < nframes; i++) {
+		for (unsigned int i = 0; i < nframes; i++) {
 			buffer[i*2] = std::floor(lxo[i] * 32000);
 			buffer[i*2+1] = std::floor(rxo[i] * 32000);
 		}
 		fwrite(buffer, nframes * 2, 2, file);
 	}
-*/
+
 	return 0;
 }
 
