@@ -25,15 +25,13 @@ void Square::reconfig(const int sampling_rate) {
 
 int Square::process(jack_nframes_t nframes) {
 
-	float d, j;
 	for (unsigned int i = 0; i < nframes; i++, rotor += rotor_step) {
-		d = modff(rotor, &j);
-		if (d < 0.5) {
+		if (rotor < PI2) {
 			lx[i] = rx[i] = 1;
 		} else {
 			lx[i] = rx[i] = -1;
 		}
-		if (rotor > 1) rotor -= 1;
+		if (rotor > PI_2) rotor -= PI_2;
 	}
 
 	return 0;

@@ -22,6 +22,7 @@ int Master::init(Core *core)
 {
 
 	this->core = core;
+	beat_counter = pattern_counter = 0;
 
 	foreach (Machine *machine, core->order) {
 		qDebug() << "Init " << machine->name;

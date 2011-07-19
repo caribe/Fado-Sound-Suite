@@ -6,6 +6,7 @@
 #include <cmath>
 
 #define PI_2 6.28318530718
+#define PI2  3.14159265359
 
 class Square : public QObject, public Machine {
 
