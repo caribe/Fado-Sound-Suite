@@ -5,13 +5,13 @@
 
 <defs>
 	<linearGradient id="orange_red" x1="0%" y1="0%" x2="0%" y2="100%">
-		<stop offset="0%" style="stop-color:#70DFFF;stop-opacity:1"/>
-		<stop offset="100%" style="stop-color:#48ACFF;stop-opacity:1"/>
+		<stop offset="0%" style="stop-color:#449BC7;stop-opacity:1"/>
+		<stop offset="100%" style="stop-color:#0D77AC;stop-opacity:1"/>
 	</linearGradient>
 </defs>
 
 <g transform="translate(128, 128)">
-	<rect x="-120" y="-120" rx="20" width="230" height="230" fill="url(#orange_red)" stroke-width="10" stroke="#41A4ED"/>
+	<rect x="-120" y="-120" rx="20" width="230" height="230" fill="url(#orange_red)" stroke-width="10" stroke="#449BC7"/>
 	<rect x="-110" y="-110" rx="10" width="210" height="210" style="fill:none;stroke-width:10; stroke:white"/>
 
 	<g>
