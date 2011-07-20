@@ -90,7 +90,7 @@ void Pattern::refreshMachines()
 	patternCombo->clear();
 	machineCombo->clear();
 	foreach (Machine *machine, core->machines) {
-		machineCombo->addItem(machine->author+"."+machine->name);
+		machineCombo->addItem(machine->getName());
 	}
 }
 

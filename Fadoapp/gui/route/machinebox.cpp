@@ -149,19 +149,5 @@ void MachineBox::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
 
 void MachineBox::refreshName()
 {
-	if (m->alias.isNull()) {
-		if (m->type == Machine::MachineMaster) {
-			boxText->setHtml("<center><b>Master</b></center>");
-		} else if (m->type == Machine::MachineInput) {
-			if (m->name == "lineinput") {
-				boxText->setHtml("<center><b>Mic</b></center>");
-			} else if (m->name == "fileinput") {
-				boxText->setHtml("<center><b>File</b></center>");
-			}
-		} else {
-			boxText->setHtml("<center><b>"+m->name+"</b></center>");
-		}
-	} else {
-		boxText->setHtml("<center><b>"+m->alias+"</b></center>");
-	}
+	boxText->setHtml("<center><b>"+m->getName()+"</b></center>");
 }

@@ -5,7 +5,7 @@ FileInput::FileInput()
 	type = Machine::MachineInput;
 
 	author = "Core";
-	name = "fileinput";
+	name = "File Input";
 	description = "Input";
 
 	addParam(new Param("file", "File name path", Param::ParamString, 0, 0));
@@ -52,39 +52,42 @@ void FileInput::init()
 }
 
 
-void FileInput::finish() {
+
+void FileInput::finish()
+{
 	foreach (QString s, filebuffer.keys()) {
 		// free(filebuffer[s]);
 	}
 }
 
-void FileInput::reconfig(const int sampling_rate) {
-	/*
+
+
+void FileInput::reconfig(const int sampling_rate)
+{
 	seek = 0;
-	ratio = (float)info.samplerate / (float)store->sampling_rate;
-	*/
+	ratio = (float)info.samplerate / (float)sampling_rate;
 }
 
-// seek2 = seek * info.samplerate / sampling_rate
+
 
 int FileInput::process(jack_nframes_t nframes) {
-	/*
-	int i, seek2;
+	// seek2 = seek * info.samplerate / sampling_rate
+	unsigned int i, seek2;
 
 	if (info.channels == 2) {
 		for (i = 0; i < nframes; i++) {
 			if (++seek > info.frames) seek = 0;
 			seek2 = seek * ratio;
- 			lx[i] = filebuffer[params["file"]->getString()][seek2*2];
- 			rx[i] = filebuffer[params["file"]->getString()][seek2*2+1];
+			lx[i] = filebuffer[params[0]->getString()][seek2*2];
+			rx[i] = filebuffer[params[0]->getString()][seek2*2+1];
 		}
 	} else if (info.channels == 1) {
 		for (i = 0; i < nframes; i++) {
 			if (++seek > info.frames) seek = 0;
 			seek2 = seek * ratio;
-			lx[i] = rx[i] = filebuffer[params["file"]->getString()][seek2];
+			lx[i] = rx[i] = filebuffer[params[0]->getString()][seek2];
 		}
 	}
-*/
+
 	return 0;
 }

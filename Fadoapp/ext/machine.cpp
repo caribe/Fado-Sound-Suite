@@ -133,3 +133,13 @@ MachinePattern *Machine::addPattern(const QString &name)
 	patterns.append(pattern);
 	return pattern;
 }
+
+
+QString Machine::getName()
+{
+	if (alias.isNull()) {
+		return name;
+	} else {
+		return alias;
+	}
+}

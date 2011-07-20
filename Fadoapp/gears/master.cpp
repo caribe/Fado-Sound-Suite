@@ -5,7 +5,7 @@
 Master::Master()
 {
 	type = Machine::MachineMaster;
-	name = "output";
+	name = "Master";
 	author = "Core";
 	description = "Master Output";
 

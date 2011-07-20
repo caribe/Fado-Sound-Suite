@@ -5,7 +5,7 @@ LineInput::LineInput()
 	type = Machine::MachineInput;
 
 	author = "Core";
-	name = "lineinput";
+	name = "Line Input";
 	description = "Input";
 }
 
