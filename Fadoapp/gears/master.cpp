@@ -141,14 +141,6 @@ int Master::process(jack_nframes_t nframes)
 					machine->params[key]->set(params[key]);
 				}
 
-/*
-				QHashIterator<QString, QString> j(machine->patterns[machine->track[pattern_counter]][beat_counter]);
-				while (j.hasNext()) {
-					j.next();
-					qDebug() <<"\t" << j.key() << " => " << j.value();
-					machine->params[j.key()]->set(j.value());
-				}
-*/
 				machine->reconfig(core->sampling_rate);
 			}
 		}
@@ -164,15 +156,11 @@ int Master::process(jack_nframes_t nframes)
 
 	// Calls all machines in the right order
 	foreach (Machine *machine, core->order) {
-		if (machine->author == "Core") {
-			if (machine->name == "lineinput") {
-				memcpy(machine->lx, lxi, sizeof(jack_default_audio_sample_t) * nframes);
-				memcpy(machine->rx, rxi, sizeof(jack_default_audio_sample_t) * nframes);
-			} else if (machine->name == "fileinput") {
-				machine->preprocess(nframes);
-			} else {
-				machine->preprocess(nframes, 0);
-			}
+		if (machine->type == Machine::MachineMaster) {
+			machine->preprocess(nframes, 0);
+		} else if (machine->type == Machine::MachineInput and machine->name == "Line Input") {
+			memcpy(machine->lx, lxi, sizeof(jack_default_audio_sample_t) * nframes);
+			memcpy(machine->rx, rxi, sizeof(jack_default_audio_sample_t) * nframes);
 		} else {
 			machine->preprocess(nframes);
 		}
