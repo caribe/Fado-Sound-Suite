@@ -31,5 +31,7 @@
         <file>system-monitor.png</file>
         <file>cross.png</file>
         <file>pencil.png</file>
+        <file>microphone.png</file>
+        <file>document-music.png</file>
     </qresource>
 </RCC>

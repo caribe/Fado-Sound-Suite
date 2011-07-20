@@ -48,12 +48,12 @@ void Core::loadPlugins()
 
 	// Standard gears
 
-	item = new QStandardItem(QIcon(":/machine"), "Line Input");
+	item = new QStandardItem(QIcon(":microphone.png"), "Line Input");
 	item->setEditable(false);
 	item->setData(-2);
 	coreFolder->appendRow(item);
 
-	item = new QStandardItem(QIcon(":/machine"), "File Input");
+	item = new QStandardItem(QIcon(":document-music.png"), "File Input");
 	item->setEditable(false);
 	item->setData(-3);
 	coreFolder->appendRow(item);

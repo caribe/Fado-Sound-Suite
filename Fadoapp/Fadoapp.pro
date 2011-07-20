@@ -88,4 +88,6 @@ OTHER_FILES += \
     resources/user.png \
     resources/system-monitor.png \
     resources/cross.png \
-    resources/pencil.png
+    resources/pencil.png \
+    resources/microphone.png \
+    resources/document-music.png
