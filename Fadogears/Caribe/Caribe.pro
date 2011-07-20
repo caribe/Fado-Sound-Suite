@@ -2,4 +2,5 @@ TEMPLATE = subdirs
 
 SUBDIRS += \
 	Sine \
-	Square
+	Square \
+	Echo

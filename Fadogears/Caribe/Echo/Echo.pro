@@ -6,12 +6,9 @@
 
 QT       += core
 
-TARGET = sine
+TARGET = echo
 TEMPLATE = lib
 
-SOURCES += sine.cpp
+SOURCES += echo.cpp
 
-HEADERS += \
-    sine.h
-
-OTHER_FILES +=
+HEADERS += echo.h
