@@ -1,0 +1,35 @@
+<RCC>
+    <qresource prefix="/">
+        <file alias="sequences">icons/block.png</file>
+        <file>icons/control-record.png</file>
+        <file>icons/control-stop-180.png</file>
+        <file>icons/control-stop-square.png</file>
+        <file>icons/control-stop.png</file>
+        <file>icons/control.png</file>
+        <file alias="quit">icons/cross-button.png</file>
+        <file>icons/cross.png</file>
+        <file alias="save-as">icons/disk--pencil.png</file>
+        <file alias="save">icons/disk.png</file>
+        <file alias="file-input">icons/document-music.png</file>
+        <file>icons/document.png</file>
+        <file alias="fado-logo">icons/fado-logo.svg</file>
+        <file>icons/folder-open-document.png</file>
+        <file alias="effect">icons/funnel.png</file>
+        <file alias="generator">icons/gear.png</file>
+        <file alias="line-input">icons/microphone.png</file>
+        <file>icons/minus.png</file>
+        <file alias="routes">icons/node.png</file>
+        <file>icons/pencil.png</file>
+        <file>icons/plus.png</file>
+        <file alias="help">icons/question.png</file>
+        <file>icons/slash.png</file>
+        <file alias="playback">icons/speaker.png</file>
+        <file>icons/splashscreen.jpg</file>
+        <file>icons/system-monitor.png</file>
+        <file alias="pattern-del">icons/table--minus.png</file>
+        <file alias="pattern-ren">icons/table--pencil.png</file>
+        <file alias="pattern-add">icons/table--plus.png</file>
+        <file alias="patterns">icons/table.png</file>
+        <file alias="user">icons/user.png</file>
+    </qresource>
+</RCC>

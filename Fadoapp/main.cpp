@@ -11,7 +11,7 @@ int main(int argc, char *argv[])
 	QCoreApplication::setApplicationName("Fado");
 	QCoreApplication::setApplicationVersion("1.0.0");
 
-	QPixmap pixmap(":/splashscreen.jpg");
+	QPixmap pixmap(":/icons/splashscreen.jpg");
 	QSplashScreen splash(pixmap);
 	splash.show();
 

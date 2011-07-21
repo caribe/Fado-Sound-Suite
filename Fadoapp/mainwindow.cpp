@@ -4,7 +4,7 @@
 MainWindow::MainWindow() : QMainWindow() {
 
 	setWindowTitle(tr("Fado"));
-	setWindowIcon(QIcon(":/logo"));
+	setWindowIcon(QIcon(":fado-logo"));
 
 	settingsLoad();
 
@@ -23,10 +23,10 @@ MainWindow::MainWindow() : QMainWindow() {
 	track = new Tracks(this, core);
 	playback = new Playback(this, core);
 
-	tabs->addTab(route,    QIcon(":/machines"), tr("Machines"));
-	tabs->addTab(pattern,  QIcon(":/patterns"), tr("Patterns"));
-	tabs->addTab(track,    QIcon(":/sequencer"), tr("Sequencer"));
-	tabs->addTab(playback, QIcon(":/playback"), tr("Playback"));
+	tabs->addTab(route,    QIcon(":routes"), tr("Machines"));
+	tabs->addTab(pattern,  QIcon(":patterns"), tr("Patterns"));
+	tabs->addTab(track,    QIcon(":sequences"), tr("Sequencer"));
+	tabs->addTab(playback, QIcon(":playback"), tr("Playback"));
 
 	setCentralWidget(tabs);
 
@@ -42,22 +42,22 @@ MainWindow::MainWindow() : QMainWindow() {
 
 	// *** Actions ***
 
-	QAction *actionTabRoute = new QAction(QIcon(":/machines"), tr("Machines"), this);
+	QAction *actionTabRoute = new QAction(QIcon(":routes"), tr("Machines"), this);
 	actionTabRoute->setShortcut(Qt::Key_F1);
 	actionTabRoute->setObjectName("actionTabRoute");
 	connect(actionTabRoute, SIGNAL(triggered()), SLOT(setTabByAction()));
 
-	QAction *actionTabPattern = new QAction(QIcon(":/patterns"), tr("Patterns"), this);
+	QAction *actionTabPattern = new QAction(QIcon(":patterns"), tr("Patterns"), this);
 	actionTabPattern->setShortcut(Qt::Key_F2);
 	actionTabPattern->setObjectName("actionTabPattern");
 	connect(actionTabPattern, SIGNAL(triggered()), SLOT(setTabByAction()));
 
-	QAction *actionTabTrack = new QAction(QIcon(":/sequencer"), tr("Sequencer"), this);
+	QAction *actionTabTrack = new QAction(QIcon(":sequences"), tr("Sequencer"), this);
 	actionTabTrack->setShortcut(Qt::Key_F3);
 	actionTabTrack->setObjectName("actionTabTrack");
 	connect(actionTabTrack, SIGNAL(triggered()), SLOT(setTabByAction()));
 
-	QAction *actionTabPlayback = new QAction(QIcon(":/playback"), tr("Playback"), this);
+	QAction *actionTabPlayback = new QAction(QIcon(":playback"), tr("Playback"), this);
 	actionTabPlayback->setShortcut(Qt::Key_F4);
 	actionTabPlayback->setObjectName("actionTabPlayback");
 	connect(actionTabPlayback, SIGNAL(triggered()), SLOT(setTabByAction()));
@@ -68,27 +68,31 @@ MainWindow::MainWindow() : QMainWindow() {
 
 	QMenu *menuFile = menu->addMenu("&File");
 
-	QAction *menuFileNew = new QAction(QIcon(":/document.png"), tr("&New"), this);
+	QAction *menuFileNew = new QAction(QIcon(":/icons/document.png"), tr("&New"), this);
 	menuFileNew->setShortcut(QKeySequence::New);
 	connect(menuFileNew, SIGNAL(triggered()), this, SLOT(menuFileNewSlot()));
 	menuFile->addAction(menuFileNew);
 
-	QAction *menuFileOpen = new QAction(QIcon(":/folder-open-document.png"), tr("&Open"), this);
+	QAction *menuFileOpen = new QAction(QIcon(":/icons/folder-open-document.png"), tr("&Open"), this);
 	menuFileOpen->setShortcut(QKeySequence::Open);
 	connect(menuFileOpen, SIGNAL(triggered()), this, SLOT(menuFileOpenSlot()));
 	menuFile->addAction(menuFileOpen);
 
-	QAction *menuFileSave = new QAction(QIcon(":/disk.png"), tr("&Save"), this);
+	menuFile->addSeparator();
+
+	QAction *menuFileSave = new QAction(QIcon(":save"), tr("&Save"), this);
 	menuFileSave->setShortcut(QKeySequence::Save);
 	connect(menuFileSave, SIGNAL(triggered()), this, SLOT(menuFileSaveSlot()));
 	menuFile->addAction(menuFileSave);
 
-	QAction *menuFileSaveAs = new QAction(QIcon(":/disk--pencil.png"), tr("Save &as..."), this);
+	QAction *menuFileSaveAs = new QAction(QIcon(":save-as"), tr("Save &as..."), this);
 	menuFileSaveAs->setShortcut(QKeySequence::SaveAs);
 	connect(menuFileSaveAs, SIGNAL(triggered()), this, SLOT(menuFileSaveAsSlot()));
 	menuFile->addAction(menuFileSaveAs);
 
-	QAction *menuFileQuit = new QAction(QIcon(":/cross-button.png"), tr("&Quit"), this);
+	menuFile->addSeparator();
+
+	QAction *menuFileQuit = new QAction(QIcon(":quit"), tr("&Quit"), this);
 	menuFileQuit->setShortcut(QKeySequence::Quit);
 	connect(menuFileQuit, SIGNAL(triggered()), this, SLOT(close()));
 	menuFile->addAction(menuFileQuit);
@@ -103,11 +107,11 @@ MainWindow::MainWindow() : QMainWindow() {
 
 	QMenu *menuHelp = menu->addMenu("&Help");
 
-	QAction *menuHelpUpdates = new QAction(QIcon(":/001_10.png"), tr("Check for updates"), this);
+	QAction *menuHelpUpdates = new QAction(tr("Check for updates"), this);
 	connect(menuHelpUpdates, SIGNAL(triggered()), this, SLOT(menuHelpUpdatesSlot()));
 	menuHelp->addAction(menuHelpUpdates);
 
-	QAction *menuHelpAbout = new QAction(QIcon(":/question.png"), tr("About Fado"), this);
+	QAction *menuHelpAbout = new QAction(QIcon(":help"), tr("About Fado"), this);
 	connect(menuHelpAbout, SIGNAL(triggered()), this, SLOT(menuHelpAboutSlot()));
 	menuHelp->addAction(menuHelpAbout);
 
@@ -115,24 +119,24 @@ MainWindow::MainWindow() : QMainWindow() {
 	// Toolbars
 
 	QToolBar *toolbarPatterns = new QToolBar(tr("Patterns Tools"));
-	toolbarPatterns->addAction(QIcon(":/table--plus.png"), tr("Add Pattern"), pattern, SLOT(addPattern()));
-	toolbarPatterns->addAction(QIcon(":/table--minus.png"), tr("Delete Pattern"), pattern, SLOT(delPattern()));
-	toolbarPatterns->addAction(QIcon(":/table--pencil.png"), tr("Rename Pattern"), pattern, SLOT(renPattern()));
+	toolbarPatterns->addAction(QIcon(":pattern-add"), tr("Add Pattern"), pattern, SLOT(addPattern()));
+	toolbarPatterns->addAction(QIcon(":pattern-del"), tr("Delete Pattern"), pattern, SLOT(delPattern()));
+	toolbarPatterns->addAction(QIcon(":pattern-ren"), tr("Rename Pattern"), pattern, SLOT(renPattern()));
 
 	QToolBar *toolbarTracks = new QToolBar(tr("Sequences Tools"));
-	toolbarTracks->addAction(QIcon(":/plus.png"), tr("Add Row"), track, SLOT(addButtonSlot()));
-	toolbarTracks->addAction(QIcon(":/minus.png"), tr("Del Row"), track, SLOT(delButtonSlot()));
-	toolbarTracks->addAction(QIcon(":/control-stop.png"), tr("First Row"), track, SLOT(frsButtonSlot()));
-	toolbarTracks->addAction(QIcon(":/control-stop-180.png"), tr("Last Row"), track, SLOT(lstButtonSlot()));
-	toolbarTracks->addAction(QIcon(":/cross.png"), tr("Delete"), track, SLOT(deleteButtonSlot()));
-	toolbarTracks->addAction(QIcon(":/slash.png"), tr("Mute"), track, SLOT(muteButtonSlot()));
-	toolbarTracks->addAction(QIcon(":/control-stop-square.png"), tr("Break"), track, SLOT(breakButtonSlot()));
+	toolbarTracks->addAction(QIcon(":/icons/plus.png"), tr("Add Row"), track, SLOT(addButtonSlot()));
+	toolbarTracks->addAction(QIcon(":/icons/minus.png"), tr("Del Row"), track, SLOT(delButtonSlot()));
+	toolbarTracks->addAction(QIcon(":/icons/control-stop.png"), tr("First Row"), track, SLOT(frsButtonSlot()));
+	toolbarTracks->addAction(QIcon(":/icons/control-stop-180.png"), tr("Last Row"), track, SLOT(lstButtonSlot()));
+	toolbarTracks->addAction(QIcon(":/icons/cross.png"), tr("Delete"), track, SLOT(deleteButtonSlot()));
+	toolbarTracks->addAction(QIcon(":/icons/slash.png"), tr("Mute"), track, SLOT(muteButtonSlot()));
+	toolbarTracks->addAction(QIcon(":/icons/control-stop-square.png"), tr("Break"), track, SLOT(breakButtonSlot()));
 
 	QToolBar *toolbarPlayback = new QToolBar(tr("Playback Tools"));
-	toolbarPlayback->addAction(QIcon(":/control.png"), tr("Play"), playback, SLOT(buttonPlay()));
-	toolbarPlayback->addAction(QIcon(":/control-record.png"), tr("Record"), playback, SLOT(buttonRec()));
-	toolbarPlayback->addAction(QIcon(":/control-stop-square.png"), tr("Stop"), playback, SLOT(buttonStop()));
-	toolbarPlayback->addAction(QIcon(":/system-monitor.png"), tr("View"), playback, SLOT(buttonView()));
+	toolbarPlayback->addAction(QIcon(":/icons/control.png"), tr("Play"), playback, SLOT(buttonPlay()));
+	toolbarPlayback->addAction(QIcon(":/icons/control-record.png"), tr("Record"), playback, SLOT(buttonRec()));
+	toolbarPlayback->addAction(QIcon(":/icons/control-stop-square.png"), tr("Stop"), playback, SLOT(buttonStop()));
+	toolbarPlayback->addAction(QIcon(":/icons/system-monitor.png"), tr("View"), playback, SLOT(buttonView()));
 
 	addToolBar(toolbarPatterns);
 	addToolBar(toolbarTracks);

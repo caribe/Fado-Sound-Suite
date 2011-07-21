@@ -48,12 +48,12 @@ void Core::loadPlugins()
 
 	// Standard gears
 
-	item = new QStandardItem(QIcon(":microphone.png"), "Line Input");
+	item = new QStandardItem(QIcon(":line-input"), "Line Input");
 	item->setEditable(false);
 	item->setData(-2);
 	coreFolder->appendRow(item);
 
-	item = new QStandardItem(QIcon(":document-music.png"), "File Input");
+	item = new QStandardItem(QIcon(":file-input"), "File Input");
 	item->setEditable(false);
 	item->setData(-3);
 	coreFolder->appendRow(item);
@@ -101,27 +101,30 @@ void Core::loadPluginsFolder(QDir &dir, QHash<QString, QStandardItem *> &generat
 
 				qDebug() << "Loaded" << machine->name << id;
 
-				QStandardItem *item = new QStandardItem(QIcon(":/machine"), machine->name);
-				item->setEditable(false);
-				item->setData(id);
+				QStandardItem *item;
 
 				if (machine->type == Machine::MachineGenerator) {
 					if (generatorsBuffer.contains(machine->author) == false) {
-						QStandardItem *item = new QStandardItem(QIcon(":/user.png"), machine->author);
-						item->setEditable(false);
-						item->setData(-100);
-						generatorsBuffer[machine->author] = item;
+						QStandardItem *userItem = new QStandardItem(QIcon(":user"), machine->author);
+						userItem->setEditable(false);
+						userItem->setData(-100);
+						generatorsBuffer[machine->author] = userItem;
 					}
+					item = new QStandardItem(QIcon(":generator"), machine->name);
 					generatorsBuffer[machine->author]->appendRow(item);
 				} else if (machine->type == Machine::MachineEffect) {
 					if (effectsBuffer.contains(machine->author) == false) {
-						QStandardItem *item = new QStandardItem(QIcon(":/user.png"), machine->author);
-						item->setEditable(false);
-						item->setData(-100);
-						effectsBuffer[machine->author] = item;
+						QStandardItem *userItem = new QStandardItem(QIcon(":user"), machine->author);
+						userItem->setEditable(false);
+						userItem->setData(-100);
+						effectsBuffer[machine->author] = userItem;
 					}
+					item = new QStandardItem(QIcon(":effect"), machine->name);
 					effectsBuffer[machine->author]->appendRow(item);
 				}
+
+				item->setEditable(false);
+				item->setData(id);
 
 			} else {
 				qDebug() << "Error" << lib->errorString();

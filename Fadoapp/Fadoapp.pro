@@ -52,7 +52,7 @@ HEADERS  += mainwindow.h \
     gui/track/tracksmodel.h
 
 RESOURCES += \
-    resources/resources.qrc
+    icons.qrc
 
 unix|win32: LIBS += -lfftw3
 unix|win32: LIBS += -ljack
@@ -90,4 +90,36 @@ OTHER_FILES += \
     resources/cross.png \
     resources/pencil.png \
     resources/microphone.png \
-    resources/document-music.png
+    resources/document-music.png \
+    resources/funnel.png \
+    icons/user.png \
+    icons/table.png \
+    icons/table--plus.png \
+    icons/table--pencil.png \
+    icons/table--minus.png \
+    icons/system-monitor.png \
+    icons/splashscreen.jpg \
+    icons/speaker.png \
+    icons/slash.png \
+    icons/question.png \
+    icons/plus.png \
+    icons/pencil.png \
+    icons/node.png \
+    icons/minus.png \
+    icons/microphone.png \
+    icons/gear.png \
+    icons/funnel.png \
+    icons/folder-open-document.png \
+    icons/fado-logo.svg \
+    icons/document.png \
+    icons/document-music.png \
+    icons/disk.png \
+    icons/disk--pencil.png \
+    icons/cross.png \
+    icons/cross-button.png \
+    icons/control.png \
+    icons/control-stop.png \
+    icons/control-stop-square.png \
+    icons/control-stop-180.png \
+    icons/control-record.png \
+    icons/block.png

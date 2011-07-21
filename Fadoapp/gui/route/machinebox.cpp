@@ -135,8 +135,8 @@ void MachineBox::hoverLeaveEvent(QGraphicsSceneHoverEvent * event)
 void MachineBox::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
 {
 	QMenu menu;
-	QAction *renameAction = menu.addAction(QIcon(":pencil.png"), route->tr("Rename"));
-	QAction *deleteAction = menu.addAction(QIcon(":cross.png"), route->tr("Delete"));
+	QAction *renameAction = menu.addAction(QIcon(":/icons/pencil.png"), route->tr("Rename"));
+	QAction *deleteAction = menu.addAction(QIcon(":/icons/cross.png"), route->tr("Delete"));
 	QAction *selectedAction = menu.exec(event->screenPos());
 
 	if (selectedAction == deleteAction) {
