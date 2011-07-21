@@ -30,8 +30,6 @@ PatternTable::PatternTable(Pattern *pattern) {
 
 	setSelectionMode(QAbstractItemView::SingleSelection);
 
-	setFont(QFont("TypeWriter", 6));
-	
 	model = new PatternTableData(pattern);
 	setModel(model);
 

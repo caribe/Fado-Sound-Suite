@@ -36,7 +36,7 @@ void PatternTableData::reload() {
 int PatternTableData::columnCount(const QModelIndex& parent) const
 {
 	Machine *machine = pattern->currentMachine();
-	if (machine == 0) {
+	if (machine == 0 or machine->patterns.size() == 0) {
 		return 0;
 	} else {
 		return machine->params.size();
