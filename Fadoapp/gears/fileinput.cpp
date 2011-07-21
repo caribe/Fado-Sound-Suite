@@ -30,8 +30,8 @@ FileInput::FileInput()
 	name = "File Input";
 	description = "Input";
 
-	addParam(new Param("file", "File name path", Param::ParamString, 0, 0));
-	addParam(new Param("seek", "Position inside file", Param::ParamInt, 0, 1000000));
+	addParam("file", "Filename", "File name path", Param::ParamString);
+	addParam("seek", "Position", "Position inside file", Param::ParamInt, 0, 1000000);
 }
 
 

@@ -82,6 +82,7 @@ public:
 	int version;
 
 	QList<Param *> params;
+	QHash<QString, Param *> paramsMap;
 	QList<MachinePattern *> patterns;
 
 	// Connections
@@ -102,7 +103,7 @@ public:
 
 	Param *getParam(int index);
 	void addParam(Param *param);
-	void addParam(QString name, QString description, Param::types type, int min, int max)
+	void addParam(QString code, QString name, QString description, Param::types type, int min = 0, int max = 0)
 	{
 		Param *param = new Param();
 		param->name = name;
@@ -110,7 +111,8 @@ public:
 		param->type = type;
 		param->min = min;
 		param->max = max;
-		params.append(param);
+		params << param;
+		paramsMap[code] = param;
 	}
 };
 

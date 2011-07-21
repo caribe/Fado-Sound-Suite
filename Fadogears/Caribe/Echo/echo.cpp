@@ -1,3 +1,25 @@
+/*
+ * Fado Sound Suite - Modular synthetic music generator and sound processor
+ *
+ * Copyright (C) 2011 Vincenzo Buttazzo <vbuttazzo@yahoo.com>
+ *
+ * This file is part of Fado Sound Suite.
+ *
+ * Fado Sound Suite is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Fado Sound Suite is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Fado Sound Suite.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
+
 #include "echo.h"
 
 Echo::Echo() {
@@ -7,8 +29,8 @@ Echo::Echo() {
 	description = "A simple echo effect";
 	type = Machine::MachineEffect;
 
-	addParam("time", "Seconds of echo", Param::ParamFloat, 0.1, 1);
-	addParam("vol", "Echo's volume", Param::ParamFloat, 0, 1);
+	addParam("time", "Time", "Seconds of echo", Param::ParamFloat, 0.1, 1);
+	addParam("vol", "Volume", "Echo's volume", Param::ParamFloat, 0, 1);
 
 	cursor = 0;
 	samples = 0;
@@ -22,7 +44,7 @@ Machine *Echo::factory() {
 
 void Echo::reconfig(const int sampling_rate)
 {
-	int s = sampling_rate * params[0]->floatValue;
+	int s = sampling_rate * paramsMap["time"]->floatValue;
 
 	if (samples < s) {
 		if (buffer_lx != 0) delete buffer_lx;
@@ -40,7 +62,7 @@ int Echo::process(jack_nframes_t nframes)
 {
 	unsigned int i;
 	int j;
-	float e1 = params[1]->floatValue;
+	float e1 = paramsMap["vol"]->floatValue;
 	float e2 = 1 - e1;
 
 	for (i = 0; i < nframes; i++) {

@@ -31,7 +31,7 @@ Master::Master()
 	author = "Core";
 	description = "Master Output";
 
-	addParam(new Param("bpm", "Beats per minute", Param::ParamInt, 50, 1000));
+	addParam("bpm", "BPM", "Beats per minute", Param::ParamInt, 50, 1000);
 }
 
 
@@ -111,8 +111,7 @@ int Master::go(jack_client_t *client, jack_port_t **input_port, jack_port_t **ou
 
 void Master::reconfig(const int sampling_rate) {
 
-// 	qDebug() <<params["bpm"]->getInt() << "\t" << store->buffer_size << "\t" << store->sampling_rate << "\n";
-	period_per_beat = (int)((60.0 / params[0]->getInt()) / ((float)core->buffer_size / (float)core->sampling_rate));
+	period_per_beat = (int)((60.0 / paramsMap["bpm"]->getInt()) / ((float)core->buffer_size / (float)core->sampling_rate));
 
 }
 
