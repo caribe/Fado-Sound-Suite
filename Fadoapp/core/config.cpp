@@ -108,45 +108,46 @@ int Config::load(QString filename, Core *core) {
 
 			if (machine == NULL) {
 				qDebug() << "Machine not found";
-			}
+			} else {
 
-			machine->alias = rootElement.attribute("alias");
-			machine->x = rootElement.attribute("x").toInt();
-			machine->y = rootElement.attribute("y").toInt();
+				machine->alias = rootElement.attribute("alias");
+				machine->x = rootElement.attribute("x").toInt();
+				machine->y = rootElement.attribute("y").toInt();
 
-			core->machines << machine;
+				core->machines << machine;
 
-			QHash<QString, MachinePattern *> patternMap;
+				QHash<QString, MachinePattern *> patternMap;
 
-			QDomElement patternsEl = rootElement.firstChildElement("patterns");
-			if (!patternsEl.isNull()) {
-				for (QDomElement patternEl = patternsEl.firstChildElement("pattern"); !patternEl.isNull(); patternEl = patternEl.nextSiblingElement("pattern")) {
-					MachinePattern *pattern = new MachinePattern();
-					pattern->name = patternEl.attribute("name");
-					patternMap[patternEl.attribute("id")] = pattern;
-					for (QDomElement patternRowEl = patternEl.firstChildElement("row"); !patternRowEl.isNull(); patternRowEl = patternRowEl.nextSiblingElement("row")) {
-						int row = patternRowEl.attribute("row", "0").toInt();
-						pattern->params[row].empty();
-						for (QDomElement patternRowValueEl = patternRowEl.firstChildElement("value"); !patternRowValueEl.isNull(); patternRowValueEl = patternRowValueEl.nextSiblingElement("value")) {
-							int i = patternRowValueEl.attribute("i").toInt();
-							pattern->params[row][i] = patternRowValueEl.text();
+				QDomElement patternsEl = rootElement.firstChildElement("patterns");
+				if (!patternsEl.isNull()) {
+					for (QDomElement patternEl = patternsEl.firstChildElement("pattern"); !patternEl.isNull(); patternEl = patternEl.nextSiblingElement("pattern")) {
+						MachinePattern *pattern = new MachinePattern();
+						pattern->name = patternEl.attribute("name");
+						patternMap[patternEl.attribute("id")] = pattern;
+						for (QDomElement patternRowEl = patternEl.firstChildElement("row"); !patternRowEl.isNull(); patternRowEl = patternRowEl.nextSiblingElement("row")) {
+							int row = patternRowEl.attribute("row", "0").toInt();
+							pattern->params[row].empty();
+							for (QDomElement patternRowValueEl = patternRowEl.firstChildElement("value"); !patternRowValueEl.isNull(); patternRowValueEl = patternRowValueEl.nextSiblingElement("value")) {
+								int i = patternRowValueEl.attribute("i").toInt();
+								pattern->params[row][i] = patternRowValueEl.text();
+							}
 						}
+						machine->patterns << pattern;
 					}
-					machine->patterns << pattern;
 				}
-			}
 
-			QDomElement trackEl = rootElement.firstChildElement("track");
-			if (!trackEl.isNull()) {
-				for (QDomElement patternEl = trackEl.firstChildElement("pattern"); !patternEl.isNull(); patternEl = patternEl.nextSiblingElement("pattern")) {
-					int row = patternEl.attribute("row").toInt();
-					QString type = patternEl.attribute("type");
-					if (type == "mute") {
-						machine->track[row] = core->mutePattern;
-					} else if (type == "break") {
-						machine->track[row] = core->breakPattern;
-					} else {
-						machine->track[row] = patternMap[patternEl.attribute("pattern")];
+				QDomElement trackEl = rootElement.firstChildElement("track");
+				if (!trackEl.isNull()) {
+					for (QDomElement patternEl = trackEl.firstChildElement("pattern"); !patternEl.isNull(); patternEl = patternEl.nextSiblingElement("pattern")) {
+						int row = patternEl.attribute("row").toInt();
+						QString type = patternEl.attribute("type");
+						if (type == "mute") {
+							machine->track[row] = core->mutePattern;
+						} else if (type == "break") {
+							machine->track[row] = core->breakPattern;
+						} else {
+							machine->track[row] = patternMap[patternEl.attribute("pattern")];
+						}
 					}
 				}
 			}

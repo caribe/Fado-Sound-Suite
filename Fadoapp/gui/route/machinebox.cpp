@@ -111,9 +111,7 @@ void MachineBox::mouseReleaseEvent(QGraphicsSceneMouseEvent *e) {
 
 void MachineBox::keyPressEvent(QKeyEvent *e) {
 	if (e->key() == Qt::Key_Delete and m->type != Machine::MachineMaster) {
-		if (QMessageBox::question(route->parentWidget(), "Are you sure?", "Are you sure to delete this machine?", QMessageBox::Ok, QMessageBox::Cancel) == QMessageBox::Ok) {
-			route->delMachine(this);
-		}
+		route->delMachine(this);
 	} else {
 		e->ignore();
 	}

@@ -14,8 +14,8 @@
         <file>icons/document.png</file>
         <file alias="fado-logo">icons/fado-logo.svg</file>
         <file>icons/folder-open-document.png</file>
-        <file alias="effect">icons/funnel.png</file>
-        <file alias="generator">icons/gear.png</file>
+        <file alias="effects">icons/funnel.png</file>
+        <file alias="generators">icons/gear.png</file>
         <file alias="line-input">icons/microphone.png</file>
         <file>icons/minus.png</file>
         <file alias="routes">icons/node.png</file>
@@ -31,5 +31,12 @@
         <file alias="pattern-add">icons/table--plus.png</file>
         <file alias="patterns">icons/table.png</file>
         <file alias="user">icons/user.png</file>
+        <file alias="pattern-break">icons/speaker-volume-control-mute.png</file>
+        <file alias="pattern-mute">icons/speaker-volume-none.png</file>
+        <file>icons/broom.png</file>
+        <file>icons/table-delete-row.png</file>
+        <file>icons/table-insert-row.png</file>
+        <file>icons/funnel-small.png</file>
+        <file>icons/gear-small.png</file>
     </qresource>
 </RCC>

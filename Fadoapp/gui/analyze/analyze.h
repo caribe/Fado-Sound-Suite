@@ -20,11 +20,12 @@
  *
  */
 
-#ifndef GUI_PLAYBACK_H
-#define GUI_PLAYBACK_H
+#ifndef GUI_ANALYZE_H
+#define GUI_ANALYZE_H
 
-#include <QFrame>
+#include <QSplitter>
 #include <QFile>
+#include <QTransform>
 #include <QScrollBar>
 #include <QGridLayout>
 #include <QGraphicsView>
@@ -35,17 +36,18 @@
 #include <cmath>
 #include <fftw3.h>
 
-class Playback;
 class MainWindow;
 
 #include "core/core.h"
+#include "gui/analyze/timeanalyze.h"
+#include "gui/analyze/freqanalyze.h"
 
-class Playback : public QWidget
+class Analyze : public QWidget
 {
 	Q_OBJECT
 
 	public:
-		Playback(QWidget *parent, Core *core);
+		Analyze(QWidget *parent, Core *core);
 		Core *core;
 		QGraphicsScene *scenef, *scenet;
 		QScrollBar *scrollBar;
@@ -53,9 +55,6 @@ class Playback : public QWidget
 		QGraphicsPolygonItem *tlx, *trx, *flx;
 
 	private slots:
-		void buttonPlay();
-		void buttonRec();
-		void buttonStop();
 		void buttonView();
 		void sliderValueChanged(int value);
 };

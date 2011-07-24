@@ -22,22 +22,19 @@
 
 #include "core/updates.h"
 
-Updates::Updates(Core *core)
+Updates::Updates(QObject *parent) : QObject(parent)
 {
-	this->core = core;
-
-	manager = new QNetworkAccessManager(this);
+	manager = new QNetworkAccessManager();
 	connect(manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(replyFinished(QNetworkReply*)));
 }
 
 
 
-int Updates::check()
+void Updates::check()
 {
 	QUrl url("http://saitfainder.altervista.org/fado/updates.php");
 	QNetworkRequest req(url);
 	manager->get(req);
-	return 0;
 }
 
 
@@ -52,7 +49,7 @@ void Updates::replyFinished(QNetworkReply *reply)
 		int errorLine, errorColumn;
 
 		if (doc.setContent(xml, false, &errorMsg, &errorLine, &errorColumn) == false) {
-			QMessageBox::critical(0, "XML Error", errorMsg + " at line " + QString::number(errorLine) + " column " + QString::number(errorColumn));
+			// QMessageBox::critical(0, "XML Error", errorMsg + " at line " + QString::number(errorLine) + " column " + QString::number(errorColumn));
 			return;
 		}
 
@@ -88,12 +85,15 @@ void Updates::replyFinished(QNetworkReply *reply)
 			} else qDebug() << "Unkown type `" << type << "`";
 		}
 */
-		if (flag) {
-			QMessageBox::information(0, "Updates avaible", "A new version of Fado is avaible. Go and download it now.");
-		}
 
-		if (count) {
-			QMessageBox::information(0, "Updates avaible", "New machines are avaible. Should i try to download them?");
+		if (flag and count) {
+			emit updateSignal(AppMachineUpdate, count);
+		} else if (flag) {
+			emit updateSignal(AppUpdate, 0);
+		} else if (count) {
+			emit updateSignal(MachineUpdate, count);
+		} else {
+			emit updateSignal(NoUpdates, 0);
 		}
 	}
 }

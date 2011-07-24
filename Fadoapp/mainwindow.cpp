@@ -43,12 +43,12 @@ MainWindow::MainWindow() : QMainWindow() {
 	route = new Route(this, core);
 	pattern  = new Pattern(this, core);
 	track = new Tracks(this, core);
-	playback = new Playback(this, core);
+	analyze = new Analyze(this, core);
 
 	tabs->addTab(route,    QIcon(":routes"), tr("Machines"));
 	tabs->addTab(pattern,  QIcon(":patterns"), tr("Patterns"));
-	tabs->addTab(track,    QIcon(":sequences"), tr("Sequencer"));
-	tabs->addTab(playback, QIcon(":playback"), tr("Playback"));
+	tabs->addTab(track,    QIcon(":sequences"), tr("Sequences"));
+	tabs->addTab(analyze, QIcon(":icons/system-monitor.png"), tr("Analyze"));
 
 	setCentralWidget(tabs);
 
@@ -79,10 +79,39 @@ MainWindow::MainWindow() : QMainWindow() {
 	actionTabTrack->setObjectName("actionTabTrack");
 	connect(actionTabTrack, SIGNAL(triggered()), SLOT(setTabByAction()));
 
-	QAction *actionTabPlayback = new QAction(QIcon(":playback"), tr("Playback"), this);
-	actionTabPlayback->setShortcut(Qt::Key_F4);
-	actionTabPlayback->setObjectName("actionTabPlayback");
-	connect(actionTabPlayback, SIGNAL(triggered()), SLOT(setTabByAction()));
+	QAction *actionTabAnalyze = new QAction(QIcon(":icons/system-monitor.png"), tr("Analyze"), this);
+	actionTabAnalyze->setShortcut(Qt::Key_F4);
+	actionTabAnalyze->setObjectName("actionTabAnalyze");
+	connect(actionTabAnalyze, SIGNAL(triggered()), SLOT(setTabByAction()));
+
+	// Toolbars
+
+	toolbarPatterns = new QToolBar(tr("Patterns Tools"));
+	QAction *patternsAdd = toolbarPatterns->addAction(QIcon(":pattern-add"), tr("Create machine pattern"), pattern, SLOT(addPattern()));
+	QAction *patternsDel = toolbarPatterns->addAction(QIcon(":pattern-del"), tr("Delete machine pattern"), pattern, SLOT(delPattern()));
+	QAction *patternsRen = toolbarPatterns->addAction(QIcon(":pattern-ren"), tr("Rename machine pattern"), pattern, SLOT(renPattern()));
+
+	toolbarTracks = new QToolBar(tr("Sequences Tools"));
+	QAction *sequencesClear = toolbarTracks->addAction(QIcon(":/icons/broom.png"), tr("Clear sequence cell"), track, SLOT(deleteButtonSlot()));
+	QAction *sequencesMute = toolbarTracks->addAction(QIcon(":pattern-mute"), tr("Set mute cell"), track, SLOT(muteButtonSlot()));
+	QAction *sequencesBreak = toolbarTracks->addAction(QIcon(":pattern-break"), tr("Set break cell"), track, SLOT(breakButtonSlot()));
+	QAction *sequencesInsert = toolbarTracks->addAction(QIcon(":/icons/table-insert-row.png"), tr("Add Row to sequence"), track, SLOT(addButtonSlot()));
+	QAction *sequencesRemove = toolbarTracks->addAction(QIcon(":/icons/table-delete-row.png"), tr("Del row from sequence"), track, SLOT(delButtonSlot()));
+	QAction *sequencesFirst = toolbarTracks->addAction(QIcon(":/icons/control-stop.png"), tr("Set as first sequence row"), track, SLOT(frsButtonSlot()));
+	QAction *sequencesLast = toolbarTracks->addAction(QIcon(":/icons/control-stop-180.png"), tr("Set ad last sequence row"), track, SLOT(lstButtonSlot()));
+
+	toolbarPlayback = new QToolBar(tr("Playback Tools"));
+	QAction *playbackPlay = toolbarPlayback->addAction(QIcon(":/icons/control.png"), tr("Play"), this, SLOT(playbackPlaySlot()));
+	QAction *playbackRec = toolbarPlayback->addAction(QIcon(":/icons/control-record.png"), tr("Record"), this, SLOT(playbackRecSlot()));
+	QAction *playbackStop = toolbarPlayback->addAction(QIcon(":/icons/control-stop-square.png"), tr("Stop"), this, SLOT(playbackStopSlot()));
+
+	toolbarAnalyze = new QToolBar(tr("Analyze Tools"));
+	toolbarAnalyze->addAction(QIcon(":/icons/system-monitor.png"), tr("View"), analyze, SLOT(buttonView()));
+
+	addToolBar(toolbarPatterns);
+	addToolBar(toolbarTracks);
+	addToolBar(toolbarPlayback);
+	addToolBar(toolbarAnalyze);
 
 	// *** menu ***
 
@@ -119,15 +148,35 @@ MainWindow::MainWindow() : QMainWindow() {
 	connect(menuFileQuit, SIGNAL(triggered()), this, SLOT(close()));
 	menuFile->addAction(menuFileQuit);
 
-	QMenu *tabs = menu->addMenu("&Tabs");
+	QMenu *tabs = menu->addMenu(tr("&Tabs"));
 	tabs->addAction(actionTabRoute);
 	tabs->addAction(actionTabPattern);
 	tabs->addAction(actionTabTrack);
-	tabs->addAction(actionTabPlayback);
+	tabs->addAction(actionTabAnalyze);
 
-	menu->addMenu("&Settings");
+	QMenu *patternsMenu = menu->addMenu(tr("&Patterns"));
+	patternsMenu->addAction(patternsAdd);
+	patternsMenu->addAction(patternsDel);
+	patternsMenu->addAction(patternsRen);
 
-	QMenu *menuHelp = menu->addMenu("&Help");
+	QMenu *sequencesMenu = menu->addMenu(tr("&Sequences"));
+	sequencesMenu->addAction(sequencesClear);
+	sequencesMenu->addAction(sequencesMute);
+	sequencesMenu->addAction(sequencesBreak);
+	sequencesMenu->addAction(sequencesInsert);
+	sequencesMenu->addAction(sequencesRemove);
+	sequencesMenu->addAction(sequencesFirst);
+	sequencesMenu->addAction(sequencesLast);
+
+	QMenu *playbackMenu = menu->addMenu(tr("Pl&ayback"));
+	playbackMenu->addAction(playbackPlay);
+	playbackMenu->addAction(playbackRec);
+	playbackMenu->addAction(playbackStop);
+
+	menu->addMenu(tr("Anal&yze"));
+	menu->addMenu(tr("Set&tings"));
+
+	QMenu *menuHelp = menu->addMenu(tr("&Help"));
 
 	QAction *menuHelpUpdates = new QAction(tr("Check for updates"), this);
 	connect(menuHelpUpdates, SIGNAL(triggered()), this, SLOT(menuHelpUpdatesSlot()));
@@ -137,41 +186,15 @@ MainWindow::MainWindow() : QMainWindow() {
 	connect(menuHelpAbout, SIGNAL(triggered()), this, SLOT(menuHelpAboutSlot()));
 	menuHelp->addAction(menuHelpAbout);
 
-
-	// Toolbars
-
-	QToolBar *toolbarPatterns = new QToolBar(tr("Patterns Tools"));
-	toolbarPatterns->addAction(QIcon(":pattern-add"), tr("Add Pattern"), pattern, SLOT(addPattern()));
-	toolbarPatterns->addAction(QIcon(":pattern-del"), tr("Delete Pattern"), pattern, SLOT(delPattern()));
-	toolbarPatterns->addAction(QIcon(":pattern-ren"), tr("Rename Pattern"), pattern, SLOT(renPattern()));
-
-	QToolBar *toolbarTracks = new QToolBar(tr("Sequences Tools"));
-	toolbarTracks->addAction(QIcon(":/icons/plus.png"), tr("Add Row"), track, SLOT(addButtonSlot()));
-	toolbarTracks->addAction(QIcon(":/icons/minus.png"), tr("Del Row"), track, SLOT(delButtonSlot()));
-	toolbarTracks->addAction(QIcon(":/icons/control-stop.png"), tr("First Row"), track, SLOT(frsButtonSlot()));
-	toolbarTracks->addAction(QIcon(":/icons/control-stop-180.png"), tr("Last Row"), track, SLOT(lstButtonSlot()));
-	toolbarTracks->addAction(QIcon(":/icons/cross.png"), tr("Delete"), track, SLOT(deleteButtonSlot()));
-	toolbarTracks->addAction(QIcon(":/icons/slash.png"), tr("Mute"), track, SLOT(muteButtonSlot()));
-	toolbarTracks->addAction(QIcon(":/icons/control-stop-square.png"), tr("Break"), track, SLOT(breakButtonSlot()));
-
-	QToolBar *toolbarPlayback = new QToolBar(tr("Playback Tools"));
-	toolbarPlayback->addAction(QIcon(":/icons/control.png"), tr("Play"), playback, SLOT(buttonPlay()));
-	toolbarPlayback->addAction(QIcon(":/icons/control-record.png"), tr("Record"), playback, SLOT(buttonRec()));
-	toolbarPlayback->addAction(QIcon(":/icons/control-stop-square.png"), tr("Stop"), playback, SLOT(buttonStop()));
-	toolbarPlayback->addAction(QIcon(":/icons/system-monitor.png"), tr("View"), playback, SLOT(buttonView()));
-
-	addToolBar(toolbarPatterns);
-	addToolBar(toolbarTracks);
-	addToolBar(toolbarPlayback);
-
 	// Resetting everything
 	menuFileNewSlot();
+	tabChanged(0);
 }
 
 
 void MainWindow::menuFileCloseSlot() {
 
-	foreach (Machine *m, core->machines) route->delMachine(m);
+	foreach (Machine *m, core->machines) route->delMachine(m, false);
 	core->machines.clear();
 
 }
@@ -232,7 +255,7 @@ void MainWindow::menuFileSaveAsSlot() {
 	if (filename.isNull()) return;
 
 	if (core->save(filename) == 0) {
-		setWindowTitle("Fado - "+filename);
+		setWindowTitle(tr("%1 - Fado").arg(filename));
 	}
 }
 
@@ -246,7 +269,7 @@ void MainWindow::menuHelpAboutSlot()
 
 void MainWindow::menuHelpUpdatesSlot()
 {
-	core->checkUpdates();
+	core->updatesCheck();
 }
 
 
@@ -274,7 +297,7 @@ void MainWindow::setTabByAction()
 		tabs->setCurrentIndex(1);
 	} else if (sender == "actionTabTrack") {
 		tabs->setCurrentIndex(2);
-	} else if (sender == "actionTabPlayback") {
+	} else if (sender == "actionTabAnalyze") {
 		tabs->setCurrentIndex(3);
 	}
 }
@@ -331,8 +354,28 @@ void MainWindow::messageCritical(const QString &title, const QString &text) {
 
 void MainWindow::tabChanged(int index)
 {
-	if (index == 1) {
+	switch (index) {
+	case 0:
+		toolbarPatterns->setEnabled(false);
+		toolbarTracks->setEnabled(false);
+		toolbarAnalyze->setEnabled(false);
+		break;
+	case 1:
+		toolbarPatterns->setEnabled(true);
+		toolbarTracks->setEnabled(false);
+		toolbarAnalyze->setEnabled(false);
 		pattern->refreshPatterns();
+		break;
+	case 2:
+		toolbarPatterns->setEnabled(false);
+		toolbarTracks->setEnabled(true);
+		toolbarAnalyze->setEnabled(false);
+		break;
+	case 3:
+		toolbarPatterns->setEnabled(false);
+		toolbarTracks->setEnabled(false);
+		toolbarAnalyze->setEnabled(true);
+		break;
 	}
 }
 
@@ -341,4 +384,24 @@ void MainWindow::slotDisplayPatterns(Machine *m)
 {
 	pattern->displayPatterns(m);
 	tabs->setCurrentIndex(1);
+}
+
+
+void MainWindow::playbackPlaySlot()
+{
+	core->start(false);
+}
+
+
+
+void MainWindow::playbackRecSlot()
+{
+	core->start(true);
+}
+
+
+
+void MainWindow::playbackStopSlot()
+{
+	core->stop();
 }

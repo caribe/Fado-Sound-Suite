@@ -24,12 +24,14 @@ SOURCES += main.cpp\
     gui/pattern/patterntabledata.cpp \
     gui/pattern/patterntable.cpp \
     gui/pattern/pattern.cpp \
-    gui/playback/playback.cpp \
     gui/route/route.cpp \
     gui/route/machinebox.cpp \
     gui/route/linkbox.cpp \
     gui/track/tracks.cpp \
-    gui/track/tracksmodel.cpp
+    gui/track/tracksmodel.cpp \
+    gui/analyze/analyze.cpp \
+    gui/analyze/timeanalyze.cpp \
+    gui/analyze/freqanalyze.cpp
 
 HEADERS  += mainwindow.h \
     core/updates.h \
@@ -44,12 +46,14 @@ HEADERS  += mainwindow.h \
     gui/pattern/patterntabledata.h \
     gui/pattern/patterntable.h \
     gui/pattern/pattern.h \
-    gui/playback/playback.h \
     gui/route/route.h \
     gui/route/machinebox.h \
     gui/route/linkbox.h \
     gui/track/tracks.h \
-    gui/track/tracksmodel.h
+    gui/track/tracksmodel.h \
+    gui/analyze/analyze.h \
+    gui/analyze/timeanalyze.h \
+    gui/analyze/freqanalyze.h
 
 RESOURCES += \
     icons.qrc
@@ -122,4 +126,11 @@ OTHER_FILES += \
     icons/control-stop-square.png \
     icons/control-stop-180.png \
     icons/control-record.png \
-    icons/block.png
+    icons/block.png \
+    icons/speaker-volume-none.png \
+    icons/speaker-volume-control-mute.png \
+    icons/broom.png \
+    icons/table-insert-row.png \
+    icons/table-delete-row.png \
+    icons/gear-small.png \
+    icons/funnel-small.png

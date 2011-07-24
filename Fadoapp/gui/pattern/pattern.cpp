@@ -192,6 +192,7 @@ void Pattern::renPattern()
 	if (machine == 0) return;
 
 	int index = patternCombo->currentIndex();
+	if (index == -1) return;
 
 	QString oldName = patternCombo->currentText();
 
@@ -211,8 +212,7 @@ void Pattern::delPattern()
 	if (machine == 0) return;
 
 	int index = patternCombo->currentIndex();
-
-	if (index < 0) return;
+	if (index == -1) return;
 
 	patternCombo->removeItem(index);
 	machine->patterns.removeAt(index);

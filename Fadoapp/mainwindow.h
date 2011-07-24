@@ -41,7 +41,7 @@ class MainWindow;
 #include "gui/route/route.h"
 #include "gui/track/tracks.h"
 #include "gui/pattern/pattern.h"
-#include "gui/playback/playback.h"
+#include "gui/analyze/analyze.h"
 
 class MainWindow : public QMainWindow
 {
@@ -54,10 +54,10 @@ class MainWindow : public QMainWindow
 		Route *route;
 		Tracks *track;
 		Pattern *pattern;
-		Playback *playback;
+		Analyze *analyze;
 
 		void refreshPatterns();
-		
+
 		QTabWidget *tabs;
 		QStatusBar *status;
 		void closeEvent(QCloseEvent *event);
@@ -67,6 +67,8 @@ class MainWindow : public QMainWindow
 	private:
 		void settingsSave();
 		void settingsLoad();
+
+		QToolBar *toolbarPatterns, *toolbarTracks, *toolbarPlayback, *toolbarAnalyze;
 
 	private slots:
 		void setTabByAction();
@@ -82,6 +84,10 @@ class MainWindow : public QMainWindow
 		void menuFileSaveAsSlot();
 		void menuHelpAboutSlot();
 		void menuHelpUpdatesSlot();
+
+		void playbackPlaySlot();
+		void playbackRecSlot();
+		void playbackStopSlot();
 };
 
 #endif

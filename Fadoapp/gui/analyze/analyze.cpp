@@ -20,17 +20,14 @@
  *
  */
 
-#include "playback.h"
+#include "analyze.h"
 
-Playback::Playback(QWidget *parent, Core *core) : QWidget(parent)
+Analyze::Analyze(QWidget *parent, Core *core) : QWidget(parent)
 {
 	this->core = core;
-
-	QGridLayout *grid = new QGridLayout(this);
-	grid->setSpacing(3);
-	grid->setContentsMargins(3, 3, 3, 3);
-
 	file = new QFile();
+
+	// Scrollbar
 
 	scrollBar = new QScrollBar(Qt::Horizontal);
 	scrollBar->setMinimum(0);
@@ -38,14 +35,10 @@ Playback::Playback(QWidget *parent, Core *core) : QWidget(parent)
 	scrollBar->setMaximum(1024);
 	scrollBar->setValue(0);
 	connect(scrollBar, SIGNAL(valueChanged(int)), this, SLOT(sliderValueChanged(int)));
-	grid->addWidget(scrollBar, 3, 0, 1, -1);
+
+	// Time graph
 
 	scenet = new QGraphicsScene();
-
-	QGraphicsView *gview = new QGraphicsView(scenet, this);
-	grid->addWidget(gview, 1, 0, 1, -1);
-	grid->setRowStretch(1, 1);
-
 	tlx = new QGraphicsPolygonItem();
 	tlx->setPen(QPen(QColor(0xff, 0, 0), 1));
 	tlx->setBrush(QBrush(QColor(0xff, 0x80, 0x80)));
@@ -56,41 +49,35 @@ Playback::Playback(QWidget *parent, Core *core) : QWidget(parent)
 	trx->setBrush(QBrush(QColor(0x80, 0xff, 0x80)));
 	scenet->addItem(trx);
 
-	scenef = new QGraphicsScene();
+	TimeAnalyze *gview = new TimeAnalyze(scenet, this);
 
-	QGraphicsView *fview = new QGraphicsView(scenef, this);
-	grid->addWidget(fview, 2, 0, 1, -1);
-	grid->setRowStretch(2, 1);
+	// Freq graph
+
+	scenef = new QGraphicsScene();
 
 	flx = new QGraphicsPolygonItem();
 	flx->setPen(QPen(QColor(0xff, 0, 0), 1));
 	flx->setBrush(QBrush(QColor(0xff, 0x80, 0x80)));
 	scenef->addItem(flx);
+
+	FreqAnalyze *fview = new FreqAnalyze(scenef, this);
+
+	// Layout
+
+	QSplitter *splitter = new QSplitter(Qt::Vertical);
+	splitter->addWidget(gview);
+	splitter->addWidget(fview);
+
+	QVBoxLayout *vbox = new QVBoxLayout();
+	vbox->addWidget(splitter, 1);
+	vbox->addWidget(scrollBar);
+
+	setLayout(vbox);
 }
 
 
 
-void Playback::buttonPlay()
-{
-	core->start(false);
-}
-
-
-
-void Playback::buttonRec()
-{
-	core->start(true);
-}
-
-
-
-void Playback::buttonStop()
-{
-	core->stop();
-}
-
-
-void Playback::buttonView()
+void Analyze::buttonView()
 {
 	short *buffer = new short[2048];
 
@@ -171,7 +158,7 @@ void Playback::buttonView()
 }
 
 
-void Playback::sliderValueChanged(int value)
+void Analyze::sliderValueChanged(int value)
 {
 	buttonView();
 }

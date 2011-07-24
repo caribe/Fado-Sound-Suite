@@ -87,7 +87,11 @@ QVariant TracksModel::headerData(int section, Qt::Orientation orientation, int r
 
 	if (role == Qt::DisplayRole) {
 		if (orientation == Qt::Horizontal) {
-			return core->machines[section]->name;
+			if (core->machines[section]->alias.isNull()) {
+				return core->machines[section]->name;
+			} else {
+				return core->machines[section]->alias;
+			}
 		} else if (orientation == Qt::Vertical) {
 			return QVariant(section);
 		}
@@ -101,8 +105,41 @@ void TracksModel::clear(const QModelIndex &index) {
 	if (index.isValid()) {
 		Machine *machine = core->machines[index.column()];
 		if (machine != NULL) {
-			machine->track[index.row()] = NULL;
+			machine->track.remove(index.row());
 			dataChanged(index, index);
 		}
+	}
+}
+
+
+
+bool TracksModel::insertRows(int row, int count, const QModelIndex &parent)
+{
+	beginInsertRows(parent, row, row+count-1);
+	core->total_patterns++;
+	endInsertRows();
+	return true;
+}
+
+
+
+bool TracksModel::removeRows(int row, int count, const QModelIndex &parent)
+{
+	if (core->total_patterns == 0) {
+		return false;
+	} else {
+		beginRemoveRows(parent, row, row+count-1);
+
+		foreach (Machine *m, core->machines) {
+			m->track.remove(row);
+		}
+		core->total_patterns--;
+
+		if (core->track_first >= core->total_patterns) core->track_first = core->total_patterns - 1;
+		if (core->track_last >= core->total_patterns) core->track_last = core->total_patterns - 1;
+
+		endRemoveRows();
+
+		return true;
 	}
 }

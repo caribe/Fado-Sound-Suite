@@ -44,6 +44,9 @@ class TracksModel : public QAbstractTableModel
 
 		QVariant headerData(int section, Qt::Orientation orientation, int role) const;
 
+		bool insertRows(int row, int count, const QModelIndex &parent = QModelIndex());
+		bool removeRows(int row, int count, const QModelIndex &parent = QModelIndex());
+
 		void reload();
 		void clear(const QModelIndex &index);
 };

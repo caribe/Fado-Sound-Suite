@@ -25,6 +25,7 @@
 Core::Core(QObject *parent) : QObject(parent)
 {
 	master = 0;
+	updates = 0;
 	pluginsPath = "../Fadogears/";
 
 	beat_per_pattern = 16;
@@ -48,17 +49,17 @@ void Core::loadPlugins()
 
 	// Base folders
 
-	QStandardItem *coreFolder = new QStandardItem(tr("Core"));
+	QStandardItem *coreFolder = new QStandardItem(QIcon(":fado-logo"), tr("Core Machines"));
 	coreFolder->setEditable(false);
 	coreFolder->setData(-100);
 	gearsTree->appendRow(coreFolder);
 
-	QStandardItem *generatorsFolder = new QStandardItem(tr("Generators"));
+	QStandardItem *generatorsFolder = new QStandardItem(QIcon(":generators"), tr("Generators"));
 	generatorsFolder->setEditable(false);
 	generatorsFolder->setData(-100);
 	gearsTree->appendRow(generatorsFolder);
 
-	QStandardItem *effectsFolder = new QStandardItem(tr("Effects"));
+	QStandardItem *effectsFolder = new QStandardItem(QIcon(":effects"), tr("Effects"));
 	effectsFolder->setEditable(false);
 	effectsFolder->setData(-100);
 	gearsTree->appendRow(effectsFolder);
@@ -132,7 +133,7 @@ void Core::loadPluginsFolder(QDir &dir, QHash<QString, QStandardItem *> &generat
 						userItem->setData(-100);
 						generatorsBuffer[machine->author] = userItem;
 					}
-					item = new QStandardItem(QIcon(":generator"), machine->name);
+					item = new QStandardItem(QIcon(":icons/gear-small.png"), machine->name);
 					generatorsBuffer[machine->author]->appendRow(item);
 				} else if (machine->type == Machine::MachineEffect) {
 					if (effectsBuffer.contains(machine->author) == false) {
@@ -141,7 +142,7 @@ void Core::loadPluginsFolder(QDir &dir, QHash<QString, QStandardItem *> &generat
 						userItem->setData(-100);
 						effectsBuffer[machine->author] = userItem;
 					}
-					item = new QStandardItem(QIcon(":effect"), machine->name);
+					item = new QStandardItem(QIcon(":icons/funnel-small.png"), machine->name);
 					effectsBuffer[machine->author]->appendRow(item);
 				}
 
@@ -160,26 +161,52 @@ void Core::loadPluginsFolder(QDir &dir, QHash<QString, QStandardItem *> &generat
 
 int Core::jack_init()
 {
-		qDebug() << "Starting Jack...";
+	qDebug() << "Starting Jack...";
 
 	// try to become a client of the JACK server
 	jack_status_t jack_status;
 	if ((client = jack_client_open("fado", JackUseExactName, &jack_status, "default")) == 0) {
-		emit messageCritical(tr("Jack server not running"), "Error " + QString::number(jack_status));
+		QString errorString;
+		if (jack_status == JackFailure) {
+			errorString = tr("Overall operation failed.");
+		} else if (jack_status = JackInvalidOption) {
+			errorString = tr("The operation contained an invalid or unsupported option.");
+		} else if (jack_status = JackNameNotUnique) {
+			errorString = tr("The desired client name was not unique.");
+		} else if (jack_status = JackServerStarted) {
+			errorString = tr("The JACK server was started as a result of this operation.");
+		} else if (jack_status = JackServerFailed) {
+			errorString = tr("Unable to connect to the JACK server.");
+		} else if (jack_status = JackServerError) {
+			errorString = tr("Communication error with the JACK server.");
+		} else if (jack_status = JackNoSuchClient) {
+			errorString = tr("Requested client does not exist.");
+		} else if (jack_status = JackLoadFailure) {
+			errorString = tr("Unable to load internal client.");
+		} else if (jack_status = JackInitFailure) {
+			errorString = tr("Unable to initialize client.");
+		} else if (jack_status = JackShmFailure) {
+			errorString = tr("Unable to access shared memory.");
+		} else if (jack_status = JackVersionError) {
+			errorString = tr("Client's protocol version does not match.");
+		}
+
+		emit messageCritical(tr("Jack server not running"), QString("%1: %2").arg(jack_status).arg(errorString));
+
 		return 1;
 	}
 
-		qDebug() << "Define callback...";
+	qDebug() << "Define callback...";
 
 	// tell the JACK server to call `process()' whenever there is work to be done.
 	jack_set_process_callback(client, ::jack_process, (void *)this);
 
-		qDebug() << "Define shutdown...";
+	qDebug() << "Define shutdown...";
 
 	// tell the JACK server to call `jack_shutdown()' if it ever shuts down, either entirely, or if it just decides to stop calling us.
 	jack_on_shutdown(client, ::jack_shutdown, (void *)this);
 
-		qDebug() << "Get sample rate...";
+	qDebug() << "Get sample rate...";
 
 	// display the current sample rate. 
 	sampling_rate = jack_get_sample_rate(client);
@@ -262,12 +289,29 @@ int Core::stop()
 
 
 
-int Core::checkUpdates()
+void Core::updatesCheck()
 {
-	if (!updates) updates = new Updates(this);
+	if (updates == NULL) {
+		updates = new Updates(this);
+		connect(updates, SIGNAL(updateSignal(Updates::UpdatesTypes,int)), SLOT(updatesResult(Updates::UpdatesTypes,int)));
+	}
 	updates->check();
-	return 0;
 }
+
+
+void Core::updatesResult(Updates::UpdatesTypes type, int count) {
+	if (type == Updates::NoUpdates) {
+		QMessageBox::information(NULL, tr("No updates"), tr("Your installation is already up to date!"));
+	} else if (type == Updates::AppUpdate) {
+		QMessageBox::information(NULL, tr("Updates avaible"), tr("A new version of Fado is avaible. Go and download it now."));
+	} else if (type == Updates::MachineUpdate) {
+		QMessageBox::information(NULL, tr("Updates avaible"), tr("%1 machines are avaible. Should i try to download them?").arg(count));
+	} else if (type == Updates::AppMachineUpdate) {
+		QMessageBox::information(NULL, tr("Updates avaible"), tr("%1 machines are avaible. Should i try to download them?").arg(count));
+	}
+
+}
+
 
 
 int jack_process(jack_nframes_t nframes, void *arg)

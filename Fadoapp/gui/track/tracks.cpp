@@ -31,9 +31,6 @@ Tracks::Tracks(QWidget *parent, Core *core) : QSplitter(parent)
 	tracksModel = new TracksModel(this, core);
 
 	tracksTable =  new QTableView(this);
-	// tracksTable->setFont(QFont("TypeWriter", 6));
-	// tracksTable->setStyleSheet("QTableView::item { border: 0px; padding: 0px; font: 6px TypeWriter }");
-
 	tracksTable->setModel(tracksModel);
 	tracksTable->setSelectionMode(QAbstractItemView::SingleSelection);
 
@@ -71,38 +68,15 @@ void Tracks::refreshPatterns()
 
 void Tracks::addButtonSlot()
 {
-	core->total_patterns++;
-	tracksTable->reset();
+	tracksModel->insertRows(tracksModel->rowCount(), 1);
 }
 
 
 void Tracks::delButtonSlot()
 {
-	int row = tracksTable->currentIndex().row();
-	if (row == -1) row = core->total_patterns - 1;
-	if (core->total_patterns <= 1) return;
-	core->total_patterns--;
-
-	foreach (Machine *m, core->machines) {
-		QList<int> tracks = m->track.keys();
-		qSort(tracks);
-		foreach (int i, tracks) {
-			if (i == row) {
-				m->track.remove(i);
-			} else if (i > row) {
-				m->track[i-1] = m->track[i];
-				m->track.remove(i);
-			}
-		}
-	}
-
-	if (core->track_first > row) core->track_first--;
-	if (core->track_last > row) core->track_last--;
-	if (core->track_first >= core->total_patterns) core->track_first = core->total_patterns - 1;
-	if (core->track_last  >= core->total_patterns) core->track_last  = core->total_patterns - 1;
-
-	tracksTable->reset();
+	tracksModel->removeRows(tracksModel->rowCount()-1, 1);
 }
+
 
 
 void Tracks::frsButtonSlot()

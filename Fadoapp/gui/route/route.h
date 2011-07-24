@@ -60,7 +60,7 @@ class Route : public QSplitter
 
 		void addMachine(Machine *machine);
 		void delMachine(MachineBox *machine);
-		void delMachine(Machine *machine);
+		void delMachine(Machine *machine, bool confirm = true);
 		void renMachine(MachineBox *machineBox);
 
 		void addConnection(Machine *m1, Machine *m2);

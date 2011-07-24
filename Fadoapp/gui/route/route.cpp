@@ -94,37 +94,35 @@ void Route::addMachine(Machine *machine)
 
 
 
-void Route::delMachine(Machine *machine)
+void Route::delMachine(Machine *machine, bool confirm)
 {
-	if (machineBoxes.contains(machine)) {
+	if (machineBoxes.contains(machine) == false) return;
 
-		qDebug() << "Remove #" << machine->name;
+	// Confirm
+	if (confirm and QMessageBox::question(parentWidget(), tr("Are you sure?"), tr("Are you sure to delete this machine?"), QMessageBox::Ok, QMessageBox::Cancel) == QMessageBox::Cancel) return;
 
-		// Removing connections
+	qDebug() << "Remove #" << machine->name;
 
-		foreach (LinkBox *linkBox, connections) {
-			if (linkBox->m1->m == machine or linkBox->m2->m == machine) {
-				connections.removeOne(linkBox);
-				delete linkBox;
-			}
+	// Removing connections
+	foreach (LinkBox *linkBox, connections) {
+		if (linkBox->m1->m == machine or linkBox->m2->m == machine) {
+			connections.removeOne(linkBox);
+			delete linkBox;
 		}
-
-		foreach (Machine *dst, machine->connectionDst.keys()) core->toggleConnection(machine, dst);
-		foreach (Machine *src, machine->connectionSrc.keys()) core->toggleConnection(src, machine);
-
-		// Machine destruction
-
-		delete machineBoxes[machine]; // Destroys the MachineBox
-		machineBoxes.remove(machine); // Removes the hash entry
-
-		core->machines.removeOne(machine); // Deletes the machine from core list
-		// delete machine; // Destroys the machine instance
-
-		// Graph update
-
-		core->orderMachines();
-
 	}
+
+	foreach (Machine *dst, machine->connectionDst.keys()) core->toggleConnection(machine, dst);
+	foreach (Machine *src, machine->connectionSrc.keys()) core->toggleConnection(src, machine);
+
+	// Machine destruction
+	delete machineBoxes[machine]; // Destroys the MachineBox
+	machineBoxes.remove(machine); // Removes the hash entry
+
+	core->machines.removeOne(machine); // Deletes the machine from core list
+	// delete machine; // Destroys the machine instance
+
+	// Graph update
+	core->orderMachines();
 }
 
 
@@ -258,4 +256,6 @@ void Route::renMachine(MachineBox *machineBox)
 		machineBox->refreshName();
 		qDebug() << "Renamed" << newAlias;
 	}
+
+	emit machinesChanged();
 }
