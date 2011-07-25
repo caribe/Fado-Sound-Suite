@@ -81,11 +81,19 @@ void Analyze::buttonView()
 {
 	short *buffer = new short[2048];
 
+	QSettings settings;
+	QString filename = settings.value("tempdir", "/tmp").toString()+"/fado.raw";
+
 	if (file->isOpen() == false) {
-		file->setFileName("/tmp/record.raw");
+		file->setFileName(filename);
 		file->open(QIODevice::ReadOnly);
 		scrollBar->setMaximum((file->size() / 4) - 1024);
 		scrollBar->setValue(0);
+	}
+
+	if (file->isOpen() == false) {
+		qDebug() << "Cannot open" << filename;
+		return;
 	}
 
 	file->seek(scrollBar->value() * 4);

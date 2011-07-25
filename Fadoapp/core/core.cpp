@@ -169,25 +169,25 @@ int Core::jack_init()
 		QString errorString;
 		if (jack_status == JackFailure) {
 			errorString = tr("Overall operation failed.");
-		} else if (jack_status = JackInvalidOption) {
+		} else if (jack_status == JackInvalidOption) {
 			errorString = tr("The operation contained an invalid or unsupported option.");
-		} else if (jack_status = JackNameNotUnique) {
+		} else if (jack_status == JackNameNotUnique) {
 			errorString = tr("The desired client name was not unique.");
-		} else if (jack_status = JackServerStarted) {
+		} else if (jack_status == JackServerStarted) {
 			errorString = tr("The JACK server was started as a result of this operation.");
-		} else if (jack_status = JackServerFailed) {
+		} else if (jack_status == JackServerFailed) {
 			errorString = tr("Unable to connect to the JACK server.");
-		} else if (jack_status = JackServerError) {
+		} else if (jack_status == JackServerError) {
 			errorString = tr("Communication error with the JACK server.");
-		} else if (jack_status = JackNoSuchClient) {
+		} else if (jack_status == JackNoSuchClient) {
 			errorString = tr("Requested client does not exist.");
-		} else if (jack_status = JackLoadFailure) {
+		} else if (jack_status == JackLoadFailure) {
 			errorString = tr("Unable to load internal client.");
-		} else if (jack_status = JackInitFailure) {
+		} else if (jack_status == JackInitFailure) {
 			errorString = tr("Unable to initialize client.");
-		} else if (jack_status = JackShmFailure) {
+		} else if (jack_status == JackShmFailure) {
 			errorString = tr("Unable to access shared memory.");
-		} else if (jack_status = JackVersionError) {
+		} else if (jack_status == JackVersionError) {
 			errorString = tr("Client's protocol version does not match.");
 		}
 

@@ -42,6 +42,7 @@ class MainWindow;
 #include "gui/track/tracks.h"
 #include "gui/pattern/pattern.h"
 #include "gui/analyze/analyze.h"
+#include "gui/settings.h"
 
 class MainWindow : public QMainWindow
 {
@@ -69,6 +70,7 @@ class MainWindow : public QMainWindow
 		void settingsLoad();
 
 		QToolBar *toolbarPatterns, *toolbarTracks, *toolbarPlayback, *toolbarAnalyze;
+		QMenu *patternsMenu, *sequencesMenu, *playbackMenu, *analyzeMenu;
 
 	private slots:
 		void setTabByAction();
@@ -88,6 +90,8 @@ class MainWindow : public QMainWindow
 		void playbackPlaySlot();
 		void playbackRecSlot();
 		void playbackStopSlot();
+
+		void menuSettingsConfigureSlot();
 };
 
 #endif

@@ -106,7 +106,7 @@ MainWindow::MainWindow() : QMainWindow() {
 	QAction *playbackStop = toolbarPlayback->addAction(QIcon(":/icons/control-stop-square.png"), tr("Stop"), this, SLOT(playbackStopSlot()));
 
 	toolbarAnalyze = new QToolBar(tr("Analyze Tools"));
-	toolbarAnalyze->addAction(QIcon(":/icons/system-monitor.png"), tr("View"), analyze, SLOT(buttonView()));
+	QAction *analyzeView = toolbarAnalyze->addAction(QIcon(":/icons/system-monitor.png"), tr("View"), analyze, SLOT(buttonView()));
 
 	addToolBar(toolbarPatterns);
 	addToolBar(toolbarTracks);
@@ -154,12 +154,12 @@ MainWindow::MainWindow() : QMainWindow() {
 	tabs->addAction(actionTabTrack);
 	tabs->addAction(actionTabAnalyze);
 
-	QMenu *patternsMenu = menu->addMenu(tr("&Patterns"));
+	patternsMenu = menu->addMenu(tr("&Patterns"));
 	patternsMenu->addAction(patternsAdd);
 	patternsMenu->addAction(patternsDel);
 	patternsMenu->addAction(patternsRen);
 
-	QMenu *sequencesMenu = menu->addMenu(tr("&Sequences"));
+	sequencesMenu = menu->addMenu(tr("&Sequences"));
 	sequencesMenu->addAction(sequencesClear);
 	sequencesMenu->addAction(sequencesMute);
 	sequencesMenu->addAction(sequencesBreak);
@@ -168,13 +168,16 @@ MainWindow::MainWindow() : QMainWindow() {
 	sequencesMenu->addAction(sequencesFirst);
 	sequencesMenu->addAction(sequencesLast);
 
-	QMenu *playbackMenu = menu->addMenu(tr("Pl&ayback"));
+	playbackMenu = menu->addMenu(tr("Pl&ayback"));
 	playbackMenu->addAction(playbackPlay);
 	playbackMenu->addAction(playbackRec);
 	playbackMenu->addAction(playbackStop);
 
-	menu->addMenu(tr("Anal&yze"));
-	menu->addMenu(tr("Set&tings"));
+	analyzeMenu = menu->addMenu(tr("Anal&yze"));
+	analyzeMenu->addAction(analyzeView);
+
+	QMenu *settingsMenu = menu->addMenu(tr("Set&tings"));
+	settingsMenu->addAction(QIcon(":/icons/wrench.png"), tr("Configure Fado..."), this, SLOT(menuSettingsConfigureSlot()));
 
 	QMenu *menuHelp = menu->addMenu(tr("&Help"));
 
@@ -359,22 +362,34 @@ void MainWindow::tabChanged(int index)
 		toolbarPatterns->setEnabled(false);
 		toolbarTracks->setEnabled(false);
 		toolbarAnalyze->setEnabled(false);
+		patternsMenu->setEnabled(false);
+		sequencesMenu->setEnabled(false);
+		analyzeMenu->setEnabled(false);
 		break;
 	case 1:
 		toolbarPatterns->setEnabled(true);
 		toolbarTracks->setEnabled(false);
 		toolbarAnalyze->setEnabled(false);
+		patternsMenu->setEnabled(true);
+		sequencesMenu->setEnabled(false);
+		analyzeMenu->setEnabled(false);
 		pattern->refreshPatterns();
 		break;
 	case 2:
 		toolbarPatterns->setEnabled(false);
 		toolbarTracks->setEnabled(true);
 		toolbarAnalyze->setEnabled(false);
+		patternsMenu->setEnabled(false);
+		sequencesMenu->setEnabled(true);
+		analyzeMenu->setEnabled(false);
 		break;
 	case 3:
 		toolbarPatterns->setEnabled(false);
 		toolbarTracks->setEnabled(false);
 		toolbarAnalyze->setEnabled(true);
+		patternsMenu->setEnabled(false);
+		sequencesMenu->setEnabled(false);
+		analyzeMenu->setEnabled(true);
 		break;
 	}
 }
@@ -404,4 +419,12 @@ void MainWindow::playbackRecSlot()
 void MainWindow::playbackStopSlot()
 {
 	core->stop();
+}
+
+
+void MainWindow::menuSettingsConfigureSlot()
+{
+	QDialog *d = new Settings();
+	d->exec();
+	delete d;
 }

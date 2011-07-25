@@ -23,6 +23,9 @@
 #ifndef CORE_MASTER_H
 #define CORE_MASTER_H
 
+#include <QObject>
+#include <QSettings>
+#include <QFile>
 #include <jack/jack.h>
 
 class Master;

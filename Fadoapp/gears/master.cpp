@@ -58,6 +58,8 @@ int Master::init(Core *core)
 
 int Master::go(jack_client_t *client, jack_port_t **input_port, jack_port_t **output_port, bool record)
 {
+	QSettings settings;
+
 	const char **ports;
 	this->client = client;
 	this->input_port = input_port;
@@ -92,12 +94,9 @@ int Master::go(jack_client_t *client, jack_port_t **input_port, jack_port_t **ou
 
 	free(ports);
 
-	if (record == true) {
-		file = fopen("/tmp/record.raw", "w");
-		if (!file) QMessageBox::critical(0, "Cannot open temporary file", "Sorry, but I cannot open a temporary file for recording");
-	} else {
-		file = 0;
-	}
+	QString filename = settings.value("tempdir", "/tmp").toString()+"/fado.raw";
+	file = fopen(filename.toUtf8().data(), "w");
+	if (!file) QMessageBox::critical(0, QObject::tr("Cannot open temporary file"), QObject::tr("Sorry, but I cannot open '%1' as temporary file for recording").arg(filename));
 
 	period_per_beat = 100;
 
@@ -125,7 +124,10 @@ int Master::stop()
 		machine->finish();
 	}
 	
-	if (file) fclose(file);
+	if (file) {
+		fclose(file);
+		file = 0;
+	}
 
 	return 0;
 }
@@ -194,8 +196,8 @@ int Master::process(jack_nframes_t nframes)
 	// If recording writes to file
 	if (file) {
 		for (unsigned int i = 0; i < nframes; i++) {
-			buffer[i*2] = std::floor(lxo[i] * 32000);
-			buffer[i*2+1] = std::floor(rxo[i] * 32000);
+			buffer[i*2] = std::floor(lxo[i] * 32767);
+			buffer[i*2+1] = std::floor(rxo[i] * 32767);
 		}
 		fwrite(buffer, nframes * 2, 2, file);
 	}

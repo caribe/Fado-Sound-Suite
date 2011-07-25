@@ -43,7 +43,7 @@ void Updates::replyFinished(QNetworkReply *reply)
 	if (reply->error() == QNetworkReply::NoError) {
 		QByteArray xml = reply->readAll();
 
-		QDomDocument doc("");
+		QDomDocument doc;
 
 		QString errorMsg;
 		int errorLine, errorColumn;

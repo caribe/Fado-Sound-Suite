@@ -31,7 +31,8 @@ SOURCES += main.cpp\
     gui/track/tracksmodel.cpp \
     gui/analyze/analyze.cpp \
     gui/analyze/timeanalyze.cpp \
-    gui/analyze/freqanalyze.cpp
+    gui/analyze/freqanalyze.cpp \
+    gui/settings.cpp
 
 HEADERS  += mainwindow.h \
     core/updates.h \
@@ -53,7 +54,8 @@ HEADERS  += mainwindow.h \
     gui/track/tracksmodel.h \
     gui/analyze/analyze.h \
     gui/analyze/timeanalyze.h \
-    gui/analyze/freqanalyze.h
+    gui/analyze/freqanalyze.h \
+    gui/settings.h
 
 RESOURCES += \
     icons.qrc
@@ -133,4 +135,6 @@ OTHER_FILES += \
     icons/table-insert-row.png \
     icons/table-delete-row.png \
     icons/gear-small.png \
-    icons/funnel-small.png
+    icons/funnel-small.png \
+    icons/wrench.png \
+    icons/tick.png

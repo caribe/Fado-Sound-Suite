@@ -38,5 +38,7 @@
         <file>icons/table-insert-row.png</file>
         <file>icons/funnel-small.png</file>
         <file>icons/gear-small.png</file>
+        <file>icons/wrench.png</file>
+        <file>icons/tick.png</file>
     </qresource>
 </RCC>
