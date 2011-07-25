@@ -419,6 +419,15 @@ void MainWindow::playbackRecSlot()
 void MainWindow::playbackStopSlot()
 {
 	core->stop();
+	if (core->record) {
+		QSettings settings;
+		QString filename = settings.value("settings/tempdir", "/tmp").toString()+"fado.raw";
+		QString savename = QFileDialog::getSaveFileName(this, tr("Save recorded file as..."), QString(), tr("Ogg/Vorbis File (*.ogg )"));
+
+		if (!savename.isNull()) {
+			Encoder::encode(filename, savename, 48000, 2, 0);
+		}
+	}
 }
 
 

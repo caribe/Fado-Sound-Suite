@@ -37,6 +37,7 @@
 class MainWindow;
 
 #include "core/core.h"
+#include "core/encoder.h"
 
 #include "gui/route/route.h"
 #include "gui/track/tracks.h"

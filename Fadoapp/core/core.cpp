@@ -278,12 +278,7 @@ int Core::start(bool record)
 
 int Core::stop()
 {
-	QSettings settings;
-
 	master->stop();
-
-	if (record) Encoder::encode(settings.value("settings/tmpfile", "/tmp/record.raw").toString(), "./record.ogg", 48000, 2, 0);
-
 	return 0;
 }
 
