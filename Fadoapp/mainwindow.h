@@ -65,6 +65,7 @@ class MainWindow : public QMainWindow
 		void closeEvent(QCloseEvent *event);
 
 		void critical(const QString & s);
+		void check();
 
 	private:
 		void settingsSave();

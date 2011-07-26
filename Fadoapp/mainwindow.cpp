@@ -437,3 +437,21 @@ void MainWindow::menuSettingsConfigureSlot()
 	d->exec();
 	delete d;
 }
+
+
+void MainWindow::check()
+{
+	QSettings settings;
+
+	QString tempFolder = settings.value("settings/tempFolder").toString();
+	if (tempFolder.isEmpty()) {
+		tempFolder = QFileDialog::getExistingDirectory(this, tr("Choose temporary file folder"), "/tmp");
+		settings.setValue("settings/tempFolder", tempFolder);
+	}
+
+	QString pluginsFolder = settings.value("settings/pluginsFolder").toString();
+	if (pluginsFolder.isEmpty()) {
+		pluginsFolder = QFileDialog::getExistingDirectory(this, tr("Choose plugins folder"));
+		settings.setValue("settings/pluginsFolder", pluginsFolder);
+	}
+}
