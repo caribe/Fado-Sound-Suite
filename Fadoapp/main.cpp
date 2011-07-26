@@ -38,8 +38,8 @@ int main(int argc, char *argv[])
 	splash.show();
 
 	MainWindow w;
-	w.check();
 	splash.finish(&w);
+	w.check();
 	w.show();
 
 	return app.exec();
