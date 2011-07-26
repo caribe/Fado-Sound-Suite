@@ -32,7 +32,7 @@ Updates::Updates(QObject *parent) : QObject(parent)
 
 void Updates::check()
 {
-	QUrl url("http://saitfainder.altervista.org/fado/updates.php");
+	QUrl url("http://saitfainder.altervista.org/fado/service.updates/");
 	QNetworkRequest req(url);
 	manager->get(req);
 }
