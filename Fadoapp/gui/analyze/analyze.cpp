@@ -82,7 +82,7 @@ void Analyze::buttonView()
 	short *buffer = new short[2048];
 
 	QSettings settings;
-	QString filename = settings.value("tempdir", "/tmp").toString()+"/fado.raw";
+	QString filename = settings.value("settings/tempFolder", "/tmp").toString()+"/fado.raw";
 
 	if (file->isOpen() == false) {
 		file->setFileName(filename);

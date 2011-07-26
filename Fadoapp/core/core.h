@@ -52,7 +52,6 @@ public:
 
 	// Funtionalities
 
-	QString pluginsPath;
 	void loadPlugins();
 	void loadPluginsFolder(QDir &dir, QHash<QString, QStandardItem *> &generatorsBuffer, QHash<QString, QStandardItem *> &effectsBuffer);
 

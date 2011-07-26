@@ -8,8 +8,11 @@ Settings::Settings(QWidget *parent) : QDialog(parent)
 
 	// Fields
 
-	tempFolder = new QLineEdit(settings.value("settings/tempdir", "/tmp").toString());
+	tempFolder = new QLineEdit(settings.value("settings/tempFolder", "/tmp").toString());
 	layout->addRow(tr("Temporary file folder"), tempFolder);
+
+	pluginsFolder = new QLineEdit(settings.value("settings/pluginsFolder", ".").toString());
+	layout->addRow(tr("Plugins folder"), pluginsFolder);
 
 	// Buttons
 
@@ -36,7 +39,8 @@ Settings::Settings(QWidget *parent) : QDialog(parent)
 void Settings::acceptAction()
 {
 	QSettings settings;
-	settings.setValue("settings/tempdir", tempFolder->text());
+	settings.setValue("settings/tempFolder", tempFolder->text());
+	settings.setValue("settings/pluginsFolder", pluginsFolder->text());
 
 	accept();
 }

@@ -94,7 +94,7 @@ int Master::go(jack_client_t *client, jack_port_t **input_port, jack_port_t **ou
 
 	free(ports);
 
-	QString filename = settings.value("tempdir", "/tmp").toString()+"/fado.raw";
+	QString filename = settings.value("settings/tempFolder", "/tmp").toString()+"/fado.raw";
 	file = fopen(filename.toUtf8().data(), "w");
 	if (!file) QMessageBox::critical(0, QObject::tr("Cannot open temporary file"), QObject::tr("Sorry, but I cannot open '%1' as temporary file for recording").arg(filename));
 

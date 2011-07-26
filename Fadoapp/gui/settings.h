@@ -12,7 +12,7 @@ class Settings : public QDialog
 {
     Q_OBJECT
 
-	QLineEdit *tempFolder;
+	QLineEdit *tempFolder, *pluginsFolder;
 
 public:
     explicit Settings(QWidget *parent = 0);

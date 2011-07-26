@@ -26,7 +26,6 @@ Core::Core(QObject *parent) : QObject(parent)
 {
 	master = 0;
 	updates = 0;
-	pluginsPath = "../Fadogears/";
 
 	beat_per_pattern = 16;
 	total_patterns = 16;
@@ -46,6 +45,7 @@ Core::Core(QObject *parent) : QObject(parent)
 void Core::loadPlugins()
 {
 	QStandardItem *item;
+	QSettings settings;
 
 	// Base folders
 
@@ -83,7 +83,7 @@ void Core::loadPlugins()
 
 	// Plugins
 
-	QDir dir(pluginsPath);
+	QDir dir(settings.value("settings/pluginsFolder", ".").toString());
 	loadPluginsFolder(dir, generatorsBuffer, effectsBuffer);
 
 	foreach (QStandardItem *item, generatorsBuffer.values()) {
@@ -112,7 +112,7 @@ void Core::loadPluginsFolder(QDir &dir, QHash<QString, QStandardItem *> &generat
 		if (info.isDir()) {
 			QDir dir(info.filePath());
 			loadPluginsFolder(dir, generatorsBuffer, effectsBuffer);
-		} else if (name.endsWith(".so")) {
+		} else if (name.endsWith(".so") or name.endsWith(".dll")) {
 
 			QPluginLoader *lib = new QPluginLoader(info.filePath());
 
