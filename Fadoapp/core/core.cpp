@@ -25,7 +25,6 @@
 Core::Core(QObject *parent) : QObject(parent)
 {
 	master = 0;
-	updates = 0;
 
 	beat_per_pattern = 16;
 	total_patterns = 16;
@@ -282,30 +281,6 @@ int Core::stop()
 	return 0;
 }
 
-
-
-void Core::updatesCheck()
-{
-	if (updates == NULL) {
-		updates = new Updates(this);
-		connect(updates, SIGNAL(updateSignal(Updates::UpdatesTypes,int)), SLOT(updatesResult(Updates::UpdatesTypes,int)));
-	}
-	updates->check();
-}
-
-
-void Core::updatesResult(Updates::UpdatesTypes type, int count) {
-	if (type == Updates::NoUpdates) {
-		QMessageBox::information(NULL, tr("No updates"), tr("Your installation is already up to date!"));
-	} else if (type == Updates::AppUpdate) {
-		QMessageBox::information(NULL, tr("Updates avaible"), tr("A new version of Fado is avaible. Go and download it now."));
-	} else if (type == Updates::MachineUpdate) {
-		QMessageBox::information(NULL, tr("Updates avaible"), tr("%1 machines are avaible. Should i try to download them?").arg(count));
-	} else if (type == Updates::AppMachineUpdate) {
-		QMessageBox::information(NULL, tr("Updates avaible"), tr("%1 machines are avaible. Should i try to download them?").arg(count));
-	}
-
-}
 
 
 

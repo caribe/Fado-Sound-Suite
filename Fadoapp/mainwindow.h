@@ -44,6 +44,7 @@ class MainWindow;
 #include "gui/pattern/pattern.h"
 #include "gui/analyze/analyze.h"
 #include "gui/settings.h"
+#include "gui/updater.h"
 
 class MainWindow : public QMainWindow
 {
@@ -73,6 +74,7 @@ class MainWindow : public QMainWindow
 
 		QToolBar *toolbarPatterns, *toolbarTracks, *toolbarPlayback, *toolbarAnalyze;
 		QMenu *patternsMenu, *sequencesMenu, *playbackMenu, *analyzeMenu;
+		Updater *updater;
 
 	private slots:
 		void setTabByAction();

@@ -35,6 +35,8 @@ MainWindow::MainWindow() : QMainWindow() {
 	core->loadPlugins();
 	core->jack_init();
 
+	updater = 0;
+
 	// *** tabs ***
 
 	tabs = new QTabWidget(this);
@@ -181,7 +183,7 @@ MainWindow::MainWindow() : QMainWindow() {
 
 	QMenu *menuHelp = menu->addMenu(tr("&Help"));
 
-	QAction *menuHelpUpdates = new QAction(tr("Check for updates"), this);
+	QAction *menuHelpUpdates = new QAction(QIcon(":update"), tr("Check for updates"), this);
 	connect(menuHelpUpdates, SIGNAL(triggered()), this, SLOT(menuHelpUpdatesSlot()));
 	menuHelp->addAction(menuHelpUpdates);
 
@@ -272,7 +274,8 @@ void MainWindow::menuHelpAboutSlot()
 
 void MainWindow::menuHelpUpdatesSlot()
 {
-	core->updatesCheck();
+	if (!updater) updater = new Updater(core, this);
+	updater->exec();
 }
 
 
@@ -421,8 +424,8 @@ void MainWindow::playbackStopSlot()
 	core->stop();
 	if (core->record) {
 		QSettings settings;
-		QString filename = settings.value("settings/tempFolder", "/tmp").toString()+"fado.raw";
-		QString savename = QFileDialog::getSaveFileName(this, tr("Save recorded file as..."), QString(), tr("Ogg/Vorbis File (*.ogg)"));
+		QString filename = settings.value("settings/tempFolder").toString()+"fado.raw";
+		QString savename = QFileDialog::getSaveFileName(this, tr("Save recorded file as..."), QString(), tr("Ogg Vorbis File (*.ogg)"));
 
 		if (!savename.isNull()) {
 			Encoder::encode(filename, savename, 48000, 2, 0);
@@ -454,4 +457,5 @@ void MainWindow::check()
 		pluginsFolder = QFileDialog::getExistingDirectory(this, tr("Choose plugins folder"));
 		settings.setValue("settings/pluginsFolder", pluginsFolder);
 	}
+
 }

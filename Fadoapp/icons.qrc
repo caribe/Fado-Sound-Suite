@@ -40,5 +40,6 @@
         <file>icons/gear-small.png</file>
         <file>icons/wrench.png</file>
         <file>icons/tick.png</file>
+        <file alias="update">icons/drive-download.png</file>
     </qresource>
 </RCC>

@@ -71,7 +71,7 @@ public:
 	virtual void finish() {}
 
 	// Jack
-	enum MachineType { MachineMaster, MachineInput, MachineGenerator, MachineEffect };
+	enum MachineType { MachineNull, MachineMaster, MachineInput, MachineGenerator, MachineEffect };
 
 	jack_default_audio_sample_t lx[2048], rx[2048];
 	jack_default_audio_sample_t li[2048], ri[2048];

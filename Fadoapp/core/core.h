@@ -36,7 +36,6 @@
 
 class Core;
 
-#include "updates.h"
 #include "config.h"
 #include "ext/machine.h"
 #include "gears/master.h"
@@ -57,9 +56,6 @@ public:
 
 	Master *master;
 	QString filename;
-
-	Updates *updates;
-	void updatesCheck();
 
 	// Jack handling
 
@@ -99,9 +95,6 @@ public:
 
 	bool orderMachines();
 	int toggleConnection(Machine *from, Machine *to);
-
-private slots:
-	void updatesResult(Updates::UpdatesTypes type, int count);
 
 signals:
 	void messageCritical(const QString &title, const QString &text);

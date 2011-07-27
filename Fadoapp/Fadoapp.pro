@@ -12,7 +12,6 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    core/updates.cpp \
     core/encoder.cpp \
     core/core.cpp \
     core/config.cpp \
@@ -32,10 +31,10 @@ SOURCES += main.cpp\
     gui/analyze/analyze.cpp \
     gui/analyze/timeanalyze.cpp \
     gui/analyze/freqanalyze.cpp \
-    gui/settings.cpp
+    gui/settings.cpp \
+    gui/updater.cpp
 
 HEADERS  += mainwindow.h \
-    core/updates.h \
     core/encoder.h \
     core/core.h \
     core/config.h \
@@ -55,7 +54,8 @@ HEADERS  += mainwindow.h \
     gui/analyze/analyze.h \
     gui/analyze/timeanalyze.h \
     gui/analyze/freqanalyze.h \
-    gui/settings.h
+    gui/settings.h \
+    gui/updater.h
 
 RESOURCES += \
     icons.qrc
@@ -137,4 +137,5 @@ OTHER_FILES += \
     icons/gear-small.png \
     icons/funnel-small.png \
     icons/wrench.png \
-    icons/tick.png
+    icons/tick.png \
+    icons/drive-download.png
