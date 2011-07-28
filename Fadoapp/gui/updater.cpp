@@ -4,7 +4,7 @@ Updater::Updater(Core *core, QWidget *parent) : QDialog(parent)
 {
 	resize(320, 240);
 	this->core = core;
-	requestUrl.setUrl("http://saitfainder.altervista.org/fado/service.updates/");
+	requestUrl.setUrl("http://"+QCoreApplication::organizationDomain()+"/fado/service.updates/");
 
 	manager = new QNetworkAccessManager();
 	connect(manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(replyFinished(QNetworkReply*)));
@@ -140,11 +140,11 @@ void Updater::analyzeXmlResponse(QNetworkReply *reply)
 					icon = QIcon(":/icons/funnel-small.png");
 				}
 
-				if (type != Machine::MachineNull and searchMachine(type, elMachine.attribute("author"), elMachine.attribute("name")) == false) {
+				if (type != Machine::MachineNull and searchMachine(elMachine.attribute("member"), elMachine.attribute("code")) == false) {
 					QListWidgetItem *item = new QListWidgetItem(icon, elMachine.attribute("author")+" / "+elMachine.attribute("name"), listListWidget);
 					item->setFlags(item->flags() | Qt::ItemIsUserCheckable);
 					item->setCheckState(Qt::Checked);
-					item->setData(Qt::UserRole+1, elMachine.attribute("member_id"));
+					item->setData(Qt::UserRole+1, elMachine.attribute("member"));
 					item->setData(Qt::UserRole+2, elMachine.attribute("code"));
 					item->setData(Qt::UserRole+3, elMachine.attribute("author"));
 					item->setData(Qt::UserRole+4, elMachine.attribute("name"));
@@ -164,7 +164,6 @@ void Updater::analyzeXmlResponse(QNetworkReply *reply)
 
 void Updater::downloadMachines()
 {
-	downloadCounter = 0;
 	downloadProgressBar->setMaximum(listListWidget->count());
 	layout->setCurrentIndex(2);
 	downloadNextMachine();
@@ -173,13 +172,24 @@ void Updater::downloadMachines()
 
 void Updater::downloadNextMachine()
 {
-	QListWidgetItem *item = listListWidget->item(downloadCounter);
+	int index = downloadProgressBar->value() + 1;
+	downloadProgressBar->setValue(index);
 
-	downloadProgressLabel->setText(tr("Downloading %1 / %2").arg(item->data(Qt::UserRole+3).toString()).arg(item->data(Qt::UserRole+4).toString()));
+	if (index == listListWidget->count()) {
+		QMessageBox::information(this, tr("Updates"), tr("All machines have been downloaded"));
+		accept();
+	} else {
+		QListWidgetItem *item = listListWidget->item(index);
 
-	QUrl url = QUrl(QString("http://saitfainder.altervista.org/fado/service.download/%1-%2").arg(item->data(Qt::UserRole+1).toString()).arg(item->data(Qt::UserRole+2).toString()));
-	QNetworkRequest req(url);
-	manager->get(req);
+		if (item->checkState() == Qt::Checked) {
+			downloadProgressLabel->setText(tr("Downloading %1 / %2").arg(item->data(Qt::UserRole+3).toString()).arg(item->data(Qt::UserRole+4).toString()));
+			QUrl url = QUrl("http://"+QCoreApplication::organizationDomain()+"/fado/service.download/"+item->data(Qt::UserRole+1).toString()+'-'+item->data(Qt::UserRole+2).toString());
+			QNetworkRequest req(url);
+			manager->get(req);
+		} else {
+			downloadNextMachine();
+		}
+	}
 }
 
 
@@ -187,21 +197,28 @@ void Updater::saveDownloadedMachine(QNetworkReply *reply)
 {
 	QSettings settings;
 
-	QListWidgetItem *item = listListWidget->item(downloadCounter);
+	QListWidgetItem *item = listListWidget->item(downloadProgressBar->value());
 
 	QByteArray data = reply->readAll();
 
-	QFile *file = new QFile(settings.value("settings/pluginsFolder").toString()+"/"+item->data(Qt::UserRole+3).toString()+"/"+item->data(Qt::UserRole+4).toString()+".so");
+	QString pluginsFolder = settings.value("settings/pluginsFolder").toString()+"/"+item->data(Qt::UserRole+1).toString();
+
+	QDir dir(pluginsFolder);
+
+	if (!dir.exists(pluginsFolder)) {
+		if (!dir.mkdir(pluginsFolder)) {
+			QMessageBox::critical(this, tr("Error"), tr("Cannot create folder %1").arg(pluginsFolder));
+			return; // TODO
+		}
+	}
+
+	QFile *file = new QFile(settings.value("settings/pluginsFolder").toString()+"/"+item->data(Qt::UserRole+1).toString()+"/"+item->data(Qt::UserRole+2).toString()+".so");
 	file->open(QIODevice::WriteOnly);
 	file->write(data);
 	file->close();
+	delete file;
 
-	if (++downloadCounter < listListWidget->count()) {
-		downloadNextMachine();
-	} else {
-		QMessageBox::information(this, tr("Updates"), tr("All machines have been downloaded"));
-		accept();
-	}
+	downloadNextMachine();
 
 	reply->deleteLater();
 }
@@ -240,13 +257,21 @@ int Updater::versionCompare(QString v1, QString v2)
 }
 
 
-bool Updater::searchMachine(Machine::MachineType type, const QString &author, const QString &name)
+bool Updater::searchMachine(const QString &member, const QString &code)
 {
+	QSettings settings;
+
+	if (QFile::exists(settings.value("settings/pluginsFolder").toString()+"/"+member+"/"+code+".so")) {
+		return true;
+	}
+
+	/*
 	foreach (Machine *machine, core->machines) {
 		if (machine->type == type and machine->author == author and machine->name == name) {
 			return true;
 		}
 	}
+	*/
 
 	return false;
 }

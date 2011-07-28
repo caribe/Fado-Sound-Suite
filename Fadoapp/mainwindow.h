@@ -74,7 +74,6 @@ class MainWindow : public QMainWindow
 
 		QToolBar *toolbarPatterns, *toolbarTracks, *toolbarPlayback, *toolbarAnalyze;
 		QMenu *patternsMenu, *sequencesMenu, *playbackMenu, *analyzeMenu;
-		Updater *updater;
 
 	private slots:
 		void setTabByAction();

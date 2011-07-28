@@ -14,6 +14,9 @@
 #include <QDialogButtonBox>
 #include <QProgressBar>
 #include <QLabel>
+#include <QCoreApplication>
+#include <QFile>
+#include <QDir>
 
 #include "core/core.h"
 
@@ -26,13 +29,12 @@ public:
 private:
 	Core *core;
 	QNetworkAccessManager *manager;
-	bool searchMachine(Machine::MachineType type, const QString &author, const QString &name);
+	bool searchMachine(const QString &member, const QString &code);
 	int versionCompare(QString v1, QString v2);
 	QUrl requestUrl;
 	QListWidget *listListWidget;
 	QStackedLayout *layout;
 	QProgressBar *downloadProgressBar;
-	int downloadCounter;
 	QLabel *downloadProgressLabel;
 
 	void downloadNextMachine();

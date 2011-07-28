@@ -35,8 +35,6 @@ MainWindow::MainWindow() : QMainWindow() {
 	core->loadPlugins();
 	core->jack_init();
 
-	updater = 0;
-
 	// *** tabs ***
 
 	tabs = new QTabWidget(this);
@@ -228,7 +226,7 @@ void MainWindow::menuFileNewSlot() {
 
 void MainWindow::menuFileOpenSlot() {
 	QSettings settings;
-	QString filename = QFileDialog::getOpenFileName(this, tr("Open Project"), settings.value("state/cwd", "").toString(), tr("Fado project files (*.fado)"));
+	QString filename = QFileDialog::getOpenFileName(this, tr("Open Project"), settings.value("state/cwd").toString(), tr("Fado project files (*.fado)"));
 	if (filename.isNull()) return;
 
 	menuFileCloseSlot();
@@ -274,8 +272,9 @@ void MainWindow::menuHelpAboutSlot()
 
 void MainWindow::menuHelpUpdatesSlot()
 {
-	if (!updater) updater = new Updater(core, this);
-	updater->exec();
+	Updater *updater = new Updater(core, this);
+	if (updater->exec() == QDialog::Accepted) core->loadPlugins();
+	delete updater;
 }
 
 
@@ -447,13 +446,13 @@ void MainWindow::check()
 	QSettings settings;
 
 	QString tempFolder = settings.value("settings/tempFolder").toString();
-	if (tempFolder.isEmpty()) {
+	while (tempFolder.isEmpty()) {
 		tempFolder = QFileDialog::getExistingDirectory(this, tr("Choose temporary file folder"), "/tmp");
 		settings.setValue("settings/tempFolder", tempFolder);
 	}
 
 	QString pluginsFolder = settings.value("settings/pluginsFolder").toString();
-	if (pluginsFolder.isEmpty()) {
+	while (pluginsFolder.isEmpty()) {
 		pluginsFolder = QFileDialog::getExistingDirectory(this, tr("Choose plugins folder"));
 		settings.setValue("settings/pluginsFolder", pluginsFolder);
 	}

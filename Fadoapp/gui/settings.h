@@ -29,6 +29,8 @@
 #include <QSettings>
 #include <QPushButton>
 #include <QDialogButtonBox>
+#include <QFileDialog>
+#include <QMessageBox>
 
 class Settings : public QDialog
 {
@@ -40,6 +42,10 @@ public:
     explicit Settings(QWidget *parent = 0);
 
 signals:
+
+private slots:
+	void tempFolderBrowseSlot();
+	void pluginsFolderBrowseSlot();
 
 public slots:
 	void acceptAction();

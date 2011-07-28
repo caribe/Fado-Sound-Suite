@@ -29,7 +29,7 @@ int main(int argc, char *argv[])
 	QApplication app(argc, argv);
 
 	QCoreApplication::setOrganizationName("Vastapalla");
-	QCoreApplication::setOrganizationDomain("saitfainder.altervista.org");
+	QCoreApplication::setOrganizationDomain("saitfainder.slakko.org");
 	QCoreApplication::setApplicationName("Fado");
 	QCoreApplication::setApplicationVersion("1.0.0");
 

@@ -46,6 +46,8 @@ void Core::loadPlugins()
 	QStandardItem *item;
 	QSettings settings;
 
+	gearsTree->clear();
+
 	// Base folders
 
 	QStandardItem *coreFolder = new QStandardItem(QIcon(":fado-logo"), tr("Core Machines"));
@@ -82,7 +84,7 @@ void Core::loadPlugins()
 
 	// Plugins
 
-	QDir dir(settings.value("settings/pluginsFolder", ".").toString());
+	QDir dir(settings.value("settings/pluginsFolder").toString());
 	loadPluginsFolder(dir, generatorsBuffer, effectsBuffer);
 
 	foreach (QStandardItem *item, generatorsBuffer.values()) {

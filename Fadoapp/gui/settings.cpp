@@ -31,10 +31,20 @@ Settings::Settings(QWidget *parent) : QDialog(parent)
 	// Fields
 
 	tempFolder = new QLineEdit(settings.value("settings/tempFolder", "/tmp").toString());
-	layout->addRow(tr("Temporary file folder"), tempFolder);
+	QPushButton *tempFolderBrowse = new QPushButton(tr("Browse..."));
+	QHBoxLayout *tempFolderLayout = new QHBoxLayout();
+	tempFolderLayout->addWidget(tempFolder, 1);
+	tempFolderLayout->addWidget(tempFolderBrowse);
+	layout->addRow(tr("Temporary file folder"), tempFolderLayout);
+	connect(tempFolderBrowse, SIGNAL(clicked()), SLOT(tempFolderBrowseSlot()));
 
 	pluginsFolder = new QLineEdit(settings.value("settings/pluginsFolder", ".").toString());
-	layout->addRow(tr("Plugins folder"), pluginsFolder);
+	QPushButton *pluginsFolderBrowse = new QPushButton(tr("Browse..."));
+	QHBoxLayout *pluginsFolderLayout = new QHBoxLayout();
+	pluginsFolderLayout->addWidget(pluginsFolder, 1);
+	pluginsFolderLayout->addWidget(pluginsFolderBrowse);
+	layout->addRow(tr("Plugins folder"), pluginsFolderLayout);
+	connect(pluginsFolderBrowse, SIGNAL(clicked()), SLOT(pluginsFolderBrowseSlot()));
 
 	// Buttons
 
@@ -61,8 +71,31 @@ Settings::Settings(QWidget *parent) : QDialog(parent)
 void Settings::acceptAction()
 {
 	QSettings settings;
-	settings.setValue("settings/tempFolder", tempFolder->text());
-	settings.setValue("settings/pluginsFolder", pluginsFolder->text());
 
-	accept();
+	QFileInfo tempInfo(tempFolder->text());
+	QFileInfo pluginsInfo(pluginsFolder->text());
+
+	if (!tempInfo.isWritable()) {
+		QMessageBox::critical(this, tr("Error"), tr("The choosen temporary file folder is not writeable or doesn't exists."));
+	} else if (!pluginsInfo.isWritable()) {
+		QMessageBox::critical(this, tr("Error"), tr("The choosen plugins folder is not writeable or doesn't exists."));
+	} else {
+		settings.setValue("settings/tempFolder", tempFolder->text());
+		settings.setValue("settings/pluginsFolder", pluginsFolder->text());
+		accept();
+	}
+}
+
+
+void Settings::tempFolderBrowseSlot()
+{
+	QString folder = QFileDialog::getExistingDirectory(this, tr("Choose temporary file folder"), tempFolder->text());
+	if (!folder.isEmpty()) tempFolder->setText(folder);
+}
+
+
+void Settings::pluginsFolderBrowseSlot()
+{
+	QString folder = QFileDialog::getExistingDirectory(this, tr("Choose plugins folder"), pluginsFolder->text());
+	if (!folder.isEmpty()) pluginsFolder->setText(folder);
 }
