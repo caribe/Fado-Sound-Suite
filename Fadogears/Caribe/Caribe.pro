@@ -3,4 +3,11 @@ TEMPLATE = subdirs
 SUBDIRS += \
 	Sine \
 	Square \
-	Echo
+	Echo \
+	Triangle \
+	Whitenoise \
+	Gaussiannoise \
+	Sawtooth \
+	Sinefm \
+	Lowpassfilter \
+	Highpassfilter

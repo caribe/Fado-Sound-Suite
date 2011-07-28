@@ -6,12 +6,12 @@
 
 QT       += core
 
-TARGET = echo
+TARGET = whitenoise
 TEMPLATE = lib
 
-SOURCES += echo.cpp
+SOURCES += whitenoise.cpp
 
-HEADERS += echo.h
+HEADERS += \
+	whitenoise.h
 
-OTHER_FILES += \
-    ../Gaussiannoise/Gaussiannoise.pro
+OTHER_FILES +=

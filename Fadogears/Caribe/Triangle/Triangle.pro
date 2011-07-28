@@ -6,12 +6,12 @@
 
 QT       += core
 
-TARGET = echo
+TARGET = triangle
 TEMPLATE = lib
 
-SOURCES += echo.cpp
+SOURCES += triangle.cpp
 
-HEADERS += echo.h
+HEADERS += \
+	triangle.h
 
-OTHER_FILES += \
-    ../Gaussiannoise/Gaussiannoise.pro
+OTHER_FILES +=

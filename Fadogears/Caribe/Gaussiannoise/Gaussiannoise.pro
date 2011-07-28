@@ -6,12 +6,12 @@
 
 QT       += core
 
-TARGET = echo
+TARGET = gaussiannoise
 TEMPLATE = lib
 
-SOURCES += echo.cpp
+SOURCES += gaussiannoise.cpp
 
-HEADERS += echo.h
+HEADERS += \
+	gaussiannoise.h
 
-OTHER_FILES += \
-    ../Gaussiannoise/Gaussiannoise.pro
+OTHER_FILES +=

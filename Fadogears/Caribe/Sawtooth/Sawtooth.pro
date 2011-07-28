@@ -6,12 +6,12 @@
 
 QT       += core
 
-TARGET = echo
+TARGET = sawtooth
 TEMPLATE = lib
 
-SOURCES += echo.cpp
+SOURCES += sawtooth.cpp
 
-HEADERS += echo.h
+HEADERS += \
+	sawtooth.h
 
-OTHER_FILES += \
-    ../Gaussiannoise/Gaussiannoise.pro
+OTHER_FILES +=

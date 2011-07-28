@@ -6,12 +6,12 @@
 
 QT       += core
 
-TARGET = echo
+TARGET = sinefm
 TEMPLATE = lib
 
-SOURCES += echo.cpp
+SOURCES += sinefm.cpp
 
-HEADERS += echo.h
+HEADERS += \
+    sinefm.h
 
-OTHER_FILES += \
-    ../Gaussiannoise/Gaussiannoise.pro
+OTHER_FILES +=

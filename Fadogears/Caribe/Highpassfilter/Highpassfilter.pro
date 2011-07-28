@@ -6,12 +6,12 @@
 
 QT       += core
 
-TARGET = echo
+TARGET = highpassfilter
 TEMPLATE = lib
 
-SOURCES += echo.cpp
+SOURCES += highpassfilter.cpp
 
-HEADERS += echo.h
+HEADERS += \
+	highpassfilter.h
 
-OTHER_FILES += \
-    ../Gaussiannoise/Gaussiannoise.pro
+OTHER_FILES +=
