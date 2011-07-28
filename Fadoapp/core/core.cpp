@@ -46,7 +46,7 @@ void Core::loadPlugins()
 	QStandardItem *item;
 	QSettings settings;
 
-	gearsTree->clear();
+	gearsTree->removeRows(0, gearsTree->rowCount());
 
 	// Base folders
 

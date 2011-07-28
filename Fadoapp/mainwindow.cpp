@@ -435,9 +435,9 @@ void MainWindow::playbackStopSlot()
 
 void MainWindow::menuSettingsConfigureSlot()
 {
-	QDialog *d = new Settings();
-	d->exec();
-	delete d;
+	QDialog *settingsDialog = new Settings();
+	if (settingsDialog->exec() == QDialog::Accepted) core->loadPlugins();
+	delete settingsDialog;
 }
 
 
