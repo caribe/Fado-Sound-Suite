@@ -12,6 +12,8 @@
 #include <QVBoxLayout>
 #include <QListWidget>
 #include <QDialogButtonBox>
+#include <QProgressBar>
+#include <QLabel>
 
 #include "core/core.h"
 
@@ -29,15 +31,22 @@ private:
 	QUrl requestUrl;
 	QListWidget *listListWidget;
 	QStackedLayout *layout;
+	QProgressBar *downloadProgressBar;
+	int downloadCounter;
+	QLabel *downloadProgressLabel;
+
+	void downloadNextMachine();
 
 signals:
 	void analyzeXmlResponseSignal(QNetworkReply *reply);
+	void saveDownloadedMachineSignal(QNetworkReply *reply);
 
 private slots:
 	void replyFinished(QNetworkReply*);
 	void check();
 	void analyzeXmlResponse(QNetworkReply *reply);
 	void downloadMachines();
+	void saveDownloadedMachine(QNetworkReply *reply);
 
 public slots:
 

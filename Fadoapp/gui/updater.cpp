@@ -40,7 +40,7 @@ Updater::Updater(Core *core, QWidget *parent) : QDialog(parent)
 	QDialogButtonBox *listButtonBox = new QDialogButtonBox();
 	listButtonBox->addButton(listUpdateButton, QDialogButtonBox::AcceptRole);
 	listButtonBox->addButton(listCancelButton, QDialogButtonBox::RejectRole);
-	connect(listButtonBox, SIGNAL(accepted()), SLOT(check()));
+	connect(listButtonBox, SIGNAL(accepted()), SLOT(downloadMachines()));
 	connect(listButtonBox, SIGNAL(rejected()), SLOT(reject()));
 
 	listLayout->addWidget(listButtonBox);
@@ -48,11 +48,29 @@ Updater::Updater(Core *core, QWidget *parent) : QDialog(parent)
 	QWidget *listWidget = new QWidget();
 	listWidget->setLayout(listLayout);
 
+	// Download
+
+	QVBoxLayout *downloadLayout = new QVBoxLayout();
+
+	downloadLayout->addStretch(1);
+
+	downloadProgressBar = new QProgressBar();
+	downloadLayout->addWidget(downloadProgressBar);
+
+	downloadProgressLabel = new QLabel("Downloading");
+	downloadLayout->addWidget(downloadProgressLabel);
+
+	downloadLayout->addStretch(1);
+
+	QWidget *downloadWidget = new QWidget();
+	downloadWidget->setLayout(downloadLayout);
+
 	// Layout
 
 	layout = new QStackedLayout();
 	layout->addWidget(initWidget);
 	layout->addWidget(listWidget);
+	layout->addWidget(downloadWidget);
 
 	layout->setCurrentIndex(0);
 
@@ -61,6 +79,7 @@ Updater::Updater(Core *core, QWidget *parent) : QDialog(parent)
 	// Connections
 
 	connect(this, SIGNAL(analyzeXmlResponseSignal(QNetworkReply*)), SLOT(analyzeXmlResponse(QNetworkReply*)));
+	connect(this, SIGNAL(saveDownloadedMachineSignal(QNetworkReply*)), SLOT(saveDownloadedMachine(QNetworkReply*)));
 }
 
 
@@ -78,6 +97,8 @@ void Updater::replyFinished(QNetworkReply *reply)
 
 		if (reply->url() == requestUrl) {
 			emit analyzeXmlResponseSignal(reply);
+		} else {
+			emit saveDownloadedMachineSignal(reply);
 		}
 	}
 }
@@ -96,12 +117,9 @@ void Updater::analyzeXmlResponse(QNetworkReply *reply)
 	int errorLine, errorColumn;
 
 	if (doc.setContent(xml, false, &errorMsg, &errorLine, &errorColumn) == false) {
-		// QMessageBox::critical(0, "XML Error", errorMsg + " at line " + QString::number(errorLine) + " column " + QString::number(errorColumn));
-		return;
+		QMessageBox::critical(this, "XML Error", errorMsg + " at line " + QString::number(errorLine) + " column " + QString::number(errorColumn));
+		reject();
 	}
-
-	QString version;
-	int count, flag;
 
 	QDomElement rootEl = doc.documentElement();
 	for (QDomElement el = rootEl.firstChildElement(); !el.isNull(); el = el.nextSiblingElement()) {
@@ -128,11 +146,13 @@ void Updater::analyzeXmlResponse(QNetworkReply *reply)
 					item->setCheckState(Qt::Checked);
 					item->setData(Qt::UserRole+1, elMachine.attribute("member_id"));
 					item->setData(Qt::UserRole+2, elMachine.attribute("code"));
+					item->setData(Qt::UserRole+3, elMachine.attribute("author"));
+					item->setData(Qt::UserRole+4, elMachine.attribute("name"));
 				}
 			}
 
 			if (listListWidget->count() == 0) {
-				QMessageBox::Information(this, tr("No updates"), tr("There are no updatable machines"));
+				QMessageBox::information(this, tr("No updates"), tr("There are no updatable machines"));
 				this->reject();
 			}
 		}
@@ -144,7 +164,46 @@ void Updater::analyzeXmlResponse(QNetworkReply *reply)
 
 void Updater::downloadMachines()
 {
+	downloadCounter = 0;
+	downloadProgressBar->setMaximum(listListWidget->count());
 	layout->setCurrentIndex(2);
+	downloadNextMachine();
+}
+
+
+void Updater::downloadNextMachine()
+{
+	QListWidgetItem *item = listListWidget->item(downloadCounter);
+
+	downloadProgressLabel->setText(tr("Downloading %1 / %2").arg(item->data(Qt::UserRole+3).toString()).arg(item->data(Qt::UserRole+4).toString()));
+
+	QUrl url = QUrl(QString("http://saitfainder.altervista.org/fado/service.download/%1-%2").arg(item->data(Qt::UserRole+1).toString()).arg(item->data(Qt::UserRole+2).toString()));
+	QNetworkRequest req(url);
+	manager->get(req);
+}
+
+
+void Updater::saveDownloadedMachine(QNetworkReply *reply)
+{
+	QSettings settings;
+
+	QListWidgetItem *item = listListWidget->item(downloadCounter);
+
+	QByteArray data = reply->readAll();
+
+	QFile *file = new QFile(settings.value("settings/pluginsFolder").toString()+"/"+item->data(Qt::UserRole+3).toString()+"/"+item->data(Qt::UserRole+4).toString()+".so");
+	file->open(QIODevice::WriteOnly);
+	file->write(data);
+	file->close();
+
+	if (++downloadCounter < listListWidget->count()) {
+		downloadNextMachine();
+	} else {
+		QMessageBox::information(this, tr("Updates"), tr("All machines have been downloaded"));
+		accept();
+	}
+
+	reply->deleteLater();
 }
 
 
