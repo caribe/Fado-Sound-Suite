@@ -25,7 +25,7 @@
 Sine::Sine() {
 
 	author = "Caribe";
-	name = "My Sine";
+	name = "Sine";
 	description = "A simple sine signal";
 	type = Machine::MachineGenerator;
 
@@ -44,14 +44,12 @@ void Sine::reconfig(const int sampling_rate) {
 
 }
 
-int Sine::process(jack_nframes_t nframes) {
+void Sine::process(jack_nframes_t nframes) {
 
 	for (unsigned int i = 0; i < nframes; i++, rotor += rotor_step) {
 		lx[i] = rx[i] = std::cos(rotor);
 		if (rotor > PI_2) rotor -= PI_2;
 	}
-
-	return 0;
 }
 
 Q_EXPORT_PLUGIN2(sine, Sine)

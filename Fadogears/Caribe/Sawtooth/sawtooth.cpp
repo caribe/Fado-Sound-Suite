@@ -39,14 +39,12 @@ void Sawtooth::reconfig(const int sampling_rate) {
 	rotor_step = 1 / (sampling_rate / paramsMap["freq"]->floatValue);
 }
 
-int Sawtooth::process(jack_nframes_t nframes) {
+void Sawtooth::process(jack_nframes_t nframes) {
 
 	for (unsigned int i = 0; i < nframes; i++, rotor += rotor_step) {
 		if (rotor > 1) rotor -= 1;
 		lx[i] = rx[i] = 1 - rotor * 2;
 	}
-
-	return 0;
 }
 
 Q_EXPORT_PLUGIN2(sawtooth, Sawtooth)

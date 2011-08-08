@@ -92,7 +92,7 @@ void FileInput::reconfig(const int sampling_rate)
 
 
 
-int FileInput::process(jack_nframes_t nframes) {
+void FileInput::process(jack_nframes_t nframes) {
 	// seek2 = seek * info.samplerate / sampling_rate
 	unsigned int i, seek2;
 
@@ -110,6 +110,4 @@ int FileInput::process(jack_nframes_t nframes) {
 			lx[i] = rx[i] = filebuffer[params[0]->getString()][seek2];
 		}
 	}
-
-	return 0;
 }

@@ -25,7 +25,7 @@
 Square::Square() {
 
 	author = "Caribe";
-	name = "My Square";
+	name = "Square";
 	description = "A simple square signal";
 	type = Machine::MachineGenerator;
 
@@ -45,7 +45,7 @@ void Square::reconfig(const int sampling_rate) {
 }
 
 
-int Square::process(jack_nframes_t nframes) {
+void Square::process(jack_nframes_t nframes) {
 
 	for (unsigned int i = 0; i < nframes; i++, rotor += rotor_step) {
 		if (rotor < PI2) {
@@ -55,8 +55,6 @@ int Square::process(jack_nframes_t nframes) {
 		}
 		if (rotor > PI_2) rotor -= PI_2;
 	}
-
-	return 0;
 }
 
 Q_EXPORT_PLUGIN2(square, Square)

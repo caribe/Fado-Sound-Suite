@@ -32,7 +32,7 @@ class LineInput : public Machine {
 	public:
 		LineInput();
 		void reconfig(const int sampling_rate);
-		int process(jack_nframes_t nframes);
+		void process(jack_nframes_t nframes);
 		Machine *factory();
 };
 

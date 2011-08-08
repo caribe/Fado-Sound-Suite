@@ -44,7 +44,7 @@ void Highpassfilter::reconfig(const int sampling_rate) {
 	last_rxi = last_lxi = 0;
 }
 
-int Highpassfilter::process(jack_nframes_t nframes) {
+void Highpassfilter::process(jack_nframes_t nframes) {
 	lx[0] = alfa * (last_lxo + li[0] - last_lxi);
 	rx[0] = alfa * (last_rxo + ri[0] - last_rxi);
 
@@ -57,8 +57,6 @@ int Highpassfilter::process(jack_nframes_t nframes) {
 	last_rxo = rx[nframes-1];
 	last_lxi = li[nframes-1];
 	last_rxi = ri[nframes-1];
-
-	return 0;
 }
 
 Q_EXPORT_PLUGIN2(highpassfilter, Highpassfilter)

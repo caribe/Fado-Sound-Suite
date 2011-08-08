@@ -38,4 +38,4 @@ Machine *LineInput::factory() {
 void LineInput::reconfig(const int sampling_rate) {}
 
 
-int LineInput::process(jack_nframes_t nframes) { return 0; }
+void LineInput::process(jack_nframes_t nframes) {}

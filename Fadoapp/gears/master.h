@@ -55,7 +55,7 @@ class Master : public Machine {
 		int go(jack_client_t *client, jack_port_t **input_port, jack_port_t **output_port, bool record);
 		int stop();
 		int jack_process(jack_nframes_t nframes);
-		int process(jack_nframes_t nframes);
+		void process(jack_nframes_t nframes);
 		Machine *factory();
 };
 

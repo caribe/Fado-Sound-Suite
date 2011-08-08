@@ -40,7 +40,7 @@ public:
 	Highpassfilter();
 	void reconfig(const int sampling_rate);
 	Machine *factory();
-	int process(jack_nframes_t nframes);
+	void process(jack_nframes_t nframes);
 };
 
 #endif // HIGHPASSFILTER_H

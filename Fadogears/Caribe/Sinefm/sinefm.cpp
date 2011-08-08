@@ -25,8 +25,8 @@
 Sinefm::Sinefm() {
 
 	author = "Caribe";
-	name = "Sine ";
-	description = "A simple sine signal";
+	name = "Sine FM";
+	description = "A sine signal with frequency modulation";
 	type = Machine::MachineGenerator;
 
 	addParam("freqC", "Carrier Frequency", "The carrier frequency", Param::ParamFloat, 50, 20000);
@@ -48,7 +48,7 @@ void Sinefm::reconfig(const int sampling_rate) {
 
 }
 
-int Sinefm::process(jack_nframes_t nframes) {
+void Sinefm::process(jack_nframes_t nframes) {
 
 	for (unsigned int i = 0; i < nframes; i++) {
 		rotorC += rotorStepC;
@@ -59,8 +59,6 @@ int Sinefm::process(jack_nframes_t nframes) {
 		if (rotorC > PI_2) rotorC -= PI_2;
 		if (rotorM > PI_2) rotorM -= PI_2;
 	}
-
-	return 0;
 }
 
 Q_EXPORT_PLUGIN2(sinefm, Sinefm)

@@ -13,5 +13,4 @@ SOURCES += echo.cpp
 
 HEADERS += echo.h
 
-OTHER_FILES += \
-    ../Gaussiannoise/Gaussiannoise.pro
+OTHER_FILES +=

@@ -24,7 +24,7 @@
 
 Lowpassfilter::Lowpassfilter() {
 	author = "Caribe";
-	name = "Lowpassfilter";
+	name = "Low Pass Filter";
 	description = "A simple Low Pass Filter";
 	type = Machine::MachineEffect;
 
@@ -43,7 +43,7 @@ void Lowpassfilter::reconfig(const int sampling_rate) {
 	last_rx = last_lx = 0;
 }
 
-int Lowpassfilter::process(jack_nframes_t nframes) {
+void Lowpassfilter::process(jack_nframes_t nframes) {
 	lx[0] = last_lx + alfa * (li[0] - last_lx);
 	rx[0] = last_rx + alfa * (li[0] - last_rx);
 
@@ -54,8 +54,6 @@ int Lowpassfilter::process(jack_nframes_t nframes) {
 
 	last_lx = lx[nframes-1];
 	last_rx = rx[nframes-1];
-
-	return 0;
 }
 
 Q_EXPORT_PLUGIN2(lowpassfilter, Lowpassfilter)

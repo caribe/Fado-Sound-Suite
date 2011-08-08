@@ -35,7 +35,7 @@ class FileInput : public Machine {
 	public:
 		FileInput();
 		void reconfig(const int sampling_rate);
-		int process(jack_nframes_t nframes);
+		void process(jack_nframes_t nframes);
 		void init();
 		void finish();
 		Machine *factory();

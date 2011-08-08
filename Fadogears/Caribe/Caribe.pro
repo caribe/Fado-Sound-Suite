@@ -10,4 +10,8 @@ SUBDIRS += \
 	Sawtooth \
 	Sinefm \
 	Lowpassfilter \
-	Highpassfilter
+	Highpassfilter \
+	Limiter \
+	Overdrive \
+	Basskick \
+	Brass

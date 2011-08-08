@@ -24,7 +24,7 @@
 
 Gaussiannoise::Gaussiannoise() {
 	author = "Caribe";
-	name = "Gaussiannoise";
+	name = "Gaussian Noise";
 	description = "A simple gaussian noise signal";
 	type = Machine::MachineGenerator;
 }
@@ -35,14 +35,12 @@ Machine *Gaussiannoise::factory() {
 
 void Gaussiannoise::reconfig(const int sampling_rate) {}
 
-int Gaussiannoise::process(jack_nframes_t nframes) {
+void Gaussiannoise::process(jack_nframes_t nframes) {
 
 	for (unsigned int i = 0; i < nframes; i++) {
 		lx[i] = (qrand() % 1000) / 1000.0;
 		rx[i] = (qrand() % 1000) / 1000.0;
 	}
-
-	return 0;
 }
 
 Q_EXPORT_PLUGIN2(gaussiannoise, Gaussiannoise)

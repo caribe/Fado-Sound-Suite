@@ -58,7 +58,7 @@ void Echo::reconfig(const int sampling_rate)
 }
 
 
-int Echo::process(jack_nframes_t nframes)
+void Echo::process(jack_nframes_t nframes)
 {
 	unsigned int i;
 	int j;
@@ -72,7 +72,6 @@ int Echo::process(jack_nframes_t nframes)
 	}
 
 	cursor = j;
-	return 0;
 }
 
 Q_EXPORT_PLUGIN2(echo, Echo)

@@ -133,7 +133,7 @@ int Master::stop()
 }
 
 
-int Master::process(jack_nframes_t nframes)
+void Master::process(jack_nframes_t nframes)
 {
 	// qDebug() <<"Period: " << period_counter << " / " << period_per_beat;
 
@@ -201,8 +201,6 @@ int Master::process(jack_nframes_t nframes)
 		}
 		fwrite(buffer, nframes * 2, 2, file);
 	}
-
-	return 0;
 }
 
 

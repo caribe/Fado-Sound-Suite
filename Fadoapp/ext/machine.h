@@ -65,7 +65,7 @@ public:
 
 	// Interface
 	virtual Machine *factory()=0;
-	virtual int process(jack_nframes_t nframes)=0;
+	virtual void process(jack_nframes_t nframes)=0;
 	virtual void reconfig(const int sampling_rate)=0;
 	virtual void init() {}
 	virtual void finish() {}

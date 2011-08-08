@@ -24,7 +24,7 @@
 
 Whitenoise::Whitenoise() {
 	author = "Caribe";
-	name = "Whitenoise";
+	name = "White Noise";
 	description = "A simple whitenoise signal";
 	type = Machine::MachineGenerator;
 }
@@ -37,14 +37,12 @@ void Whitenoise::reconfig(const int sampling_rate) {
 	max = RAND_MAX / 2.0;
 }
 
-int Whitenoise::process(jack_nframes_t nframes) {
+void Whitenoise::process(jack_nframes_t nframes) {
 
 	for (unsigned int i = 0; i < nframes; i++) {
 		lx[i] = qrand() / max - 1;
 		rx[i] = qrand() / max - 1;
 	}
-
-	return 0;
 }
 
 Q_EXPORT_PLUGIN2(whitenoise, Whitenoise)

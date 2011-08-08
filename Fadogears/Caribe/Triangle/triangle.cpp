@@ -44,7 +44,7 @@ void Triangle::reconfig(const int sampling_rate) {
 
 }
 
-int Triangle::process(jack_nframes_t nframes) {
+void Triangle::process(jack_nframes_t nframes) {
 
 	for (unsigned int i = 0; i < nframes; i++, rotor += rotor_step) {
 		if (rotor > 1) rotor -= 1;
@@ -57,8 +57,6 @@ int Triangle::process(jack_nframes_t nframes) {
 			lx[i] = rx[i] = -4 + rotor * 4;
 		}
 	}
-
-	return 0;
 }
 
 Q_EXPORT_PLUGIN2(triangle, Triangle)
