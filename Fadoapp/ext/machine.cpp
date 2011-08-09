@@ -51,6 +51,7 @@ int Machine::preprocess(jack_nframes_t nframes)
 }
 
 
+
 void Machine::setName(const QString &name)
 {
 	this->name = name;

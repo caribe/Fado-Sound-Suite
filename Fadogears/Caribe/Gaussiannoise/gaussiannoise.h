@@ -30,12 +30,8 @@ class Gaussiannoise : public QObject, public Machine {
 Q_OBJECT
 Q_INTERFACES(Machine)
 
-private:
-	float max;
-
 public:
 	Gaussiannoise();
-	void reconfig(const int sampling_rate);
 	Machine *factory();
 	void process(jack_nframes_t nframes);
 };

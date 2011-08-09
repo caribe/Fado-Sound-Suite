@@ -41,6 +41,7 @@ public:
 	Sinefm();
 	void reconfig(const int sampling_rate);
 	Machine *factory();
+	void init();
 	void process(jack_nframes_t nframes);
 
 };

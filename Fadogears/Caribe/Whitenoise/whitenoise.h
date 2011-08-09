@@ -37,7 +37,7 @@ private:
 
 public:
 	Whitenoise();
-	void reconfig(const int sampling_rate);
+	void init();
 	Machine *factory();
 	void process(jack_nframes_t nframes);
 };

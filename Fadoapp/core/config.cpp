@@ -108,6 +108,7 @@ int Config::load(QString filename, Core *core) {
 
 			if (machine == NULL) {
 				qDebug() << "Machine not found";
+				return 1;
 			} else {
 
 				machine->alias = rootElement.attribute("alias");

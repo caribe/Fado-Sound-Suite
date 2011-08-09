@@ -32,21 +32,26 @@ Sinefm::Sinefm() {
 	addParam("freqC", "Carrier Frequency", "The carrier frequency", Param::ParamFloat, 50, 20000);
 	addParam("freqM", "Modulator Frequency", "The modulator frequency", Param::ParamFloat, 1, 1000);
 	addParam("amplM", "Modulator Amplitude", "The modulated ampliture", Param::ParamFloat, 0, 100);
-
-	rotorC = rotorM = 0;
 }
 
 Machine *Sinefm::factory() {
 	return new Sinefm();
 }
 
-void Sinefm::reconfig(const int sampling_rate) {
 
+void Sinefm::init() {
+	rotorC = rotorM = 0;
+}
+
+
+void Sinefm::reconfig(const int sampling_rate) {
 	rotorStepC = PI_2 / (sampling_rate / paramsMap["freqC"]->floatValue);
 	rotorStepM = PI_2 / (sampling_rate / paramsMap["freqM"]->floatValue);
 	amplM = paramsMap["amplM"]->floatValue;
 
+	qDebug("%f %f %f", rotorStepC, rotorStepM, amplM);
 }
+
 
 void Sinefm::process(jack_nframes_t nframes) {
 

@@ -33,8 +33,6 @@ Machine *Gaussiannoise::factory() {
 	return new Gaussiannoise();
 }
 
-void Gaussiannoise::reconfig(const int sampling_rate) {}
-
 void Gaussiannoise::process(jack_nframes_t nframes) {
 
 	for (unsigned int i = 0; i < nframes; i++) {
