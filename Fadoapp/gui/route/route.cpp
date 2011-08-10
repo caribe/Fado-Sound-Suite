@@ -123,6 +123,8 @@ void Route::delMachine(Machine *machine, bool confirm)
 
 	// Graph update
 	core->orderMachines();
+
+	emit machinesChanged();
 }
 
 
