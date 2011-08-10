@@ -77,9 +77,9 @@ int Config::load(QString filename, Core *core) {
 			if (type == "master") {
 				machine = (Machine *)new Master();
 			} else if (type == "input") {
-				if (name == "lineinput") {
+				if (name == "Line Input") {
 					machine = (Machine *)new LineInput();
-				} else if (name == "fileinput") {
+				} else if (name == "File Input") {
 					machine = (Machine *)new FileInput();
 				}
 			} else {

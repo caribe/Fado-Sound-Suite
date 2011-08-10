@@ -34,10 +34,8 @@ private:
 
 public:
 	Limiter();
-	void reconfig(const int sampling_rate);
 	Machine *factory();
 	void process(jack_nframes_t nframes);
-
 };
 
 #endif // LIMITER_H

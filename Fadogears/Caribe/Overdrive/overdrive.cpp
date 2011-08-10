@@ -41,8 +41,6 @@ Machine *Overdrive::factory() {
 	return new Overdrive();
 }
 
-void Overdrive::reconfig(const int sampling_rate) {}
-
 void Overdrive::process(jack_nframes_t nframes) {
 
 	float gain = paramsMap["gain"]->floatValue;

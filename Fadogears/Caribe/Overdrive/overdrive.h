@@ -34,7 +34,6 @@ private:
 
 public:
 	Overdrive();
-	void reconfig(const int sampling_rate);
 	Machine *factory();
 	void process(jack_nframes_t nframes);
 

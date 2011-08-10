@@ -37,16 +37,15 @@ Machine *Limiter::factory() {
 	return new Limiter();
 }
 
-void Limiter::reconfig(const int sampling_rate) {}
-
 void Limiter::process(jack_nframes_t nframes)
 {
 	float vol = paramsMap["vol"]->floatValue;
 
 	for (unsigned int i = 0; i < nframes; i++) {
-		if (lx[i] > vol) lx[i] = vol;
-		if (rx[i] > vol) rx[i] = vol;
+		if (li[i] > vol) lx[i] = vol; else if (li[i] < -vol) lx[i] = -vol; else lx[i] = li[i];
+		if (ri[i] > vol) rx[i] = vol; else if (ri[i] < -vol) rx[i] = -vol; else rx[i] = ri[i];
 	}
+
 }
 
 Q_EXPORT_PLUGIN2(limiter, Limiter)

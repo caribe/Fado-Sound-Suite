@@ -65,6 +65,8 @@ void Echo::process(jack_nframes_t nframes)
 	float e1 = paramsMap["vol"]->floatValue;
 	float e2 = 1 - e1;
 
+	if (samples == 0) return; // Avoid exception
+
 	for (i = 0; i < nframes; i++) {
 		j = (cursor + i) % samples;
 		lx[i] = buffer_lx[j] = li[i] * e1 + buffer_lx[j] * e2;
