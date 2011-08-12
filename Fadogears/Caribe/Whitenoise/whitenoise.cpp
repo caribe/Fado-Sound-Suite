@@ -16,7 +16,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with Fado Sound Suite.  If not, see <http://www.gnu.org/licenses/>.
+ * aunsigned long with Fado Sound Suite.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -37,7 +37,7 @@ void Whitenoise::init() {
 	max = RAND_MAX / 2.0;
 }
 
-void Whitenoise::process(jack_nframes_t nframes) {
+void Whitenoise::process(unsigned long nframes) {
 	for (unsigned int i = 0; i < nframes; i++) {
 		lx[i] = qrand() / max - 1;
 		rx[i] = qrand() / max - 1;

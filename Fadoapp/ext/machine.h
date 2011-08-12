@@ -16,14 +16,12 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with Fado Sound Suite.  If not, see <http://www.gnu.org/licenses/>.
+ * aunsigned long with Fado Sound Suite.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
 
 #ifndef LIBRARY_MACHINE_HPP
 #define LIBRARY_MACHINE_HPP
-
-#include <jack/jack.h>
 
 #include <QHash>
 #include <QtPlugin>
@@ -65,16 +63,15 @@ public:
 
 	// Interface
 	virtual Machine *factory()=0;
-	virtual void process(jack_nframes_t nframes)=0;
+	virtual void process(unsigned long nframes)=0;
 	virtual void reconfig(const int sampling_rate) {}
 	virtual void init() {}
 	virtual void finish() {}
 
-	// Jack
 	enum MachineType { MachineNull, MachineMaster, MachineInput, MachineGenerator, MachineEffect };
 
-	jack_default_audio_sample_t lx[2048], rx[2048];
-	jack_default_audio_sample_t li[2048], ri[2048];
+	float lx[2048], rx[2048];
+	float li[2048], ri[2048];
 	int x, y;
 
 	MachineType type;
@@ -92,8 +89,8 @@ public:
 	QHash<int, MachinePattern *> track;
 
 	QString validate(int index, QString value);
-	int preprocess(jack_nframes_t nframes);
-	int preprocess(jack_nframes_t nframes, int process);
+	int preprocess(unsigned long nframes);
+	int preprocess(unsigned long nframes, int process);
 
 	void setName(const QString &name);
 	void setDescription(const QString &description);

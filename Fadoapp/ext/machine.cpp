@@ -16,21 +16,21 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with Fado Sound Suite.  If not, see <http://www.gnu.org/licenses/>.
+ * aunsigned long with Fado Sound Suite.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
 
 #include "machine.h"
 
-int Machine::preprocess(jack_nframes_t nframes, int process)
+int Machine::preprocess(unsigned long nframes, int process)
 {
 	for (unsigned int j = 0; j < nframes; j++) li[j] = ri[j] = 0;
 
 	float value = 100.0 * this->connectionSrc.size();
 
 	foreach (Machine *src, this->connectionSrc.keys()) {
-		jack_default_audio_sample_t *lx = src->lx;
-		jack_default_audio_sample_t *rx = src->rx;
+		float *lx = src->lx;
+		float *rx = src->rx;
 
 		Volume *volume = this->connectionSrc[src];
 
@@ -45,7 +45,7 @@ int Machine::preprocess(jack_nframes_t nframes, int process)
 }
 
 
-int Machine::preprocess(jack_nframes_t nframes)
+int Machine::preprocess(unsigned long nframes)
 {
 	return preprocess(nframes, 1);
 }

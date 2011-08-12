@@ -16,7 +16,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with Fado Sound Suite.  If not, see <http://www.gnu.org/licenses/>.
+ * aunsigned long with Fado Sound Suite.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -43,7 +43,7 @@ void Lowpassfilter::reconfig(const int sampling_rate) {
 	last_rx = last_lx = 0;
 }
 
-void Lowpassfilter::process(jack_nframes_t nframes) {
+void Lowpassfilter::process(unsigned long nframes) {
 	lx[0] = last_lx + alfa * (li[0] - last_lx);
 	rx[0] = last_rx + alfa * (li[0] - last_rx);
 

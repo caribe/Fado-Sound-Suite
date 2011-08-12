@@ -16,7 +16,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with Fado Sound Suite.  If not, see <http://www.gnu.org/licenses/>.
+ * aunsigned long with Fado Sound Suite.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -35,7 +35,7 @@ class FileInput : public Machine {
 	public:
 		FileInput();
 		void reconfig(const int sampling_rate);
-		void process(jack_nframes_t nframes);
+		void process(unsigned long nframes);
 		void init();
 		void finish();
 		Machine *factory();

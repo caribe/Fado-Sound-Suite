@@ -16,7 +16,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with Fado Sound Suite.  If not, see <http://www.gnu.org/licenses/>.
+ * aunsigned long with Fado Sound Suite.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -48,9 +48,9 @@ void Echo::reconfig(const int sampling_rate)
 
 	if (samples < s) {
 		if (buffer_lx != 0) delete buffer_lx;
-		buffer_lx = new jack_default_audio_sample_t[s];
+		buffer_lx = new float[s];
 		if (buffer_rx != 0) delete buffer_rx;
-		buffer_rx = new jack_default_audio_sample_t[s];
+		buffer_rx = new float[s];
 
 		for (int i = samples; i < s; i++) buffer_lx[i] = buffer_rx[i] = 0;
 	}
@@ -58,7 +58,7 @@ void Echo::reconfig(const int sampling_rate)
 }
 
 
-void Echo::process(jack_nframes_t nframes)
+void Echo::process(unsigned long nframes)
 {
 	unsigned int i;
 	int j;

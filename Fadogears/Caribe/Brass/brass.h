@@ -16,7 +16,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with Fado Sound Suite.  If not, see <http://www.gnu.org/licenses/>.
+ * aunsigned long with Fado Sound Suite.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -45,7 +45,7 @@ public:
 	void reconfig(const int sampling_rate);
 	void init();
 	Machine *factory();
-	void process(jack_nframes_t nframes);
+	void process(unsigned long nframes);
 
 };
 

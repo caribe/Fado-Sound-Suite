@@ -16,7 +16,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with Fado Sound Suite.  If not, see <http://www.gnu.org/licenses/>.
+ * aunsigned long with Fado Sound Suite.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -53,7 +53,7 @@ void Sinefm::reconfig(const int sampling_rate) {
 }
 
 
-void Sinefm::process(jack_nframes_t nframes) {
+void Sinefm::process(unsigned long nframes) {
 
 	for (unsigned int i = 0; i < nframes; i++) {
 		rotorC += rotorStepC;

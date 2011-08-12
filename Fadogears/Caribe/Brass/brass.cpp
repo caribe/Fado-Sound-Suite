@@ -16,7 +16,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with Fado Sound Suite.  If not, see <http://www.gnu.org/licenses/>.
+ * aunsigned long with Fado Sound Suite.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -72,7 +72,7 @@ void Brass::reconfig(const int sampling_rate)
 
 
 
-void Brass::process(jack_nframes_t nframes)
+void Brass::process(unsigned long nframes)
 {
 	for (unsigned int i = 0; i < nframes; i++, rotor += rotor_step) {
 		if (rotor > 1) rotor -= 1;

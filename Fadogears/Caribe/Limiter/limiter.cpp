@@ -16,7 +16,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with Fado Sound Suite.  If not, see <http://www.gnu.org/licenses/>.
+ * aunsigned long with Fado Sound Suite.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -37,7 +37,7 @@ Machine *Limiter::factory() {
 	return new Limiter();
 }
 
-void Limiter::process(jack_nframes_t nframes)
+void Limiter::process(unsigned long nframes)
 {
 	float vol = paramsMap["vol"]->floatValue;
 

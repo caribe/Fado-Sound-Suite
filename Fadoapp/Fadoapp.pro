@@ -60,9 +60,9 @@ HEADERS  += mainwindow.h \
 RESOURCES += \
     icons.qrc
 
-unix|win32: LIBS += -lfftw3
-unix|win32: LIBS += -ljack
-unix|win32: LIBS += -lsndfile
+unix: LIBS += -lfftw3
+unix: LIBS += -lportaudio
+unix: LIBS += -lsndfile
 
 OTHER_FILES += \
     resources/table.png \

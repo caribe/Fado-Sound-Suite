@@ -16,7 +16,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with Fado Sound Suite.  If not, see <http://www.gnu.org/licenses/>.
+ * aunsigned long with Fado Sound Suite.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -33,7 +33,7 @@ Machine *Gaussiannoise::factory() {
 	return new Gaussiannoise();
 }
 
-void Gaussiannoise::process(jack_nframes_t nframes) {
+void Gaussiannoise::process(unsigned long nframes) {
 
 	for (unsigned int i = 0; i < nframes; i++) {
 		lx[i] = (qrand() % 1000) / 1000.0;

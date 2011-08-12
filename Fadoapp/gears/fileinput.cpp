@@ -16,7 +16,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with Fado Sound Suite.  If not, see <http://www.gnu.org/licenses/>.
+ * aunsigned long with Fado Sound Suite.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -92,7 +92,7 @@ void FileInput::reconfig(const int sampling_rate)
 
 
 
-void FileInput::process(jack_nframes_t nframes) {
+void FileInput::process(unsigned long nframes) {
 	// seek2 = seek * info.samplerate / sampling_rate
 	unsigned int i, seek2;
 

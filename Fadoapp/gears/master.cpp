@@ -16,7 +16,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with Fado Sound Suite.  If not, see <http://www.gnu.org/licenses/>.
+ * aunsigned long with Fado Sound Suite.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -56,47 +56,18 @@ int Master::init(Core *core)
 
 
 
-int Master::go(jack_client_t *client, jack_port_t **input_port, jack_port_t **output_port, bool record)
+int Master::go(PaStream *client, bool record)
 {
 	QSettings settings;
-
-	const char **ports;
-	this->client = client;
-	this->input_port = input_port;
-	this->output_port = output_port;
-
-	// tell the JACK server that we are ready to roll
-	if (jack_activate(client)) {
-		qDebug() << "Cannot activate client";
-		return 1;
-	}
-
-	// connect the ports. Note: you can't do this before the client is activated, because we can't allow connections to be made to clients that aren't running.
-	if ((ports = jack_get_ports(client, 0, 0, JackPortIsPhysical|JackPortIsOutput)) == 0) {
-		qDebug() << "Cannot find any physical capture ports";
-		return 2;
-	}
-
-	if (jack_connect(client, ports[0], jack_port_name(input_port[0]))) qDebug() << "Cannot connect input ports LX";
-	if (jack_connect(client, ports[1], jack_port_name(input_port[1]))) qDebug() << "Cannot connect input ports RX";
-
-	free(ports);
-
-	if ((ports = jack_get_ports(client, 0, 0, JackPortIsPhysical|JackPortIsInput)) == 0) {
-		qDebug() << "Cannot find any physical playback ports";
-		return 3;
-	}
-
-	for (int i = 0; ports[i] != 0; i++) {
-		qDebug() <<"Connecting port #" << i;
-		if (jack_connect(client, jack_port_name(output_port[i & 1]), ports[i])) qDebug() << "Cannot connect output ports #" << i;
-	}
-
-	free(ports);
 
 	QString filename = settings.value("settings/tempFolder", "/tmp").toString()+"/fado.raw";
 	file = fopen(filename.toUtf8().data(), "w");
 	if (!file) QMessageBox::critical(0, QObject::tr("Cannot open temporary file"), QObject::tr("Sorry, but I cannot open '%1' as temporary file for recording").arg(filename));
+
+	PaError err = Pa_StartStream(client);
+	if( err != paNoError ) return 1;
+
+	this->client = client;
 
 	period_per_beat = 100;
 
@@ -117,7 +88,7 @@ void Master::reconfig(const int sampling_rate) {
 
 int Master::stop()
 {
-	jack_deactivate(client);
+	Pa_StopStream(this->client);
 
 	foreach (Machine *machine, core->order) {
 		qDebug() << "Finish " << machine->name;
@@ -132,8 +103,9 @@ int Master::stop()
 	return 0;
 }
 
+void Master::process(unsigned long nframes) {}
 
-void Master::process(jack_nframes_t nframes)
+void Master::process(unsigned long nframes, const void *input, void *output)
 {
 	// qDebug() <<"Period: " << period_counter << " / " << period_per_beat;
 
@@ -149,18 +121,18 @@ void Master::process(jack_nframes_t nframes)
 			}
 		}
 
-		qDebug() << "Beat" << beat_counter << "/" << core->beat_per_pattern;
-		qDebug() << "Pattern" << pattern_counter << "/" << core->total_patterns;
+		//qDebug() << "Beat" << beat_counter << "/" << core->beat_per_pattern;
+		//qDebug() << "Pattern" << pattern_counter << "/" << core->total_patterns;
 
 		foreach (Machine *machine, core->order) {
-			qDebug() << machine->name;
+			//qDebug() << machine->name;
 			if (machine->track.contains(pattern_counter) and machine->track[pattern_counter]->params.contains(beat_counter)) {
-				qDebug() << "Reconfig: " << machine->name;
+				//qDebug() << "Reconfig: " << machine->name;
 
 				QHash<int, QString> params = machine->track[pattern_counter]->params[beat_counter];
 
 				foreach (int key, params.keys()) {
-					qDebug() << key << " => " << params[key];
+					//qDebug() << key << " => " << params[key];
 					machine->params[key]->set(params[key]);
 				}
 
@@ -170,88 +142,35 @@ void Master::process(jack_nframes_t nframes)
 	}
 
 	// Get input buffers
-	jack_default_audio_sample_t *lxi = (jack_default_audio_sample_t *)jack_port_get_buffer(input_port[0], nframes);
-	jack_default_audio_sample_t *rxi = (jack_default_audio_sample_t *)jack_port_get_buffer(input_port[1], nframes);
-
-	// Get output buffers
-	jack_default_audio_sample_t *lxo = (jack_default_audio_sample_t *)jack_port_get_buffer(output_port[0], nframes);
-	jack_default_audio_sample_t *rxo = (jack_default_audio_sample_t *)jack_port_get_buffer(output_port[1], nframes);
+	float **inputPtr = (float **)input;
+	float *lxi = inputPtr[0];
+	float *rxi = inputPtr[1];
 
 	// Calls all machines in the right order
 	foreach (Machine *machine, core->order) {
 		if (machine->type == Machine::MachineMaster) {
 			machine->preprocess(nframes, 0);
 		} else if (machine->type == Machine::MachineInput and machine->name == "Line Input") {
-			memcpy(machine->lx, lxi, sizeof(jack_default_audio_sample_t) * nframes);
-			memcpy(machine->rx, rxi, sizeof(jack_default_audio_sample_t) * nframes);
+			memcpy(machine->lx, lxi, sizeof(float) * nframes);
+			memcpy(machine->rx, rxi, sizeof(float) * nframes);
 		} else {
 			machine->preprocess(nframes);
 		}
 	}
 
+	float **outputPtr = (float **)output;
+
 	// Output copy
-	memcpy(lxo, core->machines[0]->li, sizeof(jack_default_audio_sample_t) * nframes);
-	memcpy(rxo, core->machines[0]->ri, sizeof(jack_default_audio_sample_t) * nframes);
+	memcpy(outputPtr[0], core->machines[0]->li, sizeof(float) * nframes);
+	memcpy(outputPtr[1], core->machines[0]->ri, sizeof(float) * nframes);
 
 	// If recording writes to file
 	if (file) {
 		for (unsigned int i = 0; i < nframes; i++) {
-			buffer[i*2] = std::floor(lxo[i] * 32767);
-			buffer[i*2+1] = std::floor(rxo[i] * 32767);
+			buffer[i*2] = std::floor(outputPtr[0][i] * 32767);
+			buffer[i*2+1] = std::floor(outputPtr[1][i] * 32767);
 		}
 		fwrite(buffer, nframes * 2, 2, file);
 	}
+
 }
-
-
-/*
-
-* Overall operation failed.
-JackFailure = 0x01,
-
-* The operation contained an invalid or unsupported option.
-JackInvalidOption = 0x02,
-
-* The desired client name was not unique.  With the @ref
-* JackUseExactName option this situation is fatal.  Otherwise,
-* the name was modified by appending a dash and a two-digit
-* number in the range "-01" to "-99".  The
-* jack_get_client_name() function will return the exact string
-* that was used.  If the specified @a client_name plus these
-* extra characters would be too long, the open fails instead.
-JackNameNotUnique = 0x04,
-
-* The JACK server was started as a result of this operation.
-* Otherwise, it was running already.  In either case the caller
-* is now connected to jackd, so there is no race condition.
-* When the server shuts down, the client will find out.
-JackServerStarted = 0x08,
-
-* Unable to connect to the JACK server.
-JackServerFailed = 0x10,
-
-* Communication error with the JACK server.
-JackServerError = 0x20,
-
-* Requested client does not exist.
-JackNoSuchClient = 0x40,
-
-* Unable to load internal client
-JackLoadFailure = 0x80,
-
-* Unable to initialize client
-JackInitFailure = 0x100,
-
-* Unable to access shared memory
-JackShmFailure = 0x200,
-
-* Client's protocol version does not match
-JackVersionError = 0x400,
-
-* BackendError
-JackBackendError = 0x800,
-
-* Client is being shutdown against its will
-JackClientZombie = 0x1000
-
-*/

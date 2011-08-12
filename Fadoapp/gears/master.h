@@ -16,7 +16,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with Fado Sound Suite.  If not, see <http://www.gnu.org/licenses/>.
+ * aunsigned long with Fado Sound Suite.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -26,15 +26,11 @@
 #include <QObject>
 #include <QSettings>
 #include <QFile>
-#include <jack/jack.h>
 
 class Master;
 
 #include "ext/machine.h"
 #include "core/core.h"
-
-int jack_process(jack_nframes_t nframes, void *arg);
-void jack_shutdown(void *arg);
 
 class Master : public Machine {
 	public:
@@ -46,16 +42,15 @@ class Master : public Machine {
 		int period_per_beat;
 		int period_counter, beat_counter, pattern_counter;
 		Core *core;
-		jack_client_t *client;
-		jack_port_t **input_port;
-		jack_port_t **output_port;
+
+		PaStream *client;
 
 		int init(Core *core);
 		void reconfig(const int sampling_rate);
-		int go(jack_client_t *client, jack_port_t **input_port, jack_port_t **output_port, bool record);
+		int go(PaStream *client, bool record);
 		int stop();
-		int jack_process(jack_nframes_t nframes);
-		void process(jack_nframes_t nframes);
+		void process(unsigned long nframes);
+		void process(unsigned long nframes, const void *input, void *output);
 		Machine *factory();
 };
 

@@ -16,7 +16,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with Fado Sound Suite.  If not, see <http://www.gnu.org/licenses/>.
+ * aunsigned long with Fado Sound Suite.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -33,14 +33,14 @@ Q_OBJECT
 Q_INTERFACES(Machine)
 
 private:
-	jack_default_audio_sample_t last_lx, last_rx;
+	float last_lx, last_rx;
 	float alfa;
 
 public:
 	Lowpassfilter();
 	void reconfig(const int sampling_rate);
 	Machine *factory();
-	void process(jack_nframes_t nframes);
+	void process(unsigned long nframes);
 };
 
 #endif // LOWPASSFILTER_H

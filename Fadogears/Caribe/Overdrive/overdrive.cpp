@@ -16,7 +16,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with Fado Sound Suite.  If not, see <http://www.gnu.org/licenses/>.
+ * aunsigned long with Fado Sound Suite.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -41,7 +41,7 @@ Machine *Overdrive::factory() {
 	return new Overdrive();
 }
 
-void Overdrive::process(jack_nframes_t nframes) {
+void Overdrive::process(unsigned long nframes) {
 
 	float gain = paramsMap["gain"]->floatValue;
 	float cut = paramsMap["cut"]->floatValue;

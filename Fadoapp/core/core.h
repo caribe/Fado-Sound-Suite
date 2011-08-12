@@ -16,7 +16,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with Fado Sound Suite.  If not, see <http://www.gnu.org/licenses/>.
+ * aunsigned long with Fado Sound Suite.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -32,7 +32,7 @@
 #include <QList>
 #include <QStandardItemModel>
 
-#include <jack/jack.h>
+#include <portaudio.h>
 
 class Core;
 
@@ -57,18 +57,18 @@ public:
 	Master *master;
 	QString filename;
 
-	// Jack handling
+	// Playback control
 
-	int jack_init();
+	bool init();
 	bool load(QString filename);
 	int start(bool record);
 	int stop();
 	int save();
 	int save(QString filename);
 
-	jack_client_t *client;
-	jack_port_t *input_port[4];
-	jack_port_t *output_port[4];
+	PaStream *client;
+	PaStreamParameters outputParameters;
+	PaStreamParameters inputParameters;
 
 	// *** Core
 

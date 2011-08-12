@@ -16,11 +16,18 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with Fado Sound Suite.  If not, see <http://www.gnu.org/licenses/>.
+ * aunsigned long with Fado Sound Suite.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
 
 #include "core/core.h"
+
+int pa_callback(const void *input, void *output, unsigned long frameCount, const PaStreamCallbackTimeInfo* timeInfo, PaStreamCallbackFlags statusFlags, void *arg)
+{
+	Core *core = (Core *)arg;
+	if (core->master) core->master->process(frameCount, input, output);
+	return 0;
+}
 
 Core::Core(QObject *parent) : QObject(parent)
 {
@@ -160,67 +167,40 @@ void Core::loadPluginsFolder(QDir &dir, QHash<QString, QStandardItem *> &generat
 
 
 
-int Core::jack_init()
+bool Core::init()
 {
-	qDebug() << "Starting Jack...";
 
-	// try to become a client of the JACK server
-	jack_status_t jack_status;
-	if ((client = jack_client_open("fado", JackUseExactName, &jack_status, "default")) == 0) {
-		QString errorString;
-		if (jack_status == JackFailure) {
-			errorString = tr("Overall operation failed.");
-		} else if (jack_status == JackInvalidOption) {
-			errorString = tr("The operation contained an invalid or unsupported option.");
-		} else if (jack_status == JackNameNotUnique) {
-			errorString = tr("The desired client name was not unique.");
-		} else if (jack_status == JackServerStarted) {
-			errorString = tr("The JACK server was started as a result of this operation.");
-		} else if (jack_status == JackServerFailed) {
-			errorString = tr("Unable to connect to the JACK server.");
-		} else if (jack_status == JackServerError) {
-			errorString = tr("Communication error with the JACK server.");
-		} else if (jack_status == JackNoSuchClient) {
-			errorString = tr("Requested client does not exist.");
-		} else if (jack_status == JackLoadFailure) {
-			errorString = tr("Unable to load internal client.");
-		} else if (jack_status == JackInitFailure) {
-			errorString = tr("Unable to initialize client.");
-		} else if (jack_status == JackShmFailure) {
-			errorString = tr("Unable to access shared memory.");
-		} else if (jack_status == JackVersionError) {
-			errorString = tr("Client's protocol version does not match.");
-		}
-
-		emit messageCritical(tr("Jack server not running"), QString("%1: %2").arg(jack_status).arg(errorString));
-
-		return 1;
+	PaError err = Pa_Initialize();
+	if (err != paNoError) {
+		emit messageCritical(tr("Cannot initialize PortAudio"), Pa_GetErrorText(err));
+		return false;
 	}
+
+	qDebug() << "Starting PortAudio...";
 
 	qDebug() << "Define callback...";
 
-	// tell the JACK server to call `process()' whenever there is work to be done.
-	jack_set_process_callback(client, ::jack_process, (void *)this);
+	outputParameters.device = 0;
+	outputParameters.channelCount = 2;
+	outputParameters.sampleFormat = paFloat32 | paNonInterleaved;
+	outputParameters.suggestedLatency = Pa_GetDeviceInfo(outputParameters.device)->defaultLowOutputLatency;
+	outputParameters.hostApiSpecificStreamInfo = NULL;
 
-	qDebug() << "Define shutdown...";
+	inputParameters.device = 0;
+	inputParameters.channelCount = 2;
+	inputParameters.sampleFormat = paFloat32 | paNonInterleaved;
+	inputParameters.suggestedLatency = Pa_GetDeviceInfo(inputParameters.device)->defaultLowInputLatency;
+	inputParameters.hostApiSpecificStreamInfo = NULL;
 
-	// tell the JACK server to call `jack_shutdown()' if it ever shuts down, either entirely, or if it just decides to stop calling us.
-	jack_on_shutdown(client, ::jack_shutdown, (void *)this);
+	err = Pa_OpenStream(&client, &inputParameters, &outputParameters, 44100, paFramesPerBufferUnspecified, paClipOff, ::pa_callback, (void *)this);
 
 	qDebug() << "Get sample rate...";
 
-	// display the current sample rate. 
-	sampling_rate = jack_get_sample_rate(client);
-	buffer_size = jack_get_buffer_size(client);
+	const PaStreamInfo *info = Pa_GetStreamInfo(client);
 
-	qDebug() << "Engine sample rate: " << jack_get_sample_rate(client);
+	sampling_rate = info->sampleRate;
 
-	// create four ports
-	input_port[0] = jack_port_register(client, "input_lx", JACK_DEFAULT_AUDIO_TYPE, JackPortIsInput, 0);
-	input_port[1] = jack_port_register(client, "input_rx", JACK_DEFAULT_AUDIO_TYPE, JackPortIsInput, 0);
-
-	output_port[0] = jack_port_register(client, "output_lx", JACK_DEFAULT_AUDIO_TYPE, JackPortIsOutput, 0);
-	output_port[1] = jack_port_register(client, "output_rx", JACK_DEFAULT_AUDIO_TYPE, JackPortIsOutput, 0);
+	qDebug() << "Engine sample rate: " << sampling_rate;
 
 	return 0;
 }
@@ -267,7 +247,7 @@ int Core::start(bool record)
 	master = (Master *)machines.value(0);
 	if (master) {
 		if (master->init(this) == 0) {
-			master->go(client, input_port, output_port, record);
+			master->go(client, record);
 		}
 		return 0;
 	} else {
@@ -283,18 +263,6 @@ int Core::stop()
 	return 0;
 }
 
-
-
-
-int jack_process(jack_nframes_t nframes, void *arg)
-{
-	Core *core = (Core *)arg;
-	if (core->master) core->master->process(nframes);
-	return 0;
-}
-
-
-void jack_shutdown(void *arg) {}
 
 
 
