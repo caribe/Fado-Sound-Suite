@@ -24,18 +24,21 @@
 
 Settings::Settings(QWidget *parent) : QDialog(parent)
 {
-	QFormLayout *layout = new QFormLayout;
-
 	QSettings settings;
 
-	// Fields
+	QVBoxLayout *layout = new QVBoxLayout();
+	QTabWidget *tabs = new QTabWidget();
+
+	// Directories
+
+	QFormLayout *dirLayout = new QFormLayout;
 
 	tempFolder = new QLineEdit(settings.value("settings/tempFolder", "/tmp").toString());
 	QPushButton *tempFolderBrowse = new QPushButton(tr("Browse..."));
 	QHBoxLayout *tempFolderLayout = new QHBoxLayout();
 	tempFolderLayout->addWidget(tempFolder, 1);
 	tempFolderLayout->addWidget(tempFolderBrowse);
-	layout->addRow(tr("Temporary file folder"), tempFolderLayout);
+	dirLayout->addRow(tr("Temporary file folder"), tempFolderLayout);
 	connect(tempFolderBrowse, SIGNAL(clicked()), SLOT(tempFolderBrowseSlot()));
 
 	pluginsFolder = new QLineEdit(settings.value("settings/pluginsFolder", ".").toString());
@@ -43,8 +46,87 @@ Settings::Settings(QWidget *parent) : QDialog(parent)
 	QHBoxLayout *pluginsFolderLayout = new QHBoxLayout();
 	pluginsFolderLayout->addWidget(pluginsFolder, 1);
 	pluginsFolderLayout->addWidget(pluginsFolderBrowse);
-	layout->addRow(tr("Plugins folder"), pluginsFolderLayout);
+	dirLayout->addRow(tr("Plugins folder"), pluginsFolderLayout);
 	connect(pluginsFolderBrowse, SIGNAL(clicked()), SLOT(pluginsFolderBrowseSlot()));
+
+	QWidget *dirWidget = new QWidget();
+	dirWidget->setLayout(dirLayout);
+	tabs->addTab(dirWidget, tr("Directories"));
+
+	// Output Devices
+
+	int devices = Pa_GetDeviceCount();
+
+	devicesOutputWidget = new QTableWidget();
+	devicesOutputWidget->setSelectionMode(QAbstractItemView::SingleSelection);
+	devicesOutputWidget->setSelectionBehavior(QAbstractItemView::SelectRows);
+	devicesOutputWidget->setColumnCount(2);
+	devicesOutputWidget->setRowCount(devices);
+
+	devicesOutputWidget->setHorizontalHeaderItem(0, new QTableWidgetItem(tr("Device")));
+	devicesOutputWidget->setHorizontalHeaderItem(1, new QTableWidgetItem(tr("Name")));
+
+	QFont italic = QFont();
+	italic.setItalic(true);
+
+	int outputDevicesCount = 0;
+	int selectedOutputDevice = settings.value("settings/outputDevice", QVariant(Pa_GetDefaultOutputDevice())).toInt();
+
+	for (int i = 0; i < devices; i++) {
+		const PaDeviceInfo *deviceInfo = Pa_GetDeviceInfo(i);
+
+		if (deviceInfo->maxOutputChannels > 0) {
+			devicesOutputWidget->setItem(outputDevicesCount, 0, new QTableWidgetItem(QString::number(i)));
+
+			QTableWidgetItem *itemName = new QTableWidgetItem(deviceInfo->name);
+			if (i == Pa_GetDefaultOutputDevice()) itemName->setFont(italic);
+			devicesOutputWidget->setItem(outputDevicesCount, 1, itemName);
+
+			if (i == selectedOutputDevice) devicesOutputWidget->selectRow(outputDevicesCount);
+
+			outputDevicesCount++;
+		}
+	}
+
+	devicesOutputWidget->setRowCount(outputDevicesCount);
+
+	tabs->addTab(devicesOutputWidget, tr("Output Devices"));
+
+	// Output Devices
+
+	devicesInputWidget = new QTableWidget();
+	devicesInputWidget->setSelectionMode(QAbstractItemView::SingleSelection);
+	devicesInputWidget->setSelectionBehavior(QAbstractItemView::SelectRows);
+	devicesInputWidget->setColumnCount(2);
+	devicesInputWidget->setRowCount(devices);
+
+	devicesInputWidget->setHorizontalHeaderItem(0, new QTableWidgetItem(tr("Device")));
+	devicesInputWidget->setHorizontalHeaderItem(1, new QTableWidgetItem(tr("Name")));
+
+	int inputDevicesCount = 0;
+	int selectedInputDevice = settings.value("settings/inputDevice", QVariant(Pa_GetDefaultInputDevice())).toInt();
+
+	for (int i = 0; i < devices; i++) {
+		const PaDeviceInfo *deviceInfo = Pa_GetDeviceInfo(i);
+
+		if (deviceInfo->maxInputChannels > 0) {
+			devicesInputWidget->setItem(inputDevicesCount, 0, new QTableWidgetItem(QString::number(i)));
+
+			QTableWidgetItem *itemName = new QTableWidgetItem(deviceInfo->name);
+			if (i == Pa_GetDefaultInputDevice()) itemName->setFont(italic);
+			devicesInputWidget->setItem(inputDevicesCount, 1, itemName);
+
+			if (i == selectedInputDevice) devicesInputWidget->selectRow(inputDevicesCount);
+
+			inputDevicesCount++;
+		}
+	}
+
+	devicesInputWidget->setRowCount(inputDevicesCount);
+
+	devicesInputWidget->selectRow(settings.value("settings/inputDevice", QVariant(Pa_GetDefaultInputDevice())).toInt());
+
+	tabs->addTab(devicesInputWidget, tr("Input Devices"));
 
 	// Buttons
 
@@ -57,13 +139,13 @@ Settings::Settings(QWidget *parent) : QDialog(parent)
 	buttonBox->addButton(saveButton, QDialogButtonBox::AcceptRole);
 	buttonBox->addButton(cancelButton, QDialogButtonBox::RejectRole);
 
-	layout->addRow(buttonBox);
-
 	connect(buttonBox, SIGNAL(accepted()), SLOT(acceptAction()));
 	connect(buttonBox, SIGNAL(rejected()), SLOT(reject()));
 
 	// Finish
 
+	layout->addWidget(tabs, 1);
+	layout->addWidget(buttonBox);
 	setLayout(layout);
 }
 
@@ -82,6 +164,10 @@ void Settings::acceptAction()
 	} else {
 		settings.setValue("settings/tempFolder", tempFolder->text());
 		settings.setValue("settings/pluginsFolder", pluginsFolder->text());
+		QTableWidgetItem *outputDevice = devicesOutputWidget->selectedItems().at(0);
+		settings.setValue("settings/outputDevice", outputDevice->text());
+		QTableWidgetItem *inputDevice = devicesInputWidget->selectedItems().at(0);
+		settings.setValue("settings/inputDevice", inputDevice->text());
 		accept();
 	}
 }

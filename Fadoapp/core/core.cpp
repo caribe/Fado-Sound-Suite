@@ -32,6 +32,7 @@ int pa_callback(const void *input, void *output, unsigned long frameCount, const
 Core::Core(QObject *parent) : QObject(parent)
 {
 	master = 0;
+	client = 0;
 
 	beat_per_pattern = 16;
 	total_patterns = 16;
@@ -169,32 +170,43 @@ void Core::loadPluginsFolder(QDir &dir, QHash<QString, QStandardItem *> &generat
 
 bool Core::init()
 {
+	QSettings settings;
+	PaError err;
 
-	PaError err = Pa_Initialize();
-	if (err != paNoError) {
-		emit messageCritical(tr("Cannot initialize PortAudio"), Pa_GetErrorText(err));
-		return false;
+	if (client == 0) {
+		err = Pa_Initialize();
+		if (err != paNoError) {
+			emit messageCritical(tr("Cannot initialize PortAudio"), Pa_GetErrorText(err));
+			return false;
+		}
+	} else {
+		qDebug() << "Closing PortAudio Stream...";
+		err = Pa_CloseStream(client);
+		if (err != paNoError) {
+			emit messageCritical(tr("Cannot close PortAudio"), Pa_GetErrorText(err));
+			return false;
+		}
 	}
 
-	qDebug() << "Starting PortAudio...";
+	qDebug() << "(Re)starting PortAudio...";
 
-	qDebug() << "Define callback...";
-
-	outputParameters.device = 0;
+	outputParameters.device = settings.value("settings/outputDevice", QVariant(Pa_GetDefaultOutputDevice())).toInt();
 	outputParameters.channelCount = 2;
 	outputParameters.sampleFormat = paFloat32 | paNonInterleaved;
 	outputParameters.suggestedLatency = Pa_GetDeviceInfo(outputParameters.device)->defaultLowOutputLatency;
 	outputParameters.hostApiSpecificStreamInfo = NULL;
 
-	inputParameters.device = 0;
+	inputParameters.device = settings.value("settings/inputDevice", QVariant(Pa_GetDefaultInputDevice())).toInt();
 	inputParameters.channelCount = 2;
 	inputParameters.sampleFormat = paFloat32 | paNonInterleaved;
 	inputParameters.suggestedLatency = Pa_GetDeviceInfo(inputParameters.device)->defaultLowInputLatency;
 	inputParameters.hostApiSpecificStreamInfo = NULL;
 
 	err = Pa_OpenStream(&client, &inputParameters, &outputParameters, 44100, paFramesPerBufferUnspecified, paClipOff, ::pa_callback, (void *)this);
-
-	qDebug() << "Get sample rate...";
+	if (err != paNoError) {
+		emit messageCritical(tr("Cannot open PortAudio"), Pa_GetErrorText(err));
+		return false;
+	}
 
 	const PaStreamInfo *info = Pa_GetStreamInfo(client);
 

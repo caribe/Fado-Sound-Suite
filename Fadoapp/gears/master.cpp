@@ -81,7 +81,7 @@ int Master::go(PaStream *client, bool record)
 
 void Master::reconfig(const int sampling_rate) {
 
-	period_per_beat = (int)((60.0 / paramsMap["bpm"]->getInt()) / ((float)core->buffer_size / (float)core->sampling_rate));
+	period_per_beat = (int)((60.0 / paramsMap["bpm"]->getInt()) / ((float)core->buffer_size / sampling_rate));
 
 }
 
@@ -103,7 +103,7 @@ int Master::stop()
 	return 0;
 }
 
-void Master::process(unsigned long nframes) {}
+void Master::process(unsigned long nframes) {(void)nframes;}
 
 void Master::process(unsigned long nframes, const void *input, void *output)
 {

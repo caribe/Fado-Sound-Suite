@@ -31,6 +31,7 @@
 #include <QHash>
 #include <QList>
 #include <QStandardItemModel>
+#include <QSettings>
 
 #include <portaudio.h>
 
