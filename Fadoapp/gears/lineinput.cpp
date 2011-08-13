@@ -35,7 +35,5 @@ Machine *LineInput::factory() {
 	return new LineInput();
 }
 
-void LineInput::reconfig(const int sampling_rate) {}
 
-
-void LineInput::process(unsigned long nframes) {}
+void LineInput::process(unsigned long nframes) {(void)nframes;}

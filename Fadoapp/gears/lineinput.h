@@ -31,7 +31,6 @@ class LineInput : public Machine {
 
 	public:
 		LineInput();
-		void reconfig(const int sampling_rate);
 		void process(unsigned long nframes);
 		Machine *factory();
 };

@@ -28,6 +28,7 @@ MainWindow::MainWindow() : QMainWindow() {
 	setWindowTitle(tr("Fado"));
 	setWindowIcon(QIcon(":fado-logo"));
 
+	QSettings settings;
 	settingsLoad();
 
 	core = new Core();
@@ -106,7 +107,7 @@ MainWindow::MainWindow() : QMainWindow() {
 	QAction *playbackStop = toolbarPlayback->addAction(QIcon(":/icons/control-stop-square.png"), tr("Stop"), this, SLOT(playbackStopSlot()));
 
 	toolbarAnalyze = new QToolBar(tr("Analyze Tools"));
-	QAction *analyzeView = toolbarAnalyze->addAction(QIcon(":/icons/system-monitor.png"), tr("View"), analyze, SLOT(buttonView()));
+	QAction *analyzeView = toolbarAnalyze->addAction(QIcon(":/icons/system-monitor.png"), tr("View"), this, SLOT(analyzeSlot()));
 
 	addToolBar(toolbarPatterns);
 	addToolBar(toolbarTracks);
@@ -128,6 +129,11 @@ MainWindow::MainWindow() : QMainWindow() {
 	menuFileOpen->setShortcut(QKeySequence::Open);
 	connect(menuFileOpen, SIGNAL(triggered()), this, SLOT(menuFileOpenSlot()));
 	menuFile->addAction(menuFileOpen);
+
+	menuFileRecent = new QMenu(tr("&Recent"), this);
+	rebuildRecent();
+
+	menuFile->addMenu(menuFileRecent);
 
 	menuFile->addSeparator();
 
@@ -228,10 +234,24 @@ void MainWindow::menuFileOpenSlot() {
 	QSettings settings;
 	QString filename = QFileDialog::getOpenFileName(this, tr("Open Project"), settings.value("state/cwd").toString(), tr("Fado project files (*.fado)"));
 	if (filename.isNull()) return;
+	fileOpen(filename);
+}
 
+
+void MainWindow::menuFileOpenRecentSlot() {
+	QAction *item = qobject_cast<QAction *>(QObject::sender());
+	fileOpen(item->text());
+}
+
+
+void MainWindow::fileOpen(QString filename)
+{
+	QSettings settings;
 	menuFileCloseSlot();
+
 	if (core->load(filename)) {
 		setWindowTitle(tr("%1 - Fado").arg(filename));
+
 		foreach (Machine *machine, core->machines) route->addMachine(machine);
 		foreach (Machine *m1, core->machines) {
 			foreach (Machine *m2, m1->connectionDst.keys()) {
@@ -240,16 +260,21 @@ void MainWindow::menuFileOpenSlot() {
 		}
 		pattern->refreshMachines();
 		track->refreshMachines();
+
+		QStringList recentList = settings.value("state/recent").toStringList();
+		recentList.prepend(filename);
+		recentList.removeDuplicates();
+		settings.setValue("state/recent", recentList);
+		rebuildRecent();
+
 	}
 }
-
 
 
 void MainWindow::menuFileSaveSlot()
 {
 	core->save();
 }
-
 
 
 void MainWindow::menuFileSaveAsSlot() {
@@ -363,35 +388,26 @@ void MainWindow::tabChanged(int index)
 	case 0:
 		toolbarPatterns->setEnabled(false);
 		toolbarTracks->setEnabled(false);
-		toolbarAnalyze->setEnabled(false);
 		patternsMenu->setEnabled(false);
 		sequencesMenu->setEnabled(false);
-		analyzeMenu->setEnabled(false);
 		break;
 	case 1:
 		toolbarPatterns->setEnabled(true);
 		toolbarTracks->setEnabled(false);
-		toolbarAnalyze->setEnabled(false);
 		patternsMenu->setEnabled(true);
 		sequencesMenu->setEnabled(false);
-		analyzeMenu->setEnabled(false);
-		pattern->refreshPatterns();
 		break;
 	case 2:
 		toolbarPatterns->setEnabled(false);
 		toolbarTracks->setEnabled(true);
-		toolbarAnalyze->setEnabled(false);
 		patternsMenu->setEnabled(false);
 		sequencesMenu->setEnabled(true);
-		analyzeMenu->setEnabled(false);
 		break;
 	case 3:
 		toolbarPatterns->setEnabled(false);
 		toolbarTracks->setEnabled(false);
-		toolbarAnalyze->setEnabled(true);
 		patternsMenu->setEnabled(false);
 		sequencesMenu->setEnabled(false);
-		analyzeMenu->setEnabled(true);
 		break;
 	}
 }
@@ -457,4 +473,30 @@ void MainWindow::check()
 		settings.setValue("settings/pluginsFolder", pluginsFolder);
 	}
 
+}
+
+
+void MainWindow::analyzeSlot()
+{
+	tabs->setCurrentIndex(3);
+	analyze->buttonView();
+}
+
+
+void MainWindow::rebuildRecent()
+{
+	QSettings settings;
+	menuFileRecent->clear();
+
+	QStringList recentList = settings.value("state/recent").toStringList();
+
+	if (recentList.length()) {
+		foreach (QString recentItem, recentList) {
+			menuFileRecent->addAction(recentItem, this, SLOT(menuFileOpenRecentSlot()));
+		}
+	} else {
+		QAction *none = new QAction(tr("There are no recent files"), menuFileRecent);
+		none->setDisabled(true);
+		menuFileRecent->addAction(none);
+	}
 }

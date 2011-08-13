@@ -71,9 +71,11 @@ class MainWindow : public QMainWindow
 	private:
 		void settingsSave();
 		void settingsLoad();
+		void fileOpen(QString filename);
+		void rebuildRecent();
 
 		QToolBar *toolbarPatterns, *toolbarTracks, *toolbarPlayback, *toolbarAnalyze;
-		QMenu *patternsMenu, *sequencesMenu, *playbackMenu, *analyzeMenu;
+		QMenu *patternsMenu, *sequencesMenu, *playbackMenu, *analyzeMenu, *menuFileRecent;
 
 	private slots:
 		void setTabByAction();
@@ -85,6 +87,7 @@ class MainWindow : public QMainWindow
 		void menuFileCloseSlot();
 		void menuFileNewSlot();
 		void menuFileOpenSlot();
+		void menuFileOpenRecentSlot();
 		void menuFileSaveSlot();
 		void menuFileSaveAsSlot();
 		void menuHelpAboutSlot();
@@ -93,6 +96,8 @@ class MainWindow : public QMainWindow
 		void playbackPlaySlot();
 		void playbackRecSlot();
 		void playbackStopSlot();
+
+		void analyzeSlot();
 
 		void menuSettingsConfigureSlot();
 };

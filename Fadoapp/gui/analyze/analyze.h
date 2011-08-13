@@ -53,9 +53,9 @@ class Analyze : public QWidget
 		QScrollBar *scrollBar;
 		QFile *file;
 		QGraphicsPolygonItem *tlx, *trx, *flx;
+		void buttonView();
 
 	private slots:
-		void buttonView();
 		void sliderValueChanged(int value);
 };
 
