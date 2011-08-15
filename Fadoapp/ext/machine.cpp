@@ -22,34 +22,30 @@
 
 #include "machine.h"
 
-int Machine::preprocess(unsigned long nframes, int process)
+void Machine::preprocess(int framesStart, int framesLength, bool process)
 {
-	for (unsigned int j = 0; j < nframes; j++) li[j] = ri[j] = 0;
+	int framesFinish = framesStart + framesLength;
+
+	for (int j = framesStart; j < framesFinish; j++) li[j] = ri[j] = 0;
 
 	float value = 100.0 * this->connectionSrc.size();
 
 	foreach (Machine *src, this->connectionSrc.keys()) {
-		float *lx = src->lx;
-		float *rx = src->rx;
+
+		// qDebug("%.3f", src->lx[framesStart]);
 
 		Volume *volume = this->connectionSrc[src];
 
-		for (unsigned int j = 0; j < nframes; j++) {
-			li[j] += lx[j] * volume->lx / value;
-			ri[j] += rx[j] * volume->rx / value;
+		for (int j = framesStart; j < framesFinish; j++) {
+			li[j] += src->lx[j] * volume->lx / value;
+			ri[j] += src->rx[j] * volume->rx / value;
 		}
 	}
 
-	if (process > 0) this->process(nframes);
-	return 0;
+	if (process) {
+		this->process(framesStart, framesLength);
+	}
 }
-
-
-int Machine::preprocess(unsigned long nframes)
-{
-	return preprocess(nframes, 1);
-}
-
 
 
 void Machine::setName(const QString &name)

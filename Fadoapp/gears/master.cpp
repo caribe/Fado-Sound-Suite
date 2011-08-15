@@ -71,6 +71,10 @@ int Master::go(PaStream *client, bool record)
 
 	period_per_beat = 100;
 
+	// Frames per beat
+	framesPerBeat = 44100 * 60 / 120;
+	framesCounter = 0;
+
 	period_counter = -1;
 	beat_counter = -1;
 	// pattern_counter = track_last;
@@ -81,7 +85,7 @@ int Master::go(PaStream *client, bool record)
 
 void Master::reconfig(const int sampling_rate) {
 
-	period_per_beat = (int)((60.0 / paramsMap["bpm"]->getInt()) / ((float)core->buffer_size / sampling_rate));
+	framesPerBeat = sampling_rate * 60 / paramsMap["bpm"]->getInt();
 
 }
 
@@ -103,74 +107,89 @@ int Master::stop()
 	return 0;
 }
 
-void Master::process(unsigned long nframes) {(void)nframes;}
+void Master::process(int framesStart, int framesLength) {(void)framesLength;}
 
-void Master::process(unsigned long nframes, const void *input, void *output)
+void Master::process(int nframes, const void *input, void *output)
 {
-	// qDebug() <<"Period: " << period_counter << " / " << period_per_beat;
-
-	// It's time to play a new beat
-	if (period_counter == -1 or ++period_counter >= period_per_beat) {
-		period_counter = 0;
-
-		if (beat_counter == -1 or ++beat_counter >= core->beat_per_pattern) {
-			beat_counter = 0;
-			// It's time to play a new pattern!
-			if (++pattern_counter > core->track_last) {
-				pattern_counter = core->track_first;
-			}
-		}
-
-		//qDebug() << "Beat" << beat_counter << "/" << core->beat_per_pattern;
-		//qDebug() << "Pattern" << pattern_counter << "/" << core->total_patterns;
-
-		foreach (Machine *machine, core->order) {
-			//qDebug() << machine->name;
-			if (machine->track.contains(pattern_counter) and machine->track[pattern_counter]->params.contains(beat_counter)) {
-				//qDebug() << "Reconfig: " << machine->name;
-
-				QHash<int, QString> params = machine->track[pattern_counter]->params[beat_counter];
-
-				foreach (int key, params.keys()) {
-					//qDebug() << key << " => " << params[key];
-					machine->params[key]->set(params[key]);
-				}
-
-				machine->reconfig(core->sampling_rate);
-			}
-		}
-	}
+	int framesLength, framesStart = 0;
+	bool newBeat;
 
 	// Get input buffers
 	float **inputPtr = (float **)input;
-	float *lxi = inputPtr[0];
-	float *rxi = inputPtr[1];
-
-	// Calls all machines in the right order
-	foreach (Machine *machine, core->order) {
-		if (machine->type == Machine::MachineMaster) {
-			machine->preprocess(nframes, 0);
-		} else if (machine->type == Machine::MachineInput and machine->name == "Line Input") {
-			memcpy(machine->lx, lxi, sizeof(float) * nframes);
-			memcpy(machine->rx, rxi, sizeof(float) * nframes);
-		} else {
-			machine->preprocess(nframes);
-		}
-	}
-
 	float **outputPtr = (float **)output;
 
-	// Output copy
-	memcpy(outputPtr[0], core->machines[0]->li, sizeof(float) * nframes);
-	memcpy(outputPtr[1], core->machines[0]->ri, sizeof(float) * nframes);
+	while (nframes) {
 
-	// If recording writes to file
-	if (file) {
-		for (unsigned int i = 0; i < nframes; i++) {
-			buffer[i*2] = std::floor(outputPtr[0][i] * 32767);
-			buffer[i*2+1] = std::floor(outputPtr[1][i] * 32767);
+		newBeat = false;
+
+		if (framesCounter + nframes > framesPerBeat) {
+			framesLength = framesPerBeat - framesCounter;
+			framesCounter += framesLength;
+			nframes -= framesLength;
+			newBeat = true;
+		} else {
+			framesLength = nframes;
+			framesCounter += nframes;
+			nframes = 0;
 		}
-		fwrite(buffer, nframes * 2, 2, file);
-	}
 
+		// Calls all machines in the right order
+		foreach (Machine *machine, core->order) {
+			if (machine->type == Machine::MachineMaster) {
+				machine->preprocess(framesStart, framesLength, false);
+			} else {
+				if (machine->type == Machine::MachineInput and machine->name == "Line Input") {
+					memcpy(&machine->lx[framesStart], &inputPtr[0][framesStart], sizeof(float) * framesLength);
+					memcpy(&machine->rx[framesStart], &inputPtr[1][framesStart], sizeof(float) * framesLength);
+				} else {
+					machine->preprocess(framesStart, framesLength);
+				}
+			}
+		}
+
+		// Output copy
+		memcpy(&outputPtr[0][framesStart], &core->machines[0]->li[framesStart], sizeof(float) * framesLength);
+		memcpy(&outputPtr[1][framesStart], &core->machines[0]->ri[framesStart], sizeof(float) * framesLength);
+
+		// If recording writes to file
+		if (file) {
+			for (int i = 0; i < framesLength; i++) {
+				buffer[i*2] = std::floor(outputPtr[0][i+framesStart] * 32767);
+				buffer[i*2+1] = std::floor(outputPtr[1][i+framesStart] * 32767);
+			}
+			fwrite(buffer, framesLength * 2, 2, file);
+		}
+
+		// New beat
+		if (newBeat) {
+			framesCounter = 0;
+
+			if (beat_counter == -1 or ++beat_counter >= core->beat_per_pattern) {
+				beat_counter = 0;
+				// It's time to play a new pattern!
+				if (++pattern_counter > core->track_last) {
+					pattern_counter = core->track_first;
+				}
+			}
+
+			foreach (Machine *machine, core->order) {
+				// qDebug() << machine->name;
+				if (machine->track.contains(pattern_counter)
+					and machine->track[pattern_counter]->type == MachinePattern::StandardPattern
+					and machine->track[pattern_counter]->params.contains(beat_counter)
+				) {
+					qDebug() << "Reconfig: " << machine->name;
+
+					QHash<int, QString> params = machine->track[pattern_counter]->params[beat_counter];
+
+					foreach (int key, params.keys()) {
+						qDebug() << key << " => " << params[key];
+						machine->params[key]->set(params[key]);
+					}
+
+					machine->reconfig(core->sampling_rate);
+				}
+			}
+		}
+	}
 }

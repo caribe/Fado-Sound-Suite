@@ -48,8 +48,8 @@ void Basskick::reconfig(const int sampling_rate)
 
 
 
-void Basskick::process(unsigned long nframes) {
-	for (unsigned int i = 0; i < nframes; i++) {
+void Basskick::process(int framesStart, int framesLength) {
+	for (int i = framesStart; i < framesLength; i++) {
 		if (rotor++ < duration) {
 			lx[i] = rand() / max - 1;
 			rx[i] = rand() / max - 1;

@@ -36,4 +36,4 @@ Machine *LineInput::factory() {
 }
 
 
-void LineInput::process(unsigned long nframes) {(void)nframes;}
+void LineInput::process(int framesStart, int framesLength) {(void)framesLength;}

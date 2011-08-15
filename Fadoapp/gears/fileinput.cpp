@@ -92,19 +92,19 @@ void FileInput::reconfig(const int sampling_rate)
 
 
 
-void FileInput::process(unsigned long nframes) {
+void FileInput::process(int framesStart, int framesLength) {
 	// seek2 = seek * info.samplerate / sampling_rate
 	unsigned int i, seek2;
 
 	if (info.channels == 2) {
-		for (i = 0; i < nframes; i++) {
+		for (i = framesStart; i < framesLength; i++) {
 			if (++seek > info.frames) seek = 0;
 			seek2 = seek * ratio;
 			lx[i] = filebuffer[params[0]->getString()][seek2*2];
 			rx[i] = filebuffer[params[0]->getString()][seek2*2+1];
 		}
 	} else if (info.channels == 1) {
-		for (i = 0; i < nframes; i++) {
+		for (i = framesStart; i < framesLength; i++) {
 			if (++seek > info.frames) seek = 0;
 			seek2 = seek * ratio;
 			lx[i] = rx[i] = filebuffer[params[0]->getString()][seek2];

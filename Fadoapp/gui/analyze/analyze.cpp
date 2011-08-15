@@ -168,5 +168,6 @@ void Analyze::buttonView()
 
 void Analyze::sliderValueChanged(int value)
 {
+	(void)value;
 	buttonView();
 }

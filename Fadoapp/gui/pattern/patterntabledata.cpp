@@ -88,20 +88,24 @@ Qt::ItemFlags PatternTableData::flags(const QModelIndex & index) const
 
 bool PatternTableData::setData(const QModelIndex& index, const QVariant & value, int role)
 {
-	Machine *machine = pattern->currentMachine();
-	if (machine == 0) return 0;
+	if (role == Qt::DisplayRole or role == Qt::EditRole) {
+		Machine *machine = pattern->currentMachine();
+		if (machine == 0) return 0;
 
-	MachinePattern *pat = pattern->currentPattern();
-	int row = index.row();
-	int col = index.column();
+		MachinePattern *pat = pattern->currentPattern();
+		int row = index.row();
+		int col = index.column();
 
-	QString strValue = value.toString();
+		QString strValue = value.toString();
 
-	strValue = machine->validate(col, strValue);
+		strValue = machine->validate(col, strValue);
 
-	pat->params[row][col] = strValue;
+		pat->params[row][col] = strValue;
 
-	return true;
+		return true;
+	} else {
+		return false;
+	}
 }
 
 

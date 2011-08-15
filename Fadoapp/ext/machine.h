@@ -45,7 +45,7 @@ class MachinePattern {
 public:
 	QString name;
 	QHash<int, QHash<int, QString> > params;
-	enum PatternType { StandardPattern, MutePattern, BreakPattern };
+	enum PatternType { StandardPattern, MutePattern, BreakPattern, ThruPattern };
 	PatternType type;
 
 	MachinePattern() {
@@ -63,7 +63,7 @@ public:
 
 	// Interface
 	virtual Machine *factory()=0;
-	virtual void process(unsigned long nframes)=0;
+	virtual void process(int framesStart, int framesLength)=0;
 	virtual void reconfig(const int sampling_rate) {(void)sampling_rate;}
 	virtual void init() {}
 	virtual void finish() {}
@@ -89,8 +89,7 @@ public:
 	QHash<int, MachinePattern *> track;
 
 	QString validate(int index, QString value);
-	int preprocess(unsigned long nframes);
-	int preprocess(unsigned long nframes, int process);
+	void preprocess(int framesStart, int framesLength, bool process = true);
 
 	void setName(const QString &name);
 	void setDescription(const QString &description);

@@ -42,7 +42,7 @@ public:
 	Square();
 	void reconfig(const int sampling_rate);
 	Machine *factory();
-	void process(unsigned long nframes);
+	void process(int framesStart, int framesLength);
 
 };
 

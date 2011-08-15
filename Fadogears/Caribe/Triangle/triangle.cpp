@@ -44,9 +44,9 @@ void Triangle::reconfig(const int sampling_rate) {
 
 }
 
-void Triangle::process(unsigned long nframes) {
+void Triangle::process(int framesStart, int framesLength) {
 
-	for (unsigned int i = 0; i < nframes; i++, rotor += rotor_step) {
+	for (int i = framesStart; i < framesLength; i++, rotor += rotor_step) {
 		if (rotor > 1) rotor -= 1;
 
 		if (rotor <= 0.25) {

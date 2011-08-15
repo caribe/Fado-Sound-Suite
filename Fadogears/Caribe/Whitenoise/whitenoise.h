@@ -39,7 +39,7 @@ public:
 	Whitenoise();
 	void init();
 	Machine *factory();
-	void process(unsigned long nframes);
+	void process(int framesStart, int framesLength);
 };
 
 #endif // WHITENOISE_H

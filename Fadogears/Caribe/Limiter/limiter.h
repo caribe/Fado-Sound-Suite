@@ -35,7 +35,7 @@ private:
 public:
 	Limiter();
 	Machine *factory();
-	void process(unsigned long nframes);
+	void process(int framesStart, int framesLength);
 };
 
 #endif // LIMITER_H

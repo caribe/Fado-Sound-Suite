@@ -39,9 +39,13 @@ void Sawtooth::reconfig(const int sampling_rate) {
 	rotor_step = 1 / (sampling_rate / paramsMap["freq"]->floatValue);
 }
 
-void Sawtooth::process(unsigned long nframes) {
+void Sawtooth::init()
+{
+	rotor = 0;
+}
 
-	for (unsigned int i = 0; i < nframes; i++, rotor += rotor_step) {
+void Sawtooth::process(int framesStart, int framesLength) {
+	for (int i = framesStart; i < framesLength; i++, rotor += rotor_step) {
 		if (rotor > 1) rotor -= 1;
 		lx[i] = rx[i] = 1 - rotor * 2;
 	}

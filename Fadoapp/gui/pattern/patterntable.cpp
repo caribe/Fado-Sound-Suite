@@ -46,6 +46,7 @@ void PatternTable::refresh()
 
 void PatternTable::currentColumnChangedSlot(const QModelIndex &current, const QModelIndex &previous)
 {
+	(void)previous;
 	pattern->activeCol(current.column());
 }
 

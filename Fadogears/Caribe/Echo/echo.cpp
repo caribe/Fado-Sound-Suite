@@ -58,16 +58,15 @@ void Echo::reconfig(const int sampling_rate)
 }
 
 
-void Echo::process(unsigned long nframes)
+void Echo::process(int framesStart, int framesLength)
 {
-	unsigned int i;
 	int j;
 	float e1 = paramsMap["vol"]->floatValue;
 	float e2 = 1 - e1;
 
 	if (samples == 0) return; // Avoid exception
 
-	for (i = 0; i < nframes; i++) {
+	for (int i = framesStart; i < framesLength; i++) {
 		j = (cursor + i) % samples;
 		lx[i] = buffer_lx[j] = li[i] * e1 + buffer_lx[j] * e2;
 		rx[i] = buffer_rx[j] = ri[i] * e1 + buffer_rx[j] * e2;

@@ -41,7 +41,9 @@ class Master : public Machine {
 
 		int period_per_beat;
 		int period_counter, beat_counter, pattern_counter;
+
 		Core *core;
+		int framesPerBeat, framesCounter;
 
 		PaStream *client;
 
@@ -49,8 +51,8 @@ class Master : public Machine {
 		void reconfig(const int sampling_rate);
 		int go(PaStream *client, bool record);
 		int stop();
-		void process(unsigned long nframes);
-		void process(unsigned long nframes, const void *input, void *output);
+		void process(int framesStart, int framesLength);
+		void process(int nframes, const void *input, void *output);
 		Machine *factory();
 };
 

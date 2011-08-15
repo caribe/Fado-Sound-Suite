@@ -37,7 +37,8 @@ public:
 	Sawtooth();
 	void reconfig(const int sampling_rate);
 	Machine *factory();
-	void process(unsigned long nframes);
+	void init();
+	void process(int framesStart, int framesLength);
 };
 
 #endif // SAWTOOTH_H

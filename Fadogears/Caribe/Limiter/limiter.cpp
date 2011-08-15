@@ -37,11 +37,11 @@ Machine *Limiter::factory() {
 	return new Limiter();
 }
 
-void Limiter::process(unsigned long nframes)
+void Limiter::process(int framesStart, int framesLength)
 {
 	float vol = paramsMap["vol"]->floatValue;
 
-	for (unsigned int i = 0; i < nframes; i++) {
+	for (int i = framesStart; i < framesLength; i++) {
 		if (li[i] > vol) lx[i] = vol; else if (li[i] < -vol) lx[i] = -vol; else lx[i] = li[i];
 		if (ri[i] > vol) rx[i] = vol; else if (ri[i] < -vol) rx[i] = -vol; else rx[i] = ri[i];
 	}

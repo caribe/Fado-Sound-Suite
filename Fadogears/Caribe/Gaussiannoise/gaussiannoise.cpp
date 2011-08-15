@@ -33,9 +33,9 @@ Machine *Gaussiannoise::factory() {
 	return new Gaussiannoise();
 }
 
-void Gaussiannoise::process(unsigned long nframes) {
+void Gaussiannoise::process(int framesStart, int framesLength) {
 
-	for (unsigned int i = 0; i < nframes; i++) {
+	for (int i = framesStart; i < framesLength; i++) {
 		lx[i] = (qrand() % 1000) / 1000.0;
 		rx[i] = (qrand() % 1000) / 1000.0;
 	}

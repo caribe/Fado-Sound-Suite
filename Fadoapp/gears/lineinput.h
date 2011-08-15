@@ -31,7 +31,7 @@ class LineInput : public Machine {
 
 	public:
 		LineInput();
-		void process(unsigned long nframes);
+		void process(int framesStart, int framesLength);
 		Machine *factory();
 };
 
