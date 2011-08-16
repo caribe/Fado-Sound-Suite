@@ -29,7 +29,7 @@ MachineBox::MachineBox(Route *route, Machine *machine)
 
 	// Box
 
-	setRect(-50, -25, 100, 50);
+	setRect(-49.5, -24.5, 99, 49);
 	if (m->x == -1) m->x = 100;
 	if (m->y == -1) m->y = 100;
 	setPos(m->x, m->y);
