@@ -43,17 +43,17 @@ void Lowpassfilter::reconfig(const int sampling_rate) {
 	last_rx = last_lx = 0;
 }
 
-void Lowpassfilter::process(int framesStart, int framesLength) {
+void Lowpassfilter::process(int framesStart, int framesEnd) {
 	lx[0] = last_lx + alfa * (li[0] - last_lx);
 	rx[0] = last_rx + alfa * (li[0] - last_rx);
 
-	for (int i = framesStart; i < framesLength; i++) {
+	for (int i = framesStart; i < framesEnd; i++) {
 		lx[i] = lx[i-1] + alfa * (li[i] - lx[i-1]);
 		rx[i] = rx[i-1] + alfa * (li[i] - lx[i-1]);
 	}
 
-	last_lx = lx[framesLength-1];
-	last_rx = rx[framesLength-1];
+	last_lx = lx[framesEnd-1];
+	last_rx = rx[framesEnd-1];
 }
 
 Q_EXPORT_PLUGIN2(lowpassfilter, Lowpassfilter)

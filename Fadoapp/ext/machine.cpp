@@ -43,7 +43,7 @@ void Machine::preprocess(int framesStart, int framesLength, bool process)
 	}
 
 	if (process) {
-		this->process(framesStart, framesLength);
+		this->process(framesStart, framesFinish);
 	}
 }
 

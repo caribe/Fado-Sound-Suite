@@ -35,7 +35,7 @@ private:
 public:
 	Overdrive();
 	Machine *factory();
-	void process(int framesStart, int framesLength);
+	void process(int framesStart, int framesEnd);
 
 };
 

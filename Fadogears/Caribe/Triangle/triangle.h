@@ -41,7 +41,7 @@ public:
 	Triangle();
 	void reconfig(const int sampling_rate);
 	Machine *factory();
-	void process(int framesStart, int framesLength);
+	void process(int framesStart, int framesEnd);
 
 };
 

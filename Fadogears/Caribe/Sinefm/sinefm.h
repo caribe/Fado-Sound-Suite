@@ -42,7 +42,7 @@ public:
 	void reconfig(const int sampling_rate);
 	Machine *factory();
 	void init();
-	void process(int framesStart, int framesLength);
+	void process(int framesStart, int framesEnd);
 
 };
 

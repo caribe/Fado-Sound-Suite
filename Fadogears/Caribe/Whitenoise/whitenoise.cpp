@@ -37,8 +37,8 @@ void Whitenoise::init() {
 	max = RAND_MAX / 2.0;
 }
 
-void Whitenoise::process(int framesStart, int framesLength) {
-	for (int i = framesStart; i < framesLength; i++) {
+void Whitenoise::process(int framesStart, int framesEnd) {
+	for (int i = framesStart; i < framesEnd; i++) {
 		lx[i] = qrand() / max - 1;
 		rx[i] = qrand() / max - 1;
 	}

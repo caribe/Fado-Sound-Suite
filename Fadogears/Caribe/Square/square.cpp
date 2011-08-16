@@ -45,9 +45,9 @@ void Square::reconfig(const int sampling_rate) {
 }
 
 
-void Square::process(int framesStart, int framesLength) {
+void Square::process(int framesStart, int framesEnd) {
 
-	for (int i = framesStart; i < framesLength; i++, rotor += rotor_step) {
+	for (int i = framesStart; i < framesEnd; i++, rotor += rotor_step) {
 		if (rotor < PI2) {
 			lx[i] = rx[i] = 1;
 		} else {

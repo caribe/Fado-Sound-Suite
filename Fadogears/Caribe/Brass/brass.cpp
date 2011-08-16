@@ -72,9 +72,9 @@ void Brass::reconfig(const int sampling_rate)
 
 
 
-void Brass::process(int framesStart, int framesLength)
+void Brass::process(int framesStart, int framesEnd)
 {
-	for (int i = framesStart; i < framesLength; i++, rotor += rotor_step) {
+	for (int i = framesStart; i < framesEnd; i++, rotor += rotor_step) {
 		if (rotor > 1) rotor -= 1;
 
 		contour_val = 0;

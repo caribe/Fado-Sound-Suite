@@ -35,7 +35,7 @@ class FileInput : public Machine {
 	public:
 		FileInput();
 		void reconfig(const int sampling_rate);
-		void process(int framesStart, int framesLength);
+		void process(int framesStart, int framesEnd);
 		void init();
 		void finish();
 		Machine *factory();

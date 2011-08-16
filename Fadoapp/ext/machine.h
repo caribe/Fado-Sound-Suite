@@ -63,7 +63,7 @@ public:
 
 	// Interface
 	virtual Machine *factory()=0;
-	virtual void process(int framesStart, int framesLength)=0;
+	virtual void process(int framesStart, int framesEnd)=0;
 	virtual void reconfig(const int sampling_rate) {(void)sampling_rate;}
 	virtual void init() {}
 	virtual void finish() {}

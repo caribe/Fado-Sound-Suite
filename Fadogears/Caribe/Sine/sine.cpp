@@ -44,9 +44,9 @@ void Sine::reconfig(const int sampling_rate) {
 
 }
 
-void Sine::process(int framesStart, int framesLength) {
+void Sine::process(int framesStart, int framesEnd) {
 
-	for (int i = framesStart; i < framesLength; i++, rotor += rotor_step) {
+	for (int i = framesStart; i < framesEnd; i++, rotor += rotor_step) {
 		lx[i] = rx[i] = std::cos(rotor);
 		if (rotor > PI_2) rotor -= PI_2;
 	}

@@ -33,7 +33,7 @@ Q_INTERFACES(Machine)
 public:
 	Gaussiannoise();
 	Machine *factory();
-	void process(int framesStart, int framesLength);
+	void process(int framesStart, int framesEnd);
 };
 
 #endif // GAUSSIANNOISE_H

@@ -41,12 +41,12 @@ Machine *Overdrive::factory() {
 	return new Overdrive();
 }
 
-void Overdrive::process(int framesStart, int framesLength) {
+void Overdrive::process(int framesStart, int framesEnd) {
 
 	float gain = paramsMap["gain"]->floatValue;
 	float cut = paramsMap["cut"]->floatValue;
 
-	for (int i = framesStart; i < framesLength; i++) {
+	for (int i = framesStart; i < framesEnd; i++) {
 		lx[i] = li[i] * gain;
 		if (lx[i] > cut) lx[i] = cut;
 		else if (lx[i] < -cut) lx[i] = -cut;

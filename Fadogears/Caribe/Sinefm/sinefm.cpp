@@ -53,9 +53,9 @@ void Sinefm::reconfig(const int sampling_rate) {
 }
 
 
-void Sinefm::process(int framesStart, int framesLength) {
+void Sinefm::process(int framesStart, int framesEnd) {
 
-	for (int i = framesStart; i < framesLength; i++) {
+	for (int i = framesStart; i < framesEnd; i++) {
 		rotorC += rotorStepC;
 		rotorM += rotorStepM;
 

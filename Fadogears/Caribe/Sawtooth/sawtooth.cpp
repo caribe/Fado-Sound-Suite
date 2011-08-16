@@ -44,8 +44,8 @@ void Sawtooth::init()
 	rotor = 0;
 }
 
-void Sawtooth::process(int framesStart, int framesLength) {
-	for (int i = framesStart; i < framesLength; i++, rotor += rotor_step) {
+void Sawtooth::process(int framesStart, int framesEnd) {
+	for (int i = framesStart; i < framesEnd; i++, rotor += rotor_step) {
 		if (rotor > 1) rotor -= 1;
 		lx[i] = rx[i] = 1 - rotor * 2;
 	}

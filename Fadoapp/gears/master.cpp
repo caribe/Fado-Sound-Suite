@@ -65,19 +65,18 @@ int Master::go(PaStream *client, bool record)
 	if (!file) QMessageBox::critical(0, QObject::tr("Cannot open temporary file"), QObject::tr("Sorry, but I cannot open '%1' as temporary file for recording").arg(filename));
 
 	PaError err = Pa_StartStream(client);
-	if( err != paNoError ) return 1;
+	if (err != paNoError) return 1;
 
 	this->client = client;
-
-	period_per_beat = 100;
 
 	// Frames per beat
 	framesPerBeat = 44100 * 60 / 120;
 	framesCounter = 0;
 
-	period_counter = -1;
-	beat_counter = -1;
+	period_counter = beat_counter = -1;
 	// pattern_counter = track_last;
+
+	nextBeat();
 
 	return 0;
 }
@@ -107,7 +106,7 @@ int Master::stop()
 	return 0;
 }
 
-void Master::process(int framesStart, int framesLength) {(void)framesLength;}
+void Master::process(int framesStart, int framesFinish) {(void)framesFinish;}
 
 void Master::process(int nframes, const void *input, void *output)
 {
@@ -132,6 +131,8 @@ void Master::process(int nframes, const void *input, void *output)
 			framesCounter += nframes;
 			nframes = 0;
 		}
+
+		// qDebug() << framesStart << framesLength;
 
 		// Calls all machines in the right order
 		foreach (Machine *machine, core->order) {
@@ -164,34 +165,41 @@ void Master::process(int nframes, const void *input, void *output)
 
 		// New beat
 		if (newBeat) {
-			framesCounter = 0;
+			nextBeat();
+		}
+	}
+}
 
-			if (beat_counter == -1 or ++beat_counter >= core->beat_per_pattern) {
-				beat_counter = 0;
-				// It's time to play a new pattern!
-				if (++pattern_counter > core->track_last) {
-					pattern_counter = core->track_first;
-				}
+
+
+void Master::nextBeat()
+{
+	framesCounter = 0;
+
+	if (beat_counter == -1 or ++beat_counter >= core->beat_per_pattern) {
+		beat_counter = 0;
+		// It's time to play a new pattern!
+		if (++pattern_counter > core->track_last) {
+			pattern_counter = core->track_first;
+		}
+	}
+
+	foreach (Machine *machine, core->order) {
+		// qDebug() << machine->name;
+		if (machine->track.contains(pattern_counter)
+			and machine->track[pattern_counter]->type == MachinePattern::StandardPattern
+			and machine->track[pattern_counter]->params.contains(beat_counter)
+		) {
+			qDebug() << "Reconfig: " << machine->name;
+
+			QHash<int, QString> params = machine->track[pattern_counter]->params[beat_counter];
+
+			foreach (int key, params.keys()) {
+				qDebug() << key << " => " << params[key];
+				machine->params[key]->set(params[key]);
 			}
 
-			foreach (Machine *machine, core->order) {
-				// qDebug() << machine->name;
-				if (machine->track.contains(pattern_counter)
-					and machine->track[pattern_counter]->type == MachinePattern::StandardPattern
-					and machine->track[pattern_counter]->params.contains(beat_counter)
-				) {
-					qDebug() << "Reconfig: " << machine->name;
-
-					QHash<int, QString> params = machine->track[pattern_counter]->params[beat_counter];
-
-					foreach (int key, params.keys()) {
-						qDebug() << key << " => " << params[key];
-						machine->params[key]->set(params[key]);
-					}
-
-					machine->reconfig(core->sampling_rate);
-				}
-			}
+			machine->reconfig(core->sampling_rate);
 		}
 	}
 }

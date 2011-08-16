@@ -44,19 +44,19 @@ void Highpassfilter::reconfig(const int sampling_rate) {
 	last_rxi = last_lxi = 0;
 }
 
-void Highpassfilter::process(int framesStart, int framesLength) {
+void Highpassfilter::process(int framesStart, int framesEnd) {
 	lx[0] = alfa * (last_lxo + li[0] - last_lxi);
 	rx[0] = alfa * (last_rxo + ri[0] - last_rxi);
 
-	for (int i = framesStart; i < framesLength; i++) {
+	for (int i = framesStart; i < framesEnd; i++) {
 		lx[i] = alfa * (lx[i-1] + li[i] - li[i-1]);
 		rx[i] = alfa * (rx[i-1] + ri[i] - ri[i-1]);
 	}
 
-	last_lxo = lx[framesLength-1];
-	last_rxo = rx[framesLength-1];
-	last_lxi = li[framesLength-1];
-	last_rxi = ri[framesLength-1];
+	last_lxo = lx[framesEnd-1];
+	last_rxo = rx[framesEnd-1];
+	last_lxi = li[framesEnd-1];
+	last_rxi = ri[framesEnd-1];
 }
 
 Q_EXPORT_PLUGIN2(highpassfilter, Highpassfilter)
