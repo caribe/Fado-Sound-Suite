@@ -55,9 +55,10 @@ int Config::load(QString filename, Core *core) {
 		if (rootElement.tagName() == "settings") {
 
 			QDomElement beatPerPattern = rootElement.firstChildElement("beat-per-pattern");
-			if (!beatPerPattern.isNull()) {
-				core->beat_per_pattern = beatPerPattern.text().toInt();
-			}
+			if (!beatPerPattern.isNull()) core->beat_per_pattern = beatPerPattern.text().toInt();
+
+			QDomElement beatPerMinute = rootElement.firstChildElement("beat-per-minute");
+			if (!beatPerMinute.isNull()) core->baseBpm = beatPerMinute.text().toInt();
 
 			QDomElement patterns = rootElement.firstChildElement("patterns");
 			if (!patterns.isNull()) {
@@ -194,8 +195,12 @@ int Config::save(QString filename, Core *core) {
 	settingsPatterns.appendChild(doc.createTextNode(QString::number(core->total_patterns)));
 	settings.appendChild(settingsPatterns);
 
-	QDomElement settingsBPM = doc.createElement("beat-per-pattern");
-	settingsBPM.appendChild(doc.createTextNode(QString::number(core->beat_per_pattern)));
+	QDomElement settingsBPP = doc.createElement("beat-per-pattern");
+	settingsBPP.appendChild(doc.createTextNode(QString::number(core->beat_per_pattern)));
+	settings.appendChild(settingsBPP);
+
+	QDomElement settingsBPM = doc.createElement("beat-per-minute");
+	settingsBPM.appendChild(doc.createTextNode(QString::number(core->baseBpm)));
 	settings.appendChild(settingsBPM);
 
 	QHash<Machine *, int> machineMapping;

@@ -27,6 +27,8 @@
 #include <QSettings>
 #include <QFile>
 
+#include <cmath>
+
 class Master;
 
 #include "ext/machine.h"
@@ -48,11 +50,12 @@ class Master : public Machine {
 
 		int init(Core *core);
 		void reconfig(const int sampling_rate);
-		int go(PaStream *client, bool record);
-		int stop();
 		void process(int framesStart, int framesEnd);
-		void process(int nframes, const void *input, void *output);
 		Machine *factory();
+
+		int go(PaStream *client, int baseBpm, bool record);
+		int stop();
+		void process(int nframes, const void *input, void *output);
 
 		void nextBeat();
 };

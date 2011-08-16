@@ -31,6 +31,7 @@
 #include <QKeyEvent>
 #include <QSettings>
 #include <QToolBar>
+#include <QSpinBox>
 #include <QDebug>
 
 //! MainWindow class
@@ -62,6 +63,7 @@ class MainWindow : public QMainWindow
 		void refreshPatterns();
 
 		QTabWidget *tabs;
+		QSpinBox *baseBpm;
 		QStatusBar *status;
 		void closeEvent(QCloseEvent *event);
 

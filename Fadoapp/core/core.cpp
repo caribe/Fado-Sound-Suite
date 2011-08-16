@@ -35,6 +35,7 @@ Core::Core(QObject *parent) : QObject(parent)
 	client = 0;
 
 	beat_per_pattern = 16;
+	baseBpm = 16;
 	total_patterns = 16;
 	gearsTree = new QStandardItemModel();
 
@@ -259,7 +260,7 @@ int Core::start(bool record)
 	master = (Master *)machines.value(0);
 	if (master) {
 		if (master->init(this) == 0) {
-			master->go(client, record);
+			master->go(client, baseBpm, record);
 		}
 		return 0;
 	} else {
@@ -352,4 +353,11 @@ int Core::toggleConnection(Machine *m1, Machine *m2)
 
 	orderMachines();
 	return 0;
+}
+
+
+
+void Core::baseBpmChanged(int value)
+{
+	baseBpm = value;
 }

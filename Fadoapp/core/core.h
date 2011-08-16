@@ -73,7 +73,7 @@ public:
 
 	// *** Core
 
-	int beat_per_pattern, total_patterns, track_first, track_last;
+	int beat_per_pattern, total_patterns, track_first, track_last, baseBpm;
 	int sampling_rate, buffer_size;
 	bool record;
 
@@ -96,6 +96,9 @@ public:
 
 	bool orderMachines();
 	int toggleConnection(Machine *from, Machine *to);
+
+public slots:
+	void baseBpmChanged(int);
 
 signals:
 	void messageCritical(const QString &title, const QString &text);

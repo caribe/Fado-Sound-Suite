@@ -22,8 +22,6 @@
 
 #include "gears/master.h"
 
-#include <cmath>
-
 Master::Master()
 {
 	type = Machine::MachineMaster;
@@ -56,7 +54,7 @@ int Master::init(Core *core)
 
 
 
-int Master::go(PaStream *client, bool record)
+int Master::go(PaStream *client, int baseBpm, bool record)
 {
 	QSettings settings;
 
@@ -69,8 +67,10 @@ int Master::go(PaStream *client, bool record)
 
 	this->client = client;
 
+	const PaStreamInfo *info = Pa_GetStreamInfo(client);
+
 	// Frames per beat
-	framesPerBeat = 44100 * 60 / 120;
+	framesPerBeat = info->sampleRate * 60 / baseBpm;
 	framesCounter = 0;
 
 	period_counter = beat_counter = -1;

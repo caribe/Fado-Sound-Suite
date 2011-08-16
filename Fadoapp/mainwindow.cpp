@@ -106,6 +106,14 @@ MainWindow::MainWindow() : QMainWindow() {
 	QAction *playbackRec = toolbarPlayback->addAction(QIcon(":/icons/control-record.png"), tr("Record"), this, SLOT(playbackRecSlot()));
 	QAction *playbackStop = toolbarPlayback->addAction(QIcon(":/icons/control-stop-square.png"), tr("Stop"), this, SLOT(playbackStopSlot()));
 
+	baseBpm = new QSpinBox();
+	baseBpm->setMinimum(16);
+	baseBpm->setMaximum(500);
+	baseBpm->setToolTip(tr("Base Beat per Minute (BPM)"));
+	baseBpm->setValue(126);
+	connect(baseBpm, SIGNAL(valueChanged(int)), core, SLOT(baseBpmChanged(int)));
+	toolbarPlayback->addWidget(baseBpm);
+
 	toolbarAnalyze = new QToolBar(tr("Analyze Tools"));
 	QAction *analyzeView = toolbarAnalyze->addAction(QIcon(":/icons/system-monitor.png"), tr("View"), this, SLOT(analyzeSlot()));
 
@@ -260,6 +268,8 @@ void MainWindow::fileOpen(QString filename)
 		}
 		pattern->refreshMachines();
 		track->refreshMachines();
+
+		baseBpm->setValue(core->baseBpm);
 
 		QStringList recentList = settings.value("state/recent").toStringList();
 		recentList.prepend(filename);
