@@ -94,8 +94,8 @@ MainWindow::MainWindow() : QMainWindow() {
 
 	toolbarTracks = new QToolBar(tr("Sequences Tools"));
 	QAction *sequencesClear = toolbarTracks->addAction(QIcon(":/icons/broom.png"), tr("Clear sequence cell"), track, SLOT(deleteButtonSlot()));
-	QAction *sequencesMute = toolbarTracks->addAction(QIcon(":pattern-mute"), tr("Set mute cell"), track, SLOT(muteButtonSlot()));
-	QAction *sequencesBreak = toolbarTracks->addAction(QIcon(":pattern-break"), tr("Set break cell"), track, SLOT(breakButtonSlot()));
+	// QAction *sequencesMute = toolbarTracks->addAction(QIcon(":pattern-mute"), tr("Set mute cell"), track, SLOT(muteButtonSlot()));
+	// QAction *sequencesBreak = toolbarTracks->addAction(QIcon(":pattern-break"), tr("Set break cell"), track, SLOT(breakButtonSlot()));
 	QAction *sequencesInsert = toolbarTracks->addAction(QIcon(":/icons/table-insert-row.png"), tr("Add Row to sequence"), track, SLOT(addButtonSlot()));
 	QAction *sequencesRemove = toolbarTracks->addAction(QIcon(":/icons/table-delete-row.png"), tr("Del row from sequence"), track, SLOT(delButtonSlot()));
 	QAction *sequencesFirst = toolbarTracks->addAction(QIcon(":/icons/control-stop.png"), tr("Set as first sequence row"), track, SLOT(frsButtonSlot()));
@@ -167,8 +167,8 @@ MainWindow::MainWindow() : QMainWindow() {
 
 	sequencesMenu = menu->addMenu(tr("&Sequences"));
 	sequencesMenu->addAction(sequencesClear);
-	sequencesMenu->addAction(sequencesMute);
-	sequencesMenu->addAction(sequencesBreak);
+	// sequencesMenu->addAction(sequencesMute);
+	// sequencesMenu->addAction(sequencesBreak);
 	sequencesMenu->addAction(sequencesInsert);
 	sequencesMenu->addAction(sequencesRemove);
 	sequencesMenu->addAction(sequencesFirst);
