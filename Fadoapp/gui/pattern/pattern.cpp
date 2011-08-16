@@ -240,7 +240,7 @@ MachinePattern *Pattern::currentPattern()
 Machine *Pattern::currentMachine()
 {
 	int index = machineCombo->currentIndex();
-	if (index == -1) {
+	if (index == -1 or index >= core->machines.length()) {
 		return 0;
 	} else {
 		return core->machines[index];
