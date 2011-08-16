@@ -160,6 +160,8 @@ void Master::process(int nframes, const void *input, void *output)
 			fwrite(buffer, framesLength * 2, 2, file);
 		}
 
+		framesStart += framesLength;
+
 		// New beat
 		if (newBeat) {
 			framesCounter = 0;
