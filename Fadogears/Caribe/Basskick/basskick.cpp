@@ -42,10 +42,9 @@ Machine *Basskick::factory() {
 
 void Basskick::reconfig(const int sampling_rate)
 {
-	duration = paramsMap["duration"]->floatValue * sampling_rate;
 	rotor = 0;
+	duration = paramsMap["duration"]->floatValue * sampling_rate;
 }
-
 
 
 void Basskick::process(int framesStart, int framesEnd) {
