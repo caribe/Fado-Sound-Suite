@@ -138,4 +138,5 @@ OTHER_FILES += \
     icons/funnel-small.png \
     icons/wrench.png \
     icons/tick.png \
-    icons/drive-download.png
+    icons/drive-download.png \
+    icons/globe.png

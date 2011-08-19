@@ -32,6 +32,7 @@
 #include <QSettings>
 #include <QToolBar>
 #include <QSpinBox>
+#include <QDesktopServices>
 #include <QDebug>
 
 //! MainWindow class
@@ -94,6 +95,7 @@ class MainWindow : public QMainWindow
 		void menuFileSaveAsSlot();
 		void menuHelpAboutSlot();
 		void menuHelpUpdatesSlot();
+		void menuHelpWebsiteSlot();
 
 		void playbackPlaySlot();
 		void playbackRecSlot();

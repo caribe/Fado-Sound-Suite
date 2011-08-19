@@ -199,6 +199,10 @@ MainWindow::MainWindow() : QMainWindow() {
 	connect(menuHelpUpdates, SIGNAL(triggered()), this, SLOT(menuHelpUpdatesSlot()));
 	menuHelp->addAction(menuHelpUpdates);
 
+	QAction *menuHelpWebsite = new QAction(QIcon(":icons/globe.png"), tr("Project website"), this);
+	connect(menuHelpWebsite, SIGNAL(triggered()), this, SLOT(menuHelpWebsiteSlot()));
+	menuHelp->addAction(menuHelpWebsite);
+
 	QAction *menuHelpAbout = new QAction(QIcon(":help"), tr("About Fado"), this);
 	connect(menuHelpAbout, SIGNAL(triggered()), this, SLOT(menuHelpAboutSlot()));
 	menuHelp->addAction(menuHelpAbout);
@@ -509,4 +513,10 @@ void MainWindow::rebuildRecent()
 		none->setDisabled(true);
 		menuFileRecent->addAction(none);
 	}
+}
+
+
+void MainWindow::menuHelpWebsiteSlot()
+{
+	QDesktopServices::openUrl(QUrl("http://saitfainder.altervista.org/fado/"));
 }
