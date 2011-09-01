@@ -52,7 +52,7 @@ Core::Core(QObject *parent) : QObject(parent)
 
 void Core::loadPlugins()
 {
-	QStandardItem *item;
+	QStandardItem *item = NULL;
 	QSettings settings;
 
 	gearsTree->removeRows(0, gearsTree->rowCount());
@@ -134,7 +134,7 @@ void Core::loadPluginsFolder(QDir &dir, QHash<QString, QStandardItem *> &generat
 
 				qDebug() << "Loaded" << machine->name << id;
 
-				QStandardItem *item;
+				QStandardItem *item = NULL;
 
 				if (machine->type == Machine::MachineGenerator) {
 					if (generatorsBuffer.contains(machine->author) == false) {

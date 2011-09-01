@@ -94,7 +94,7 @@ void FileInput::reconfig(const int sampling_rate)
 
 void FileInput::process(int framesStart, int framesEnd) {
 	// seek2 = seek * info.samplerate / sampling_rate
-	unsigned int i, seek2;
+	int i, seek2;
 
 	if (info.channels == 2) {
 		for (i = framesStart; i < framesEnd; i++) {
