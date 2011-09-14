@@ -40,7 +40,10 @@ int Encoder::encode(const QString &srcname, const QString &dstname, int samplera
 	sfinfo_src.format = SF_FORMAT_RAW | SF_FORMAT_PCM_16;
 
 	if (sf_format_check(&sfinfo_src) == 0) return 0x10;
-	if ((src = sf_open(srcname.toLatin1().data(), SFM_READ, &sfinfo_src)) == 0) return 0x11;
+	if ((src = sf_open(srcname.toUtf8().constData(), SFM_READ, &sfinfo_src)) == NULL) {
+		qDebug() << sf_error(src) << sf_error_number(sf_error(src));
+		return 0x11;
+	}
 
 	// Output file
 
@@ -49,7 +52,10 @@ int Encoder::encode(const QString &srcname, const QString &dstname, int samplera
 	sfinfo_dst.channels = channels;
 
 	if (sf_format_check(&sfinfo_dst) == 0) return 0x20;
-	if ((dst = sf_open(dstname.toLatin1().data(), SFM_WRITE, &sfinfo_dst)) == 0) return 0x21;
+	if ((dst = sf_open(dstname.toUtf8().constData(), SFM_WRITE, &sfinfo_dst)) == NULL) {
+		qDebug() << dstname << sf_error(dst) << sf_error_number(sf_error(dst));
+		return 0x21;
+	}
 
 	// Conversion
 

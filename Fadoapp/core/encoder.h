@@ -24,6 +24,7 @@
 #define CORE_ENCODER_H
 
 #include <QObject>
+#include <QDebug>
 
 #include <sndfile.h>
 
